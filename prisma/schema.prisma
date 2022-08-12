@@ -1,0 +1,62 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String        @id @default(cuid())
+  email       String        @unique
+  password    String
+  name        String        @unique
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  card        Card[]
+  transaction Transaction[]
+
+  @@unique([email, password])
+  @@unique([email, name])
+}
+
+model Card {
+  id        String   @id @default(cuid())
+  userId    String
+  billKey   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  name      String
+  type      String
+  hash      String
+  USER      User     @relation(fields: [userId], references: [id])
+
+  @@unique([id, userId])
+}
+
+model Products {
+  id          String        @id @default(cuid())
+  name        String
+  price       Int
+  detail      String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  TRANSACTION Transaction[]
+}
+
+model Transaction {
+  id          String   @unique
+  userId      String
+  productId   String
+  productName String
+  price       Int
+  TID         String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  canceled    Boolean  @default(false)
+  PRODUCT     Products @relation(fields: [productId], references: [id])
+  USER        User     @relation(fields: [userId], references: [id])
+
+  @@unique([id, userId])
+}
