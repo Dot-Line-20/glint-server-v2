@@ -23,7 +23,7 @@ export default class {
   }
 
   private initializeHandlers(): void {
-    this.app.addHook('onError', errorHandler)
+    this.app.setErrorHandler(errorHandler)
     // Add more router at here
 
     return

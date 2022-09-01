@@ -8,8 +8,23 @@ import {
 } from 'fastify'
 import { IncomingMessage, Server, ServerResponse } from 'http'
 import module from '@library/module'
+import {
+  ArraySchema,
+  BooleanSchema,
+  IntegerSchema,
+  JSONSchema,
+  NumberSchema,
+  ObjectSchema,
+  StringSchema,
+} from 'fluent-json-schema'
 
-interface RouteOptions extends Omit<_RouteOptions, 'handler'> {
+type RecursiveRecord<T extends string | number | symbol, S> = {
+  [key in T]: S | RecursiveRecord<T, S>
+}
+
+type SchemaKey = 'body' | 'querystring' | 'params' | 'headers'
+
+interface RouteOptions extends Omit<_RouteOptions, 'handler' | 'schema'> {
   method: HTTPMethods
   handler: RouteHandlerMethod<
     Server,
@@ -20,6 +35,16 @@ interface RouteOptions extends Omit<_RouteOptions, 'handler'> {
     FastifySchema,
     FastifyTypeProvider,
     FastifyBaseLogger
+  >
+  schema?: Partial<
+    Pick<
+      RecursiveRecord<
+        string,
+        | Record<'$isRequired', boolean>
+        | Omit<Record<string, JSONSchema>, '$isRequired'>
+      >,
+      SchemaKey
+    >
   >
 }
 
@@ -38,7 +63,3 @@ type Schema<T extends string> = Record<
   | IntegerSchema
   | BooleanSchema
 >
-
-type RecursiveRecord<T extends string | number | symbol, S> = {
-  [key in T]: S | RecursiveRecord<T, S>
-}

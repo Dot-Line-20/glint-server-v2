@@ -1,12 +1,13 @@
 import { FastifyError, FastifyRequest, PayloadReply } from 'fastify'
 
 export default (
+  error: FastifyError,
   request: FastifyRequest,
-  reply: PayloadReply,
-  error: FastifyError
+  reply: PayloadReply
 ) => {
   if (typeof error.validation === 'object') {
     error.statusCode = 400
+    error.message = error.message[0].toUpperCase() + error.message.slice(1)
   } else if (typeof error.statusCode !== 'number') {
     error.statusCode = 500
   }

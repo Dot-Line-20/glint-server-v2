@@ -2,10 +2,10 @@
   "name": "glint-server-v2",
   "version": "1.0.0",
   "repository": "https://github.com/Dot-Line-20/glint-server-v2",
-	"contributors": [
-		"kraccoon-dev <kraccoon@kakao.com>",
-		"H2Owater425 <h2o@h2owr.xyz>"
-	],
+  "contributors": [
+    "kraccoon-dev <kraccoon@kakao.com>",
+    "H2Owater425 <h2o@h2owr.xyz>"
+  ],
   "license": "MIT",
   "main": "distribution/server.js",
   "scripts": {
@@ -17,14 +17,16 @@
     "lint:fix": "eslint --fix **/*.ts",
     "prettier": "prettier **/*.ts",
     "prettier:fix": "prettier --write **/*.ts",
-		"prisma": "prisma"
+    "prisma": "prisma"
   },
   "dependencies": {
     "@prisma/client": "^4.2.1",
     "dotenv": "^16.0.1",
-    "fastify": "^4.5.2",
+    "fastify": "^4.5.3",
     "fluent-json-schema": "^3.1.0",
+    "ioredis": "^5.2.3",
     "jsonwebtoken": "^8.5.1",
+    "mariadb": "^3.0.1",
     "tsconfig-paths": "^4.1.0"
   },
   "devDependencies": {
