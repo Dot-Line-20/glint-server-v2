@@ -8,13 +8,21 @@
     "start": "ts-node -r tsconfig-paths/register src/server.ts",
     "dev": "nodemon -r tsconfig-paths/register src/server.ts",
     "lint": "eslint src/**/*.ts",
+    "lint:fix": "eslint src/**/*.ts --fix",
     "db:seed": "npx prisma db seed",
     "db:push": "npx prisma db push && yarn db:pull",
     "db:pull": "npx prisma db pull && npx prisma generate",
-    "docs:server": "docsify serve docs"
+    "docs:server": "docsify serve docs",
+    "prepare": "husky install",
+    "test": "exit 0"
   },
   "prisma": {
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} -r tsconfig-paths/register prisma/seed.ts"
+  },
+  "husku": {
+    "hooks": {
+      "pre-push": "yarn lint:fix && yarn test"
+    }
   },
   "dependencies": {
     "@prisma/client": "^4.2.1",
@@ -42,6 +50,7 @@
     "@typescript-eslint/eslint-plugin": "^5.33.0",
     "@typescript-eslint/parser": "^5.33.0",
     "eslint": "^8.21.0",
+    "husky": "^8.0.0",
     "nodemon": "^2.0.19",
     "prettier": "^2.7.1",
     "prisma": "^4.2.1",
