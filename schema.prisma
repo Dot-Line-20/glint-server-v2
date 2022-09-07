@@ -6,3 +6,151 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
+
+model Category {
+  id         Int       @id @db.UnsignedInt
+  scheduleId Int?      @map("schedule_id") @db.UnsignedInt
+  postId     Int?      @map("post_id") @db.UnsignedInt
+  name       String    @db.VarChar(64)
+  post       Post?     @relation(fields: [postId], references: [id], onDelete: NoAction, map: "FOREIGN KEY (category.post_id, post.id)")
+  schedule   Schedule? @relation(fields: [scheduleId], references: [id], onDelete: NoAction, map: "FOREIGN KEY (category.schedule_id, schedule.id)")
+
+  @@index([postId], map: "FOREIGN KEY (category.post_id, post.id)")
+  @@index([scheduleId], map: "FOREIGN KEY (category.schedule_id, schedule.id)")
+  @@map("category")
+}
+
+model Chat {
+  id           Int       @id @db.UnsignedInt
+  userId       Int       @map("user_id") @db.UnsignedInt
+  targetUserId Int       @map("target_user_id") @db.UnsignedInt
+  name         String    @db.VarChar(64)
+  user         User      @relation("FOREIGN KEY (chat.user_id, user.id)", fields: [userId], references: [id], onDelete: NoAction, map: "FOREIGN KEY (chat.user_id, user.id)")
+  targetUser   User      @relation("FOREIGN KEY (chat.target_user_id, user.id)", fields: [targetUserId], references: [id], onDelete: NoAction, map: "FOREIGN KEY (chat.target_user_id, user.id)")
+  messages     Message[]
+
+  @@unique([userId, targetUserId], map: "UNIQUE INDEX (user_id, target_user_id)")
+  @@index([targetUserId], map: "FOREIGN KEY (chat.target_user_id, user.id)")
+  @@map("chat")
+}
+
+model Comment {
+  id        Int      @id @db.UnsignedInt
+  userId    Int      @map("user_id") @db.UnsignedInt
+  postId    Int      @map("post_id") @db.UnsignedInt
+  content   String   @db.Text
+  isDeleted Boolean  @map("isDeleted")
+  createdAt DateTime @map("created_at") @db.DateTime(0)
+  post      Post     @relation(fields: [postId], references: [id], onDelete: NoAction, map: "FOREIGN KEY (comment.post_id, post.id)")
+  user      User     @relation(fields: [userId], references: [id], onDelete: NoAction, map: "FOREIGN KEY (comment.user_id, user.id)")
+  reports   Report[]
+
+  @@index([postId], map: "FOREIGN KEY (comment.post_id, post.id)")
+  @@index([userId], map: "FOREIGN KEY (comment.user_id, user.id)")
+  @@map("comment")
+}
+
+model Following {
+  userId       Int  @id @map("user_id") @db.UnsignedInt
+  targetUserId Int  @map("target_user_id") @db.UnsignedInt
+  user         User @relation("FOREIGN KEY (following.user_id, user.id)", fields: [userId], references: [id], onDelete: NoAction, map: "FOREIGN KEY (following.user_id, user.id)")
+  targetUser   User @relation("FOREIGN KEY (following.target_user_id, user.id)", fields: [targetUserId], references: [id], onDelete: NoAction, map: "FOREIGN KEY (following.target_user_id, user.id)")
+
+  @@index([targetUserId], map: "FOREIGN KEY (following.target_user_id, user.id)")
+  @@map("following")
+}
+
+model Message {
+  id        Int      @id @db.UnsignedInt
+  chatId    Int      @map("chat_id") @db.UnsignedInt
+  content   String   @db.Text
+  createdAt DateTime @map("created_at") @db.DateTime(0)
+  chat      Chat     @relation(fields: [chatId], references: [id], onDelete: NoAction, map: "FOREIGN KEY (message.chat_id, chat.id)")
+
+  @@index([chatId], map: "FOREIGN KEY (message.chat_id, chat.id)")
+  @@map("message")
+}
+
+model Post {
+  id         Int        @id @db.UnsignedInt
+  userId     Int        @map("user_id") @db.UnsignedInt
+  title      String     @db.VarChar(64)
+  content    String     @db.Text
+  medias     String     @db.Text
+  isDeleted  Boolean    @map("is_deleted")
+  createdAt  DateTime   @map("created_at") @db.DateTime(0)
+  user       User       @relation(fields: [userId], references: [id], onDelete: NoAction, map: "FOREIGN KEY (post.user_id, user.id)")
+  categories Category[]
+  comments   Comment[]
+  reports    Report[]
+
+  @@index([userId], map: "FOREIGN KEY (post.user_id, user.id)")
+  @@map("post")
+}
+
+model Report {
+  id        Int      @id @db.UnsignedInt
+  userId    Int      @map("user_id") @db.UnsignedInt
+  postId    Int?     @map("post_id") @db.UnsignedInt
+  commentId Int?     @map("comment_id") @db.UnsignedInt
+  reason    String   @db.Text
+  createdAt DateTime @map("created_at") @db.DateTime(0)
+  user      User     @relation(fields: [userId], references: [id], onDelete: NoAction, map: "FOREIGN KEY (report.user_id, user.id)")
+  post      Post?    @relation(fields: [postId], references: [id], onDelete: NoAction, map: "FOREIGN KEY (report.post_id, post.id)")
+  comment   Comment? @relation(fields: [commentId], references: [id], onDelete: NoAction, map: "FOREIGN KEY (report.comment_id, comment.id)")
+
+  @@index([userId], map: "FOREIGN KEY (report.user_id, user.id)")
+  @@index([postId], map: "FOREIGN KEY (report.post_id, post.id)")
+  @@index([commentId], map: "FOREIGN KEY (report.comment_id, comment.id)")
+  @@map("report")
+}
+
+model Schedule {
+  id               Int        @id @db.UnsignedInt
+  userId           Int        @map("user_id") @db.UnsignedInt
+  parentScheduleId Int?       @map("parent_schedule_id") @db.UnsignedInt
+  name             String     @db.VarChar(128)
+  startingAt       DateTime   @map("starting_at") @db.DateTime(0)
+  endingAt         DateTime   @map("ending_at") @db.DateTime(0)
+  isSuccess        Boolean    @map("is_success")
+  createdAt        DateTime   @map("created_at") @db.DateTime(0)
+  user             User       @relation(fields: [userId], references: [id], onDelete: NoAction, map: "FOREIGN KEY (schedule.user_id, user.id)")
+  schedule         Schedule?  @relation("FOREIGN KEY (schedule.parent_schedule_id, schedule.id)", fields: [parentScheduleId], references: [id], onDelete: NoAction, map: "FOREIGN KEY (schedule.parent_schedule_id, schedule.id)")
+  childSchedules   Schedule[] @relation("FOREIGN KEY (schedule.parent_schedule_id, schedule.id)")
+  categories       Category[]
+
+  @@index([userId], map: "FOREIGN KEY (schedule.user_id, user.id)")
+  @@index([parentScheduleId], map: "FOREIGN KEY (schedule.parent_schedule_id, schedule.id)")
+  @@map("schedule")
+}
+
+model Social {
+  userId Int    @map("user_id") @db.UnsignedInt
+  type   Int    @db.UnsignedInt
+  token  String @unique(map: "UNIQUE INDEX (token)") @db.VarChar(128)
+  user   User   @relation(fields: [userId], references: [id], onDelete: NoAction, map: "FOREIGN KEY (social.user_id, user.id)")
+
+  @@id([userId, type])
+  @@map("social")
+}
+
+model User {
+  id        Int      @id @db.UnsignedInt
+  email     String   @db.VarChar(128)
+  password  String   @db.VarChar(512)
+  name      String   @db.VarChar(32)
+  birth     DateTime @db.Date
+  image     String   @db.VarChar(128)
+  createdAt DateTime @map("created_at") @db.DateTime(0)
+  chats              Chat[]      @relation("FOREIGN KEY (chat.user_id, user.id)")
+  targetedChats      Chat[]      @relation("FOREIGN KEY (chat.target_user_id, user.id)")
+  followings         Following[] @relation("FOREIGN KEY (following.user_id, user.id)")
+  targetedFollowings Following[] @relation("FOREIGN KEY (following.target_user_id, user.id)")
+  socials            Social[]
+  schedules          Schedule[]
+  posts              Post[]
+  comments           Comment[]
+  reports            Report[]
+
+  @@map("user")
+}
