@@ -112,6 +112,7 @@ model Schedule {
   name             String     @db.VarChar(128)
   startingAt       DateTime   @map("starting_at") @db.DateTime(0)
   endingAt         DateTime   @map("ending_at") @db.DateTime(0)
+  repeatAt         DateTime?  @map("repeat_at") @db.DateTime(0)
   isSuccess        Boolean    @map("is_success")
   createdAt        DateTime   @map("created_at") @db.DateTime(0)
   user             User       @relation(fields: [userId], references: [id], onDelete: NoAction, map: "FOREIGN KEY (schedule.user_id, user.id)")
@@ -135,13 +136,13 @@ model Social {
 }
 
 model User {
-  id        Int      @id @db.UnsignedInt
-  email     String   @db.VarChar(128)
-  password  String   @db.VarChar(512)
-  name      String   @db.VarChar(32)
-  birth     DateTime @db.Date
-  image     String   @db.VarChar(128)
-  createdAt DateTime @map("created_at") @db.DateTime(0)
+  id                 Int         @id @db.UnsignedInt
+  email              String      @db.VarChar(128)
+  password           String      @db.VarChar(512)
+  name               String      @db.VarChar(32)
+  birth              DateTime    @db.Date
+  image              String      @db.VarChar(128)
+  createdAt          DateTime    @map("created_at") @db.DateTime(0)
   chats              Chat[]      @relation("FOREIGN KEY (chat.user_id, user.id)")
   targetedChats      Chat[]      @relation("FOREIGN KEY (chat.target_user_id, user.id)")
   followings         Following[] @relation("FOREIGN KEY (following.user_id, user.id)")
