@@ -58,10 +58,6 @@ distribution/
 # Stores VSCode versions used for testing VSCode extensions
 .vscode-test
 
-# locks
-yarn.lock
-package-lock.json
-
 # yarn v2
 .yarn/cache
 .yarn/unplugged
