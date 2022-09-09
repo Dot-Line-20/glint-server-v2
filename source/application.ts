@@ -50,7 +50,7 @@ export default class {
           .split(/^(└──\s|\s{4})/gm)
           .slice(2)
 
-        for (let i: number = 0; i < routeLines['length']; i++) {
+        for (let i = 0; i < routeLines['length']; i++) {
           if (i % 2 === 0) {
             this.logger.info(routeLines[i].replace('\n', ''))
           }
