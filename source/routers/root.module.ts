@@ -1,6 +1,7 @@
 import Module from '@library/module'
 import authModule from './auth/auth.module'
 import getRootController from './getRoot.controller'
+import usersModule from './users/users.module'
 
 export default new Module({
   routers: [
@@ -10,6 +11,6 @@ export default new Module({
       handler: getRootController,
     },
   ],
-  modules: [authModule],
+  modules: [authModule, usersModule],
   prefix: '',
 })

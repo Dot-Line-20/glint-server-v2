@@ -136,11 +136,12 @@ model Social {
 
 model User {
   id                 Int         @id @default(autoincrement()) @db.UnsignedInt
-  email              String      @db.VarChar(128)
+  email              String      @db.VarChar(128) @unique(map: "UNIQUE INDEX (email)")
   password           String      @db.VarChar(512)
   name               String      @db.VarChar(32)
   birth              DateTime    @db.Date
   image              String?     @db.VarChar(128)
+	verificationKey    String?     @db.VarChar(128) @map("verification_key") @unique(map: "UNIQUE INDEX (verification_key)")
   createdAt          DateTime    @default(now()) @map("created_at") @db.DateTime(0)
   targetedChats      Chat[]      @relation("FOREIGN KEY (chat.target_user_id, user.id)")
   chats              Chat[]      @relation("FOREIGN KEY (chat.user_id, user.id)")

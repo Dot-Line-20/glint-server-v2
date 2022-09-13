@@ -22,8 +22,8 @@ export default class Logger implements FastifyBaseLogger {
           levelColor++
         }
 
-				// Not to use break statement was intended
-				/* eslint-disable */
+        // Not to use break statement was intended
+        /* eslint-disable */
         default: {
           print = process.stdout.write.bind(process.stdout)
         }

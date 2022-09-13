@@ -3,6 +3,7 @@ import fastify, { FastifyInstance } from 'fastify'
 import Logger from './library/logger'
 import errorHandler from './handlers/error'
 import rootModule from './routers/root.module'
+import notFoundHandler from './handlers/notFound'
 
 // App
 export default class {
@@ -23,6 +24,7 @@ export default class {
   }
 
   private initializeHandlers(): void {
+    this.app.setNotFoundHandler(notFoundHandler)
     this.app.setErrorHandler(errorHandler)
     // Add more router at here
 
