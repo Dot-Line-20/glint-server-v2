@@ -1,10 +1,6 @@
 import { FastifyInstance } from 'fastify'
 import { join } from 'path/posix'
-import {
-  ModuleOptions,
-  RouteOptions,
-  SchemaKey,
-} from '@library/type'
+import { ModuleOptions, RouteOptions, SchemaKey } from '@library/type'
 import authHandler from '../handlers/auth'
 import schema, { ObjectSchema } from 'fluent-json-schema'
 
@@ -28,11 +24,11 @@ export default class {
 
     let _schema: ObjectSchema = schema.object().additionalProperties(false)
 
-    for (let i: number = 0; i < schmeaNames['length']; i++) {
+    for (let i = 0; i < schmeaNames['length']; i++) {
       _schema = _schema.prop(
         schmeaNames[i],
         // @ts-expect-error (fault of typescript)
-        object[schmeaNames[i]].hasOwnProperty('isFluentJSONSchema')
+				Object.prototype.hasOwnProperty.call(object[schmeaNames[i]], 'isFluentJSONSchema')
           ? // @ts-expect-error (fault of typescript)
             object[schmeaNames[i]]
           : this.getObjectSchema(
@@ -56,7 +52,7 @@ export default class {
   }
 
   public register(fastifyInstance: FastifyInstance): void {
-    for (let i: number = 0; i < this.options.routers.length; i++) {
+    for (let i = 0; i < this.options.routers.length; i++) {
       let _schema: Partial<Record<SchemaKey, ObjectSchema>>
 
       if (typeof this.options.routers[i].schema === 'object') {
@@ -66,7 +62,7 @@ export default class {
           this.options.routers[i].schema as object
         ) as SchemaKey[]
 
-        for (let j: number = 0; j < schemaKeys['length']; j++) {
+        for (let j = 0; j < schemaKeys['length']; j++) {
           _schema[schemaKeys[j]] = this.getObjectSchema(
             (
               this.options.routers[i].schema as Required<
@@ -86,7 +82,7 @@ export default class {
               this.options.prefix,
               this.options.routers[i].url
             ),
-            // @ts-expect-error
+						// @ts-expect-error (fault of typescript)
             schema: _schema,
           },
           this.options.routers[i].isAuthNeeded
@@ -97,7 +93,7 @@ export default class {
     }
 
     if (this.options.modules.length !== 0) {
-      for (let i: number = 0; i < this.options.modules.length; i++) {
+      for (let i = 0; i < this.options.modules.length; i++) {
         this.options.modules[i].appendPrefix(this.options.prefix)
         this.options.modules[i].register(fastifyInstance)
       }

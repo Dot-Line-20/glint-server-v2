@@ -7,7 +7,7 @@ export default class Logger implements FastifyBaseLogger {
   static log(level: LogLevel, _arguments: Record<string, any>): void {
     if (typeof _arguments[0].req === 'undefined') {
       let print: Socket['write']
-      let levelColor: number = 32
+      let levelColor = 32
 
       switch (level) {
         case 'error':
@@ -22,6 +22,8 @@ export default class Logger implements FastifyBaseLogger {
           levelColor++
         }
 
+				// Not to use break statement was intended
+				/* eslint-disable */
         default: {
           print = process.stdout.write.bind(process.stdout)
         }
