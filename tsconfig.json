@@ -12,7 +12,7 @@
     "baseUrl": ".",
     "paths": {
       "@library/*": ["source/library/*", "distribution/library/*"],
-      "@schema/*": ["source/schema/*", "distribution/schema/*"]
+      "@schemas/*": ["source/schemas/*", "distribution/schemas/*"]
     },
 		"typeRoots": ["source/types"],
     "removeComments": true

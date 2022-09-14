@@ -40,7 +40,7 @@ interface RouteOptions extends Omit<_RouteOptions, 'handler' | 'schema'> {
     Pick<
       RecursiveRecord<
         string,
-        | Record<'$isRequired', boolean>
+        | Partial<Record<'$isRequired', boolean>>
         | Omit<Record<string, JSONSchema>, '$isRequired'>
       >,
       SchemaKey
@@ -63,3 +63,7 @@ type Schema<T extends string> = Record<
   | IntegerSchema
   | BooleanSchema
 >
+
+interface PageQuery extends Record<`page[${'index' | 'size'}]`, number> {
+  'page[order]': 'desc' | 'asc'
+}

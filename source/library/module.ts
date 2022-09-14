@@ -3,6 +3,7 @@ import { join } from 'path/posix'
 import { ModuleOptions, RouteOptions, SchemaKey } from '@library/type'
 import authHandler from '../handlers/auth'
 import schema, { ObjectSchema } from 'fluent-json-schema'
+import { FastifySchemaValidationError } from 'fastify/types/schema'
 
 // Module
 export default class {
@@ -24,25 +25,44 @@ export default class {
 
     let _schema: ObjectSchema = schema.object().additionalProperties(false)
 
-    for (let i = 0; i < schmeaNames['length']; i++) {
-      _schema = _schema.prop(
-        schmeaNames[i],
-        // @ts-expect-error (fault of typescript)
-				Object.prototype.hasOwnProperty.call(object[schmeaNames[i]], 'isFluentJSONSchema')
-          ? // @ts-expect-error (fault of typescript)
-            object[schmeaNames[i]]
-          : this.getObjectSchema(
-              // @ts-expect-error (fault of typescript)
-              object[schmeaNames[i]]
-            )
-      )
-    }
-
     if (typeof object.$isRequired === 'boolean' && object.$isRequired) {
       _schema = _schema.required()
     }
 
+    for (let i = 0; i < schmeaNames['length']; i++) {
+      if (schmeaNames[i] !== '$isRequired') {
+        _schema = _schema.prop(
+          schmeaNames[i],
+          Object.prototype.hasOwnProperty.call(
+            // @ts-expect-error (fault of typescript)
+            object[schmeaNames[i]],
+            'isFluentJSONSchema'
+          )
+            ? // @ts-expect-error (fault of typescript)
+              object[schmeaNames[i]]
+            : this.getObjectSchema(
+                // @ts-expect-error (fault of typescript)
+                object[schmeaNames[i]]
+              )
+        )
+      }
+    }
+
     return _schema.readOnly(true)
+  }
+
+  private schemaErrorFormatter(
+    errors: FastifySchemaValidationError[],
+    dataVariableName: string
+  ): Error {
+    return new Error(
+      dataVariableName +
+        ' ' +
+        (errors[0].instancePath.length !== 0
+          ? errors[0]['instancePath'].slice(1) + ' '
+          : '') +
+        errors[0].message
+    )
   }
 
   public appendPrefix(prefix: string): void {
@@ -82,12 +102,15 @@ export default class {
               this.options.prefix,
               this.options.routers[i].url
             ),
-						// @ts-expect-error (fault of typescript)
+            // @ts-expect-error (fault of typescript)
             schema: _schema,
           },
           this.options.routers[i].isAuthNeeded
             ? { preHandler: authHandler }
-            : undefined
+            : undefined,
+          {
+            schemaErrorFormatter: this.schemaErrorFormatter,
+          }
         )
       )
     }
