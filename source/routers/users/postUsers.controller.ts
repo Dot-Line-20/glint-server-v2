@@ -4,6 +4,7 @@ import prisma from '@library/prisma'
 import HttpError from '@library/httpError'
 import { argon2id, hash } from 'argon2'
 import { randomBytes } from 'crypto'
+import { sendMail } from '@library/utility'
 
 export default async (
   request: FastifyRequest<{
@@ -25,12 +26,18 @@ export default async (
   }
 
   const verificationKey: string = randomBytes(64).toString('hex')
-  console.log(
-    'http://localhost:3000/auth/email?verificationKey=' + verificationKey
-  )
 
-  // TODO: Make mail sending available
-  //await sendMail(request.body.email, 'Glint 계정 인증', '<p>' + request['body']['name'] + '님, 안녕하세요.</p><br><p>계정의 생성이 확인되었습니다,</p><p><a href="http://localhost:3000/auth/email?verificationKey=' + verificationKey + '">여기</a>를 눌러 이메일을 인증해주세요.</p><br><p>만약 이를 요청하지 않으셨다면, 이메일 도용의 가능성이 있으니 <a href="mailto:' + process.env.EMAIL_USER + '">회답</a>해주시길 바랍니다.</p><br><hr><br><p>Glint | <a href="http://localhost:3000/">http://localhost:3000/</a></p>')
+  await sendMail(
+    request.body.email,
+    'Glint 계정 인증',
+    '<p>' +
+      request['body']['name'] +
+      '님, 안녕하세요.</p><br><p>계정의 생성이 확인되었습니다,</p><p><a href="http://h2o.vg/auth/email?verificationKey=' +
+      verificationKey +
+      '">여기</a>를 눌러 이메일을 인증해주세요.</p><br><p>만약 이를 요청하지 않으셨다면, 이메일 도용의 가능성이 있으니 <a href="mailto:' +
+      process.env.EMAIL_USER +
+      '">회답</a>해주시길 바랍니다.</p><br><hr><br><p>Glint | <a href="http://h2o.vg/">http://h2o.vg/</a></p>'
+  )
 
   try {
     reply.send({

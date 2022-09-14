@@ -7,7 +7,7 @@ export default {
   id: schema.integer().minimum(0),
   email: schema.string().format('email'),
   password: schema.string(),
-  name: schema.string().minLength(2).maxLength(32),
+  name: schema.string().pattern(/^[a-zA-Z0-9_]{2,32}$/),
   birth: schema.string().format('date'),
   image: schema.string(),
   verificationKey: commonSchema.sha512,

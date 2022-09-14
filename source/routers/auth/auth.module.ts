@@ -24,6 +24,17 @@ export default new Module({
       handler: postLoginController,
     },
     {
+      url: 'test',
+      method: 'POST',
+      schema: {
+        body: {
+          email: userSchema.email.required(),
+          password: userSchema.password.required(),
+        },
+      },
+      handler: postLoginController,
+    },
+    {
       url: 'email',
       method: 'GET',
       schema: {

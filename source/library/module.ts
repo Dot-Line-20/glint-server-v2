@@ -25,6 +25,10 @@ export default class {
 
     let _schema: ObjectSchema = schema.object().additionalProperties(false)
 
+    if (typeof object.$isRequired === 'boolean' && object.$isRequired) {
+      _schema = _schema.required()
+    }
+
     for (let i = 0; i < schmeaNames['length']; i++) {
       if (schmeaNames[i] !== '$isRequired') {
         _schema = _schema.prop(
@@ -42,10 +46,6 @@ export default class {
               )
         )
       }
-    }
-
-    if (typeof object.$isRequired === 'boolean' && object.$isRequired) {
-      _schema = _schema.required()
     }
 
     return _schema.readOnly(true)
