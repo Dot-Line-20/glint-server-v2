@@ -3,7 +3,7 @@ import prisma from '@library/prisma'
 import { User } from '@prisma/client'
 import { FastifyRequest, PayloadReply } from 'fastify'
 import { verify } from 'argon2'
-import JsonWebToken from '@library/jsonwebtoken'
+import JsonWebToken from '@library/jsonWebToken'
 import { getEpoch } from '@library/utility'
 
 export default async (

@@ -2,7 +2,7 @@ import HttpError from '@library/httpError'
 import prisma from '@library/prisma'
 import { FastifyRequest, PayloadReply } from 'fastify'
 import { User } from '@prisma/client'
-import JsonWebToken from '@library/jsonwebtoken'
+import JsonWebToken from '@library/jsonWebToken'
 import { getEpoch } from '@library/utility'
 
 export default async (

@@ -1,5 +1,5 @@
 import HttpError from '@library/httpError'
-import JsonWebToken from '@library/jsonwebtoken'
+import JsonWebToken from '@library/jsonWebToken'
 import { DoneFuncWithErrOrRes, FastifyRequest, PayloadReply } from 'fastify'
 
 export default (
