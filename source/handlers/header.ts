@@ -23,6 +23,9 @@ export default (
     'X-Permitted-Cross-Domain-Policies': 'none',
     'X-XSS-Protection': '0',
     'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET,PATCH,POST,DELETE',
+    'Access-Control-Allow-Headers':
+      'Origin,X-Requested-With,Content-Type,Accept',
   })
 
   done()
