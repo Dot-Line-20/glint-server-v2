@@ -1,27 +1,15 @@
 import { FastifySchema, FastifyTypeProvider, FastifyReply } from 'fastify'
 import { RouteGenericInterface } from 'fastify/types/route'
 import { IncomingMessage, Server, ServerResponse } from 'http'
-import httpError from '@library/httpError'
 
 interface Reply extends RouteGenericInterface {
-  Reply:
-    | {
-        status: 'success' | 'fail'
-        data: Record<string, any> | null
-      }
-    | {
-        status: 'error'
-        message: string
-        code?: number
-        data?: Record<string, any> | null
-      }
-    | httpError
+  Reply: Record<string, any> | null
 }
 
 declare module 'fastify' {
   interface FastifyRequest {
     user: {
-      id: string
+      id: number
     }
   }
 
