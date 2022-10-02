@@ -21,4 +21,10 @@ export async function sendMail(
     subject: title,
     html: body,
   })
+
+  return
+}
+
+export function getEpoch(): number {
+  return Math.trunc(Date.now() / 1000)
 }
