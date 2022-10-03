@@ -23,7 +23,6 @@ export default async (
   }
 
   await prisma.user.delete({
-    select: null,
     where: request.params,
   })
 

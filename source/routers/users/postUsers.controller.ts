@@ -43,9 +43,6 @@ export default async (
 
   reply.send(
     await prisma.user.create({
-      select: {
-        id: true,
-      },
       data: Object.assign(request.body, {
         password: await hash(request.body.password, {
           type: argon2id,

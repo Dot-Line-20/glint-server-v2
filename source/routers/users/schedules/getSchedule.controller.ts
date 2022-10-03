@@ -22,6 +22,13 @@ export default async (
       where: {
         id: request.params.id,
       },
+			include: {
+				categories: {
+					include: {
+						category: true
+					}
+				}
+			}
     })
   )
 

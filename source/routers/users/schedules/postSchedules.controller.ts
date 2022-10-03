@@ -31,7 +31,6 @@ export default async (
   if (
     request.body.parentScheduleId !== null &&
     (await prisma.schedule.findUnique({
-      select: null,
       where: {
         id: request.body.parentScheduleId,
       },

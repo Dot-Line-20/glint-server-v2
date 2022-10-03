@@ -1,5 +1,5 @@
 import { FastifyRequest, PayloadReply } from 'fastify'
-import { Schedule, User } from '@prisma/client'
+import { Prisma, Schedule, User } from '@prisma/client'
 import prisma from '@library/prisma'
 import HttpError from '@library/httpError'
 import { isScheduleExist } from '@library/existence'
@@ -33,7 +33,9 @@ export default async (
   reply.send(
     await prisma.schedule.update({
       data: request.body,
-      where: request.params,
+      where: {
+				id: request.params.id
+			},
     })
   )
 

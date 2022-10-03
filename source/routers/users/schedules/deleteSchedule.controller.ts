@@ -24,11 +24,11 @@ export default async (
     return
   }
 
-  // TODO: Delete recursively if schedule is parent
-  await prisma.schedule.delete({
-    select: null,
-    where: request.params,
-  })
+	await prisma.schedule.delete({
+		where: {
+			id: request.params.id
+		}
+	})
 
   reply.send(null)
 
