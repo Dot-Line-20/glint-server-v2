@@ -19,7 +19,15 @@ export default async (
     return
   }
 
-  const verificationKey: string = randomBytes(64).toString('hex')
+  let verificationKey: string;
+
+	do {
+		verificationKey = randomBytes(64).toString('hex')
+	} while(await prisma.user.findUnique({
+		where: {
+			verificationKey: verificationKey
+		}
+	}) !== null)
 
   await sendMail(
     request.body.email,
