@@ -1,5 +1,5 @@
 import { FastifyRequest, PayloadReply } from 'fastify'
-import { Prisma, Schedule, User } from '@prisma/client'
+import { Schedule, User } from '@prisma/client'
 import prisma from '@library/prisma'
 import HttpError from '@library/httpError'
 import { isScheduleExist } from '@library/existence'
