@@ -18,9 +18,8 @@ for (let i = 0; i < REQUIRED_ENVIRONMENT_VARIABLE_NAMES.length; i++) {
     typeof process.env[REQUIRED_ENVIRONMENT_VARIABLE_NAMES[i]] === 'undefined'
   ) {
     throw new Error(
-      'Unconfigured environment variable(' +
-        REQUIRED_ENVIRONMENT_VARIABLE_NAMES[i] +
-        ')'
+      'Unconfigured environment variable: ' +
+        REQUIRED_ENVIRONMENT_VARIABLE_NAMES[i]
     )
   }
 }
