@@ -8,150 +8,210 @@ datasource db {
 }
 
 model Category {
-  id         Int       @id @default(autoincrement()) @db.UnsignedInt
-  scheduleId Int?      @map("schedule_id") @db.UnsignedInt
-  postId     Int?      @map("post_id") @db.UnsignedInt
-  name       String    @db.VarChar(64)
-  post       Post?     @relation(fields: [postId], references: [id], onDelete: NoAction, map: "FOREIGN KEY (category.post_id, post.id)")
-  schedule   Schedule? @relation(fields: [scheduleId], references: [id], onDelete: NoAction, map: "FOREIGN KEY (category.schedule_id, schedule.id)")
+  id        Int                @id @default(autoincrement()) @db.UnsignedInt
+  name      String             @unique(map: "UNIQUE INDEX (name)") @db.VarChar(64)
+  posts     PostCategory[]
+  schedules ScheduleCategory[]
 
-  @@index([postId], map: "FOREIGN KEY (category.post_id, post.id)")
-  @@index([scheduleId], map: "FOREIGN KEY (category.schedule_id, schedule.id)")
   @@map("category")
 }
 
 model Chat {
-  id           Int       @id @default(autoincrement()) @db.UnsignedInt
-  userId       Int       @map("user_id") @db.UnsignedInt
-  targetUserId Int       @map("target_user_id") @db.UnsignedInt
-  name         String    @db.VarChar(64)
-  targetUser   User      @relation("FOREIGN KEY (chat.target_user_id, user.id)", fields: [targetUserId], references: [id], onDelete: NoAction, map: "FOREIGN KEY (chat.target_user_id, user.id)")
-  user         User      @relation("FOREIGN KEY (chat.user_id, user.id)", fields: [userId], references: [id], onDelete: NoAction, map: "FOREIGN KEY (chat.user_id, user.id)")
-  messages     Message[]
+  id       Int        @id @default(autoincrement()) @db.UnsignedInt
+  name     String     @db.VarChar(64)
+  users    ChatUser[]
+  messages Message[]
 
-  @@unique([userId, targetUserId], map: "UNIQUE INDEX (user_id, target_user_id)")
-  @@index([targetUserId], map: "FOREIGN KEY (chat.target_user_id, user.id)")
   @@map("chat")
 }
 
+model ChatUser {
+  chatId Int  @map("chat_id") @db.UnsignedInt
+  userId Int  @map("user_id") @db.UnsignedInt
+  chat   Chat @relation(fields: [chatId], references: [id], onDelete: Cascade, map: "FOREIGN KEY (chat_user.chat_id, chat.id)")
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade, map: "FOREIGN KEY (chat_user.user_id, user.id)")
+
+  @@id([chatId, userId])
+  @@index([userId], map: "FOREIGN KEY (chat_user.user_id, user.id)")
+  @@map("chat_user")
+}
+
 model Comment {
-  id        Int      @id @default(autoincrement()) @db.UnsignedInt
-  userId    Int      @map("user_id") @db.UnsignedInt
-  postId    Int      @map("post_id") @db.UnsignedInt
-  content   String   @db.Text
-  isDeleted Boolean  @default(false) @map("is_deleted")
-  createdAt DateTime @default(now()) @map("created_at") @db.DateTime(0)
-  post      Post     @relation(fields: [postId], references: [id], onDelete: NoAction, map: "FOREIGN KEY (comment.post_id, post.id)")
-  user      User     @relation(fields: [userId], references: [id], onDelete: NoAction, map: "FOREIGN KEY (comment.user_id, user.id)")
-  reports   Report[]
+  id        Int             @id @default(autoincrement()) @db.UnsignedInt
+  userId    Int             @map("user_id") @db.UnsignedInt
+  postId    Int             @map("post_id") @db.UnsignedInt
+  content   String          @db.Text
+  isDeleted Boolean         @default(false) @map("is_deleted")
+  createdAt DateTime        @default(now()) @map("created_at") @db.DateTime(0)
+  post      Post            @relation(fields: [postId], references: [id], onDelete: Cascade, map: "FOREIGN KEY (comment.post_id, post.id)")
+  user      User            @relation(fields: [userId], references: [id], onDelete: Cascade, map: "FOREIGN KEY (comment.user_id, user.id)")
+  reports   CommentReport[]
 
   @@index([postId], map: "FOREIGN KEY (comment.post_id, post.id)")
   @@index([userId], map: "FOREIGN KEY (comment.user_id, user.id)")
   @@map("comment")
 }
 
-model Following {
-  userId       Int  @id @map("user_id") @db.UnsignedInt
-  targetUserId Int  @map("target_user_id") @db.UnsignedInt
-  targetUser   User @relation("FOREIGN KEY (following.target_user_id, user.id)", fields: [targetUserId], references: [id], onDelete: NoAction, map: "FOREIGN KEY (following.target_user_id, user.id)")
-  user         User @relation("FOREIGN KEY (following.user_id, user.id)", fields: [userId], references: [id], onDelete: NoAction, map: "FOREIGN KEY (following.user_id, user.id)")
+model CommentReport {
+  commentId Int     @map("comment_id") @db.UnsignedInt
+  reportId  Int     @map("report_id") @db.UnsignedInt
+  comment   Comment @relation(fields: [commentId], references: [id], onDelete: Cascade, map: "FOREIGN KEY (comment_report.comment_id, comment.id)")
+  report    Report  @relation(fields: [reportId], references: [id], onDelete: Cascade, map: "FOREIGN KEY (comment_report.report_id, report.id)")
 
-  @@index([targetUserId], map: "FOREIGN KEY (following.target_user_id, user.id)")
-  @@map("following")
+  @@id([commentId, reportId])
+  @@index([reportId], map: "FOREIGN KEY (comment_report.report_id, report.id)")
+  @@map("comment_report")
 }
 
 model Message {
   id        Int      @id @default(autoincrement()) @db.UnsignedInt
   chatId    Int      @map("chat_id") @db.UnsignedInt
+  userId    Int      @map("user_id") @db.UnsignedInt
   content   String   @db.Text
-  createdAt DateTime @default(now()) @map("created_at") @db.DateTime(0)
-  chat      Chat     @relation(fields: [chatId], references: [id], onDelete: NoAction, map: "FOREIGN KEY (message.chat_id, chat.id)")
+  createdAt DateTime @map("created_at") @db.DateTime(0)
+  chat      Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade, map: "FOREIGN KEY (message.chat_id, chat.id)")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade, map: "FOREIGN KEY (message.user_id, user.id)")
 
   @@index([chatId], map: "FOREIGN KEY (message.chat_id, chat.id)")
+  @@index([userId], map: "FOREIGN KEY (message.user_id, user.id)")
   @@map("message")
 }
 
 model Post {
-  id         Int        @id @default(autoincrement()) @db.UnsignedInt
-  userId     Int        @map("user_id") @db.UnsignedInt
-  title      String     @db.VarChar(64)
-  content    String     @db.Text
-  medias     String?    @db.Text
-  isDeleted  Boolean    @default(false) @map("is_deleted")
-  createdAt  DateTime   @default(now()) @map("created_at") @db.DateTime(0)
-  user       User       @relation(fields: [userId], references: [id], onDelete: NoAction, map: "FOREIGN KEY (post.user_id, user.id)")
-  categories Category[]
+  id         Int            @id @default(autoincrement()) @db.UnsignedInt
+  userId     Int            @map("user_id") @db.UnsignedInt
+  title      String         @db.VarChar(64)
+  content    String         @db.Text
+  medium     String?        @db.Text
+  isDeleted  Boolean        @default(false) @map("is_deleted")
+  createdAt  DateTime       @default(now()) @map("created_at") @db.DateTime(0)
+  user       User           @relation(fields: [userId], references: [id], onDelete: Cascade, map: "FOREIGN KEY (post.user_id, user.id)")
   comments   Comment[]
-  reports    Report[]
+  categories PostCategory[]
+  reports    PostReport[]
 
   @@index([userId], map: "FOREIGN KEY (post.user_id, user.id)")
   @@map("post")
 }
 
+model PostCategory {
+  postId     Int      @map("post_id") @db.UnsignedInt
+  categoryId Int      @map("category_id") @db.UnsignedInt
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade, map: "FOREIGN KEY (post_category.category_id, category.id)")
+  post       Post     @relation(fields: [postId], references: [id], onDelete: Cascade, map: "FOREIGN KEY (post_category.post_id, post.id)")
+
+  @@id([postId, categoryId])
+  @@index([categoryId], map: "FOREIGN KEY (post_category.category_id, category.id)")
+  @@map("post_category")
+}
+
+model PostReport {
+  postId   Int    @map("post_id") @db.UnsignedInt
+  reportId Int    @map("report_id") @db.UnsignedInt
+  post     Post   @relation(fields: [postId], references: [id], onDelete: Cascade, map: "FOREIGN KEY (post_report.post_id, post.id)")
+  report   Report @relation(fields: [reportId], references: [id], onDelete: Cascade, map: "FOREIGN KEY (post_report.report_id, report.id)")
+
+  @@id([postId, reportId])
+  @@index([reportId], map: "FOREIGN KEY (post_report.report_id, report.id)")
+  @@map("post_report")
+}
+
 model Report {
-  id        Int      @id @default(autoincrement()) @db.UnsignedInt
-  userId    Int      @map("user_id") @db.UnsignedInt
-  postId    Int?     @map("post_id") @db.UnsignedInt
-  commentId Int?     @map("comment_id") @db.UnsignedInt
-  reason    String   @db.Text
-  createdAt DateTime @default(now()) @map("created_at") @db.DateTime(0)
-  comment   Comment? @relation(fields: [commentId], references: [id], onDelete: NoAction, map: "FOREIGN KEY (report.comment_id, comment.id)")
-  post      Post?    @relation(fields: [postId], references: [id], onDelete: NoAction, map: "FOREIGN KEY (report.post_id, post.id)")
-  user      User     @relation(fields: [userId], references: [id], onDelete: NoAction, map: "FOREIGN KEY (report.user_id, user.id)")
+  id        Int             @id @default(autoincrement()) @db.UnsignedInt
+  userId    Int             @map("user_id") @db.UnsignedInt
+  reason    String          @db.Text
+  createdAt DateTime        @default(now()) @map("created_at") @db.DateTime(0)
+  user      User            @relation(fields: [userId], references: [id], onDelete: Cascade, map: "FOREIGN KEY (report.user_id, user.id)")
+  comments  CommentReport[]
+  posts     PostReport[]
+  users     UserReport[]
 
   @@index([userId], map: "FOREIGN KEY (report.user_id, user.id)")
-  @@index([postId], map: "FOREIGN KEY (report.post_id, post.id)")
-  @@index([commentId], map: "FOREIGN KEY (report.comment_id, comment.id)")
   @@map("report")
 }
 
 model Schedule {
-  id               Int        @id @default(autoincrement()) @db.UnsignedInt
-  userId           Int        @map("user_id") @db.UnsignedInt
-  parentScheduleId Int?       @map("parent_schedule_id") @db.UnsignedInt
-  name             String     @db.VarChar(64)
-  startingAt       DateTime   @map("starting_at") @db.DateTime(0)
-  endingAt         DateTime   @map("ending_at") @db.DateTime(0)
-  isSuccess        Boolean?   @default(false) @map("is_success")
-  createdAt        DateTime   @default(now()) @map("created_at") @db.DateTime(0)
-  parentSchedule   Schedule?  @relation("FOREIGN KEY (schedule.parent_schedule_id, schedule.id)", fields: [parentScheduleId], references: [id], onDelete: NoAction, map: "FOREIGN KEY (schedule.parent_schedule_id, schedule.id)")
-  user             User       @relation(fields: [userId], references: [id], onDelete: NoAction, map: "FOREIGN KEY (schedule.user_id, user.id)")
-  categories       Category[]
-  childSchedules   Schedule[] @relation("FOREIGN KEY (schedule.parent_schedule_id, schedule.id)")
+  id               Int                @id @default(autoincrement()) @db.UnsignedInt
+  userId           Int                @map("user_id") @db.UnsignedInt
+  parentScheduleId Int?               @map("parent_schedule_id") @db.UnsignedInt
+  name             String             @db.VarChar(64)
+  startingAt       DateTime           @map("starting_at") @db.DateTime(0)
+  endingAt         DateTime           @map("ending_at") @db.DateTime(0)
+  isSuccess        Boolean?           @default(false) @map("is_success")
+  createdAt        DateTime           @default(now()) @map("created_at") @db.DateTime(0)
+  parentSchedule   Schedule?          @relation("FOREIGN KEY (schedule.parent_schedule_id, schedule.id)", fields: [parentScheduleId], references: [id], onDelete: Cascade, map: "FOREIGN KEY (schedule.parent_schedule_id, schedule.id)")
+  user             User               @relation(fields: [userId], references: [id], onDelete: Cascade, map: "FOREIGN KEY (schedule.user_id, user.id)")
+  childSchedules   Schedule[]         @relation("FOREIGN KEY (schedule.parent_schedule_id, schedule.id)")
+  categories       ScheduleCategory[]
 
-  @@index([userId], map: "FOREIGN KEY (schedule.user_id, user.id)")
   @@index([parentScheduleId], map: "FOREIGN KEY (schedule.parent_schedule_id, schedule.id)")
+  @@index([userId], map: "FOREIGN KEY (schedule.user_id, user.id)")
   @@map("schedule")
 }
 
-model Social {
-  userId Int    @map("user_id") @db.UnsignedInt
-  type   Int    @db.UnsignedInt
-  token  String @unique(map: "UNIQUE INDEX (token)") @db.VarChar(128)
-  user   User   @relation(fields: [userId], references: [id], onDelete: NoAction, map: "FOREIGN KEY (social.user_id, user.id)")
+model ScheduleCategory {
+  scheduleId Int      @map("schedule_id") @db.UnsignedInt
+  categoryId Int      @map("category_id") @db.UnsignedInt
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade, map: "FOREIGN KEY (schedule_category.category_id, category.id)")
+  schedule   Schedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade, map: "FOREIGN KEY (schedule_category.schedule_id, schedule.id)")
 
-  @@id([userId, type])
-  @@map("social")
+  @@id([scheduleId, categoryId])
+  @@index([categoryId], map: "FOREIGN KEY (schedule_category.category_id, category.id)")
+  @@index([scheduleId], map: "FOREIGN KEY (schedule_category.schedule_id, schedule.id)")
+  @@map("schedule_category")
 }
 
 model User {
-  id                 Int         @id @default(autoincrement()) @db.UnsignedInt
-  email              String      @db.VarChar(128) @unique(map: "UNIQUE INDEX (email)")
-  password           String      @db.VarChar(512)
-  name               String      @db.VarChar(64)
-  birth              DateTime    @db.Date
-  image              String?     @db.VarChar(128)
-	verificationKey    String?     @db.VarChar(128) @map("verification_key") @unique(map: "UNIQUE INDEX (verification_key)")
-  createdAt          DateTime    @default(now()) @map("created_at") @db.DateTime(0)
-  targetedChats      Chat[]      @relation("FOREIGN KEY (chat.target_user_id, user.id)")
-  chats              Chat[]      @relation("FOREIGN KEY (chat.user_id, user.id)")
-  comments           Comment[]
-  targetedFollowings Following[] @relation("FOREIGN KEY (following.target_user_id, user.id)")
-  followings         Following?  @relation("FOREIGN KEY (following.user_id, user.id)")
-  posts              Post[]
-  reports            Report[]
-  schedules          Schedule[]
-  socials            Social[]
+  id               Int             @id @default(autoincrement()) @db.UnsignedInt
+  email            String          @unique(map: "UNIQUE INDEX (email)") @db.VarChar(128)
+  password         String          @db.VarChar(512)
+  name             String          @db.VarChar(64)
+  birth            DateTime        @db.Date
+  image            String?         @db.VarChar(128)
+  verificationKey  String?         @unique(map: "UNIQUE INDEX (verification_key)") @map("verification_key") @db.VarChar(128)
+  createdAt        DateTime        @default(now()) @map("created_at") @db.DateTime(0)
+  chatUsers        ChatUser[]
+  comments         Comment[]
+  messages         Message[]
+  posts            Post[]
+  reports          Report[]
+  schedules        Schedule[]
+  targetFollowings UserFollowing[] @relation("FOREIGN KEY (user_following.target_user_id, user.id)")
+  followings       UserFollowing[] @relation("FOREIGN KEY (user_following.user_id, user.id)")
+  reports_         UserReport[]
+  socials          UserSocial[]
 
   @@map("user")
+}
+
+model UserFollowing {
+  userId       Int  @map("user_id") @db.UnsignedInt
+  targetUserId Int  @map("target_user_id") @db.UnsignedInt
+  targetUser   User @relation("FOREIGN KEY (user_following.target_user_id, user.id)", fields: [targetUserId], references: [id], onDelete: Cascade, map: "FOREIGN KEY (user_following.target_user_id, user.id)")
+  user         User @relation("FOREIGN KEY (user_following.user_id, user.id)", fields: [userId], references: [id], onDelete: Cascade, map: "FOREIGN KEY (user_following.user_id, user.id)")
+
+  @@id([userId, targetUserId])
+  @@index([targetUserId], map: "FOREIGN KEY (user_following.target_user_id, user.id)")
+  @@map("user_following")
+}
+
+model UserReport {
+  userId   Int    @map("user_id") @db.UnsignedInt
+  reportId Int    @map("report_id") @db.UnsignedInt
+  report   Report @relation(fields: [reportId], references: [id], onDelete: Cascade, map: "FOREIGN KEY (user_report.report_id, report.id)")
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade, map: "FOREIGN KEY (user_report.user_id, user.id)")
+
+  @@id([userId, reportId])
+  @@index([reportId], map: "FOREIGN KEY (user_report.report_id, report.id)")
+  @@map("user_report")
+}
+
+model UserSocial {
+  userId Int    @map("user_id") @db.UnsignedInt
+  type   Int    @db.UnsignedInt
+  token  String @unique(map: "UNIQUE INDEX (token)") @db.VarChar(128)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, map: "FOREIGN KEY (user_social.user_id, user.id)")
+
+  @@id([userId, type])
+  @@map("user_social")
 }
