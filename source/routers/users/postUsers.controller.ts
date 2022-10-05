@@ -19,15 +19,17 @@ export default async (
     return
   }
 
-  let verificationKey: string;
+  let verificationKey: string
 
-	do {
-		verificationKey = randomBytes(64).toString('hex')
-	} while(await prisma.user.findUnique({
-		where: {
-			verificationKey: verificationKey
-		}
-	}) !== null)
+  do {
+    verificationKey = randomBytes(64).toString('hex')
+  } while (
+    (await prisma.user.findUnique({
+      where: {
+        verificationKey: verificationKey,
+      },
+    })) !== null
+  )
 
   await sendMail(
     request.body.email,
@@ -43,6 +45,14 @@ export default async (
 
   reply.send(
     await prisma.user.create({
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        birth: true,
+        image: true,
+        createdAt: true,
+      },
       data: Object.assign(request.body, {
         password: await hash(request.body.password, {
           type: argon2id,

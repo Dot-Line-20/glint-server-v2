@@ -34,8 +34,8 @@ export default async (
     await prisma.schedule.update({
       data: request.body,
       where: {
-				id: request.params.id
-			},
+        id: request.params.id,
+      },
     })
   )
 
