@@ -24,11 +24,11 @@ export default async (
     return
   }
 
-	await prisma.schedule.delete({
-		where: {
-			id: request.params.id
-		}
-	})
+  await prisma.schedule.delete({
+    where: {
+      id: request.params.id,
+    },
+  })
 
   reply.send(null)
 

@@ -43,9 +43,6 @@ export default async (
 
   reply.send(
     await prisma.schedule.create({
-      select: {
-        id: true,
-      },
       data: Object.assign(request.body, {
         userId: request.params.userId,
         startingAt: new Date(request.body.startingAt),

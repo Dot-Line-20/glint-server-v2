@@ -25,6 +25,14 @@ export default async (
 
   reply.send(
     await prisma.user.update({
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        birth: true,
+        image: true,
+        createdAt: true,
+      },
       data: request.body,
       where: request.params,
     })

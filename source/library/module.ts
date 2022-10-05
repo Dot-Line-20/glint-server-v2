@@ -34,11 +34,14 @@ export default class {
         _schema = _schema.prop(
           schmeaNames[i],
           Object.prototype.hasOwnProperty.call(
+            // @ts-expect-error :: fault of typescript
             object[schmeaNames[i]],
             'isFluentJSONSchema'
           )
-            ? object[schmeaNames[i]]
-            : this.getObjectSchema(object[schmeaNames[i]])
+            ? // @ts-expect-error :: fault of typescript
+              object[schmeaNames[i]]
+            : // @ts-expect-error :: fault of typescript
+              this.getObjectSchema(object[schmeaNames[i]])
         )
       }
     }
