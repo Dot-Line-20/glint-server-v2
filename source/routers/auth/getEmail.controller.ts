@@ -36,5 +36,5 @@ export default async (
   })
 
   // TODO: Replace redirect url with login page
-  reply.redirect(307, 'https://google.com')
+  reply.redirect(307, 'https://dot-line-20.github.io/glint-flutter/#/login')
 }

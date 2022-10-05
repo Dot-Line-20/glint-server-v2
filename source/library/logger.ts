@@ -77,37 +77,37 @@ export default class Logger implements FastifyBaseLogger {
     return
   }
 
-  public info(..._arguments: unknown[]): void {
+  public info(..._arguments: readonly unknown[]): void {
     Logger.log('info', _arguments)
 
     return
   }
 
-  public warn(..._arguments: unknown[]): void {
+  public warn(..._arguments: readonly unknown[]): void {
     Logger.log('warn', _arguments)
 
     return
   }
 
-  public error(..._arguments: unknown[]): void {
+  public error(..._arguments: readonly unknown[]): void {
     Logger.log('error', _arguments)
 
     return
   }
 
-  public fatal(..._arguments: unknown[]): void {
+  public fatal(..._arguments: readonly unknown[]): void {
     Logger.log('fatal', _arguments)
 
     return
   }
 
-  public trace(..._arguments: unknown[]): void {
+  public trace(..._arguments: readonly unknown[]): void {
     Logger.log('trace', _arguments)
 
     return
   }
 
-  public debug(..._arguments: unknown[]): void {
+  public debug(..._arguments: readonly unknown[]): void {
     Logger.log('debug', _arguments)
 
     return

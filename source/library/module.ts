@@ -29,21 +29,16 @@ export default class {
       _schema = _schema.required()
     }
 
-    for (let i = 0; i < schmeaNames['length']; i++) {
+    for (let i = 0; i < schmeaNames.length; i++) {
       if (schmeaNames[i] !== '$isRequired') {
         _schema = _schema.prop(
           schmeaNames[i],
           Object.prototype.hasOwnProperty.call(
-            // @ts-expect-error (fault of typescript)
             object[schmeaNames[i]],
             'isFluentJSONSchema'
           )
-            ? // @ts-expect-error (fault of typescript)
-              object[schmeaNames[i]]
-            : this.getObjectSchema(
-                // @ts-expect-error (fault of typescript)
-                object[schmeaNames[i]]
-              )
+            ? object[schmeaNames[i]]
+            : this.getObjectSchema(object[schmeaNames[i]])
         )
       }
     }
@@ -52,14 +47,14 @@ export default class {
   }
 
   private schemaErrorFormatter(
-    errors: FastifySchemaValidationError[],
+    errors: readonly FastifySchemaValidationError[],
     dataVariableName: string
   ): Error {
     return new Error(
       dataVariableName +
         ' ' +
         (errors[0].instancePath.length !== 0
-          ? errors[0]['instancePath'].slice(1) + ' '
+          ? errors[0].instancePath.slice(1) + ' '
           : '') +
         errors[0].message
     )
@@ -78,11 +73,11 @@ export default class {
       if (typeof this.options.routers[i].schema === 'object') {
         _schema = {}
 
-        const schemaKeys: SchemaKey[] = Object.keys(
+        const schemaKeys: readonly SchemaKey[] = Object.keys(
           this.options.routers[i].schema as object
         ) as SchemaKey[]
 
-        for (let j = 0; j < schemaKeys['length']; j++) {
+        for (let j = 0; j < schemaKeys.length; j++) {
           _schema[schemaKeys[j]] = this.getObjectSchema(
             (
               this.options.routers[i].schema as Required<

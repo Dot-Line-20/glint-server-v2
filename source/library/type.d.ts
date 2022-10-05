@@ -7,7 +7,7 @@ import {
   RouteOptions as _RouteOptions,
 } from 'fastify'
 import { IncomingMessage, Server, ServerResponse } from 'http'
-import module from '@library/module'
+import Module from '@library/module'
 import {
   ArraySchema,
   BooleanSchema,
@@ -49,8 +49,8 @@ interface RouteOptions extends Omit<_RouteOptions, 'handler' | 'schema'> {
 }
 
 interface ModuleOptions {
-  routers: (RouteOptions & { isAuthNeeded?: boolean })[]
-  modules?: module[]
+  routers: readonly (RouteOptions & { isAuthNeeded?: boolean })[]
+  modules?: readonly Module[]
   prefix?: string
 }
 

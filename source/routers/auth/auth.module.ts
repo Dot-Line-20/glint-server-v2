@@ -4,6 +4,7 @@ import userSchema from '@schemas/user'
 import getAuthController from './getAuth.controller'
 import getEmailController from './getEmail.controller'
 import postLoginController from './postLogin.controller'
+import postTokenController from './postToken.controller'
 
 export default new Module({
   routers: [
@@ -24,15 +25,14 @@ export default new Module({
       handler: postLoginController,
     },
     {
-      url: 'test',
+      url: 'token',
       method: 'POST',
       schema: {
         body: {
-          email: userSchema.email.required(),
-          password: userSchema.password.required(),
+          refreshToken: commonSchema.jsonWebToken.required(),
         },
       },
-      handler: postLoginController,
+      handler: postTokenController,
     },
     {
       url: 'email',

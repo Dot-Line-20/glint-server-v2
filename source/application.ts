@@ -4,17 +4,17 @@ import Logger from './library/logger'
 import errorHandler from './handlers/error'
 import rootModule from './routers/root.module'
 import notFoundHandler from './handlers/notFound'
+import serializeHandler from './handlers/serialize'
 
 // App
 export default class {
-  logger: Logger = new Logger()
-  app: FastifyInstance
+  application: FastifyInstance
 
   constructor() {
-    this.app = fastify({
+    this.application = fastify({
       trustProxy: true,
       exposeHeadRoutes: false,
-      logger: this.logger,
+      logger: new Logger(),
     })
 
     this.initializeHandlers()
@@ -24,8 +24,9 @@ export default class {
   }
 
   private initializeHandlers(): void {
-    this.app.setNotFoundHandler(notFoundHandler)
-    this.app.setErrorHandler(errorHandler)
+    this.application.setNotFoundHandler(notFoundHandler)
+    this.application.setErrorHandler(errorHandler)
+    this.application.setReplySerializer(serializeHandler)
     // Add more router at here
 
     return
@@ -33,28 +34,28 @@ export default class {
 
   private initializeRouters(): void {
     rootModule.appendPrefix('/')
-    rootModule.register(this.app)
+    rootModule.register(this.application)
 
     return
   }
 
   public listen(port: number = Number.parseInt(process.env.PORT, 10)): void {
-    this.app
+    this.application
       .listen({
         host: '0.0.0.0',
         port: port,
       })
       .then(() => {
-        this.logger.info('Route tree:')
+        this.application.log.info('Route tree:')
 
-        const routeLines: string[] = this.app
+        const routeLines: readonly string[] = this.application
           .printRoutes({ commonPrefix: false })
           .split(/^(└──\s|\s{4})/gm)
           .slice(2)
 
-        for (let i = 0; i < routeLines['length']; i++) {
+        for (let i = 0; i < routeLines.length; i++) {
           if (i % 2 === 0) {
-            this.logger.info(routeLines[i].replace('\n', ''))
+            this.application.log.info(routeLines[i].replace('\n', ''))
           }
         }
 

@@ -2,8 +2,9 @@ import HttpError from '@library/httpError'
 import prisma from '@library/prisma'
 import { User } from '@prisma/client'
 import { FastifyRequest, PayloadReply } from 'fastify'
-import { sign } from 'jsonwebtoken'
 import { verify } from 'argon2'
+import JsonWebToken from '@library/jsonWebToken'
+import { getEpoch } from '@library/utility'
 
 export default async (
   request: FastifyRequest<{
@@ -42,27 +43,20 @@ export default async (
   }
 
   reply.send({
-    status: 'success',
-    data: {
-      refreshToken: sign(
-        {
-          id: user.id,
-        },
-        user.password,
-        {
-          expiresIn: '90d',
-        }
-      ),
-      accessToken: sign(
-        {
-          id: user.id,
-        },
-        process.env.JWT_SECRET,
-        {
-          expiresIn: '1h',
-        }
-      ),
-    },
+    refreshToken: JsonWebToken.create(
+      {
+        id: user.id,
+        exp: getEpoch() + 7776000, // 90d
+      },
+      user.password
+    ),
+    accessToken: JsonWebToken.create(
+      {
+        id: user.id,
+        exp: getEpoch() + 3600, // 1h
+      },
+      process.env.JWT_SECRET
+    ),
   })
 
   return

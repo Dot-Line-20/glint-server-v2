@@ -1,14 +1,17 @@
 import Module from '@library/module'
 import pageSchema from '@schemas/page'
 import userSchema from '@schemas/user'
+import getUserController from './getUser.controller'
 import getUsersController from './getUsers.controller'
 import postUsersController from './postUsers.controller'
+import schedulesModule from './schedules/schedules.module'
 
 export default new Module({
   routers: [
     {
       url: '',
       method: 'GET',
+      isAuthNeeded: true,
       schema: {
         querystring: pageSchema,
       },
@@ -17,6 +20,7 @@ export default new Module({
     {
       url: '',
       method: 'POST',
+      isAuthNeeded: true,
       schema: {
         body: {
           email: userSchema.email.required(),
@@ -27,7 +31,18 @@ export default new Module({
       },
       handler: postUsersController,
     },
+    {
+      url: ':id',
+      method: 'GET',
+      isAuthNeeded: true,
+      schema: {
+        params: {
+          id: userSchema.id.required(),
+        },
+      },
+      handler: getUserController,
+    },
   ],
-  modules: [],
+  modules: [schedulesModule],
   prefix: 'users',
 })

@@ -1,18 +1,22 @@
+import { isUserIdExist } from '@library/existence'
 import prisma from '@library/prisma'
-import { PageQuery } from '@library/type'
+import { User } from '@prisma/client'
 import { FastifyRequest, PayloadReply } from 'fastify'
 
 export default async (
   request: FastifyRequest<{
-    Querystring: Partial<PageQuery>
+    Params: Pick<User, 'id'>
   }>,
   reply: PayloadReply
 ) => {
-  request.query['page[size]'] ||= 50
-  request.query['page[index]'] ||= 0
+  if (!(await isUserIdExist(request.params.id))) {
+    reply.callNotFound()
+
+    return
+  }
 
   reply.send(
-    await prisma.user.findMany({
+    await prisma.user.findFirst({
       select: {
         id: true,
         email: true,
@@ -22,12 +26,8 @@ export default async (
         createdAt: true,
       },
       where: {
+        id: request.params.id,
         verificationKey: null,
-      },
-      skip: request.query['page[size]'] * request.query['page[index]'],
-      take: request.query['page[size]'],
-      orderBy: {
-        id: request.query['page[order]'] === 'asc' ? 'asc' : 'desc',
       },
     })
   )
