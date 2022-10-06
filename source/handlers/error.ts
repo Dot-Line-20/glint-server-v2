@@ -15,27 +15,29 @@ export default (
   const isStackAvailable: boolean =
     typeof error.stack === 'string' && process.env.NODE_ENV === 'development'
 
-  reply.status(error.statusCode as number)
-
-  reply.send(
-    (error.statusCode as number) < 500
-      ? {
-          status: 'fail',
-          data: [
-            Object.assign(
-              {
-                title: error.message,
-              },
-              isStackAvailable ? { body: error.stack } : undefined
-            ),
-          ],
-        }
-      : {
-          status: 'error',
-          code: error.statusCode,
-          message: error.message + (isStackAvailable ? '; ' + error.stack : ''),
-        }
-  )
+  reply
+    .status(error.statusCode as number)
+    .header('Access-Control-Allow-Origin', '*')
+    .send(
+      (error.statusCode as number) < 500
+        ? {
+            status: 'fail',
+            data: [
+              Object.assign(
+                {
+                  title: error.message,
+                },
+                isStackAvailable ? { body: error.stack } : undefined
+              ),
+            ],
+          }
+        : {
+            status: 'error',
+            code: error.statusCode,
+            message:
+              error.message + (isStackAvailable ? '; ' + error.stack : ''),
+          }
+    )
 
   return
 }
