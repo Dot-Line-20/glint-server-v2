@@ -5,6 +5,8 @@ import errorHandler from './handlers/error'
 import rootModule from './routers/root.module'
 import notFoundHandler from './handlers/notFound'
 import serializeHandler from './handlers/serialize'
+import optionsHandler from './handlers/options'
+import headerHandler from './handlers/header'
 
 // App
 export default class {
@@ -27,6 +29,7 @@ export default class {
     this.application.setNotFoundHandler(notFoundHandler)
     this.application.setErrorHandler(errorHandler)
     this.application.setReplySerializer(serializeHandler)
+    this.application.addHook('preHandler', headerHandler)
     // Add more router at here
 
     return
@@ -35,6 +38,7 @@ export default class {
   private initializeRouters(): void {
     rootModule.appendPrefix('/')
     rootModule.register(this.application)
+    this.application.options('*', optionsHandler)
 
     return
   }
