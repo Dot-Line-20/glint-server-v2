@@ -1,4 +1,4 @@
-import { isUserExist } from '@library/existence'
+import { isUserExists } from '@library/existence'
 import HttpError from '@library/httpError'
 import prisma from '@library/prisma'
 import { User } from '@prisma/client'
@@ -10,7 +10,7 @@ export default async (
   }>,
   reply: PayloadReply
 ) => {
-  if (!(await isUserExist(request.params.id))) {
+  if (!(await isUserExists(request.params.id))) {
     reply.callNotFound()
 
     return
