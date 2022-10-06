@@ -5,6 +5,8 @@ export default (
   reply: PayloadReply,
   done: DoneFuncWithErrOrRes
 ) => {
+  reply.removeHeader('Access-Control-Allow-Origin')
+
   // Replaces helmet and cors package
   reply.headers({
     'Content-Security-Policy':

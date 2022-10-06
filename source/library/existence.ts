@@ -1,6 +1,6 @@
 import prisma from '@library/prisma'
 
-export async function isUserIdExist(id: number): Promise<boolean> {
+export async function isUserExists(id: number): Promise<boolean> {
   return (
     (await prisma.user.findFirst({
       where: {
@@ -11,18 +11,7 @@ export async function isUserIdExist(id: number): Promise<boolean> {
   )
 }
 
-export async function isUserEmailExist(email: string): Promise<boolean> {
-  return (
-    (await prisma.user.findFirst({
-      where: {
-        email: email,
-        verificationKey: null,
-      },
-    })) !== null
-  )
-}
-
-export async function isScheduleExist(id: number): Promise<boolean> {
+export async function isScheduleExists(id: number): Promise<boolean> {
   return (
     (await prisma.schedule.findUnique({
       where: {

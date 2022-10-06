@@ -20,7 +20,6 @@ export default new Module({
     {
       url: '',
       method: 'POST',
-      isAuthNeeded: true,
       schema: {
         body: {
           email: userSchema.email.required(),

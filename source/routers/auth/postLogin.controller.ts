@@ -43,6 +43,7 @@ export default async (
   }
 
   reply.send({
+    id: user.id,
     refreshToken: JsonWebToken.create(
       {
         id: user.id,
