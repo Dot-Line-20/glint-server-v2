@@ -2,7 +2,6 @@ import { FastifyRequest, PayloadReply } from 'fastify'
 import { Schedule, User } from '@prisma/client'
 import { isUserExists, prisma } from '@library/prisma'
 import HttpError from '@library/httpError'
-import { getEpoch } from '@library/utility'
 
 export default async (
   request: FastifyRequest<{
