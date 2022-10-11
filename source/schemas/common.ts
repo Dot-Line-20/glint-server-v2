@@ -6,7 +6,8 @@ export default {
   sha512: schema.string().pattern(/^[0-9a-f]{128}$/),
   date: schema.string().format('date'),
   dateTime: schema.string().format('date-time'),
+  text: schema.string().minLength(1).maxLength(65535),
   jsonWebToken: schema.string().pattern(/^(?:[\w-]*\.){2}[\w-]*$/),
 } as Schema<
-  'positiveInteger' | 'sha512' | `date${'' | 'Time'}` | 'jsonWebToken'
+  'positiveInteger' | 'sha512' | `date${'' | 'Time'}` | 'text' | 'jsonWebToken'
 >
