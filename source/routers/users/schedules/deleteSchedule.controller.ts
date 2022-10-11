@@ -1,6 +1,5 @@
-import { isScheduleExists } from '@library/existence'
 import HttpError from '@library/httpError'
-import prisma from '@library/prisma'
+import { isScheduleExists, prisma } from '@library/prisma'
 import { Schedule, User } from '@prisma/client'
 import { FastifyRequest, PayloadReply } from 'fastify'
 
@@ -12,7 +11,7 @@ export default async (
   }>,
   reply: PayloadReply
 ) => {
-  if (!(await isScheduleExists(request.params.id))) {
+  if (!(await isScheduleExists(request.params.userId, request.params.id))) {
     reply.callNotFound()
 
     return

@@ -1,6 +1,6 @@
 import { FastifyRequest, PayloadReply } from 'fastify'
 import { User } from '@prisma/client'
-import prisma from '@library/prisma'
+import { prisma } from '@library/prisma'
 import HttpError from '@library/httpError'
 import { argon2id, hash } from 'argon2'
 import { randomBytes } from 'crypto'

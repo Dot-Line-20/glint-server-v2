@@ -1,4 +1,4 @@
-import prisma from '@library/prisma'
+import { prisma } from '@library/prisma'
 import { FastifyRequest, PayloadReply } from 'fastify'
 import { User } from '@prisma/client'
 import HttpError from '@library/httpError'

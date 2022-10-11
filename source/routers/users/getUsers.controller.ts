@@ -1,4 +1,4 @@
-import prisma from '@library/prisma'
+import { prisma } from '@library/prisma'
 import { PageQuery } from '@library/type'
 import { FastifyRequest, PayloadReply } from 'fastify'
 
