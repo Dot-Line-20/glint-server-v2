@@ -87,8 +87,8 @@ model Post {
   user       User           @relation(fields: [userId], references: [id], onDelete: Cascade, map: "FOREIGN KEY (post.user_id, user.id)")
   comments   Comment[]
   categories PostCategory[]
-  postLikes  PostLike[]     @relation("FOREIGN KEY (post_like.post_id, post.id)")
-  postMedias PostMedia[]    @relation("FOREIGN KEY (post_media.post_id, post.id)")
+  likes      PostLike[]     @relation("FOREIGN KEY (post_like.post_id, post.id)")
+  medias     PostMedia[]    @relation("FOREIGN KEY (post_media.post_id, post.id)")
   reports    PostReport[]
 
   @@index([userId], map: "FOREIGN KEY (post.user_id, user.id)")
@@ -197,7 +197,7 @@ model User {
   comments         Comment[]
   messages         Message[]
   posts            Post[]
-  post_like        PostLike[]      @relation("FOREIGN KEY (post_like.user_id, user.id)")
+  likes            PostLike[]      @relation("FOREIGN KEY (post_like.user_id, user.id)")
   reports          Report[]
   schedules        Schedule[]
   targetFollowings UserFollowing[] @relation("FOREIGN KEY (user_following.target_user_id, user.id)")
