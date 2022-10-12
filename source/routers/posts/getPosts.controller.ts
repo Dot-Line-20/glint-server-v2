@@ -1,10 +1,16 @@
 import { prisma } from '@library/prisma'
 import { PageQuery } from '@library/type'
+import { Category, User } from '@prisma/client'
 import { FastifyRequest, PayloadReply } from 'fastify'
 
 export default async (
   request: FastifyRequest<{
-    Querystring: Partial<PageQuery>
+    Querystring: Partial<
+      {
+        userId: User['id']
+        categoryId: Category['id']
+      } & PageQuery
+    >
   }>,
   reply: PayloadReply
 ) => {
@@ -12,17 +18,17 @@ export default async (
   request.query['page[index]'] ||= 0
 
   reply.send(
-    await prisma.user.findMany({
+    await prisma.post.findMany({
       select: {
         id: true,
-        email: true,
-        name: true,
-        birth: true,
-        image: true,
+        userId: true,
+        title: true,
+        content: true,
         createdAt: true,
+        postMedias: true,
       },
       where: {
-        verificationKey: null,
+        isDeleted: false,
       },
       skip: request.query['page[size]'] * request.query['page[index]'],
       take: request.query['page[size]'],

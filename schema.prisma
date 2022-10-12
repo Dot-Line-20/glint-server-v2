@@ -82,12 +82,13 @@ model Post {
   userId     Int            @map("user_id") @db.UnsignedInt
   title      String         @db.VarChar(64)
   content    String         @db.Text
-  medium     String?        @db.Text
   isDeleted  Boolean        @default(false) @map("is_deleted")
   createdAt  DateTime       @default(now()) @map("created_at") @db.DateTime(0)
   user       User           @relation(fields: [userId], references: [id], onDelete: Cascade, map: "FOREIGN KEY (post.user_id, user.id)")
   comments   Comment[]
   categories PostCategory[]
+  likes      PostLike[]     @relation("FOREIGN KEY (post_like.post_id, post.id)")
+  medias     PostMedia[]    @relation("FOREIGN KEY (post_media.post_id, post.id)")
   reports    PostReport[]
 
   @@index([userId], map: "FOREIGN KEY (post.user_id, user.id)")
@@ -103,6 +104,28 @@ model PostCategory {
   @@id([postId, categoryId])
   @@index([categoryId], map: "FOREIGN KEY (post_category.category_id, category.id)")
   @@map("post_category")
+}
+
+model PostLike {
+  postId Int  @map("post_id") @db.UnsignedInt
+  userId Int  @map("user_id") @db.UnsignedInt
+  post   Post @relation("FOREIGN KEY (post_like.post_id, post.id)", fields: [postId], references: [id], onDelete: Cascade, map: "FOREIGN KEY (post_like.post_id, post.id)")
+  user   User @relation("FOREIGN KEY (post_like.user_id, user.id)", fields: [userId], references: [id], onDelete: Cascade, map: "FOREIGN KEY (post_like.user_id, user.id)")
+
+  @@id([postId, userId])
+  @@index([userId], map: "FOREIGN KEY (post_like.user_id, user.id)")
+  @@map("post_like")
+}
+
+model PostMedia {
+  postId Int     @map("post_id") @db.UnsignedInt
+  id     String  @db.VarChar(64)
+  type   Boolean
+  post   Post    @relation("FOREIGN KEY (post_media.post_id, post.id)", fields: [postId], references: [id], onDelete: Cascade, map: "FOREIGN KEY (post_media.post_id, post.id)")
+
+  @@id([id, type])
+  @@index([postId], map: "FOREIGN KEY (post_media.post_id, post.id)")
+  @@map("post_media")
 }
 
 model PostReport {
@@ -174,6 +197,7 @@ model User {
   comments         Comment[]
   messages         Message[]
   posts            Post[]
+  likes            PostLike[]      @relation("FOREIGN KEY (post_like.user_id, user.id)")
   reports          Report[]
   schedules        Schedule[]
   targetFollowings UserFollowing[] @relation("FOREIGN KEY (user_following.target_user_id, user.id)")

@@ -1,4 +1,6 @@
 import Module from '@library/module'
+import schema from 'fluent-json-schema'
+import commonSchema from '@schemas/common'
 import pageSchema from '@schemas/page'
 import scheduleSchema from '@schemas/schedule'
 import userSchema from '@schemas/user'
@@ -38,6 +40,10 @@ export default new Module({
         },
         querystring: Object.assign(
           {
+            depth: commonSchema.positiveInteger,
+            isParent: schema.boolean(),
+            from: commonSchema.dateTime,
+            to: commonSchema.dateTime,
             isSuccess: scheduleSchema.isSuccess,
           },
           pageSchema
@@ -53,6 +59,9 @@ export default new Module({
         params: {
           userId: userSchema.id.required(),
           id: scheduleSchema.id.required(),
+        },
+        querystring: {
+          depth: commonSchema.positiveInteger,
         },
       },
       handler: getScheduleController,

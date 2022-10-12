@@ -1,8 +1,7 @@
 import { FastifyRequest, PayloadReply } from 'fastify'
 import { User } from '@prisma/client'
-import prisma from '@library/prisma'
+import { isUserExists, prisma } from '@library/prisma'
 import HttpError from '@library/httpError'
-import { isUserExists } from '@library/existence'
 
 export default async (
   request: FastifyRequest<{

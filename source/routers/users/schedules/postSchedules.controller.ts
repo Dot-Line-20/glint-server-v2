@@ -1,8 +1,7 @@
 import { FastifyRequest, PayloadReply } from 'fastify'
 import { Schedule, User } from '@prisma/client'
-import prisma from '@library/prisma'
+import { isUserExists, prisma } from '@library/prisma'
 import HttpError from '@library/httpError'
-import { isUserExists } from '@library/existence'
 
 export default async (
   request: FastifyRequest<{
@@ -28,15 +27,47 @@ export default async (
     return
   }
 
-  if (
-    request.body.parentScheduleId !== null &&
-    (await prisma.schedule.findUnique({
-      where: {
-        id: request.body.parentScheduleId,
-      },
-    })) === null
-  ) {
+  const hasParentSchedule: boolean =
+    typeof request.body.parentScheduleId === 'number'
+  const parentSchedule: Pick<Schedule, 'startingAt' | 'endingAt'> | null =
+    hasParentSchedule
+      ? await prisma.schedule.findFirst({
+          select: {
+            startingAt: true,
+            endingAt: true,
+          },
+          where: {
+            id: request.body.parentScheduleId as number,
+            userId: request.params.userId,
+          },
+        })
+      : null
+
+  if (hasParentSchedule && parentSchedule === null) {
     reply.send(new HttpError(400, 'Invalid parentScheduleId'))
+
+    return
+  }
+
+  if (
+    request.body.startingAt >= request.body.endingAt ||
+    (hasParentSchedule &&
+      request.body.startingAt <
+        (parentSchedule as Pick<Schedule, 'startingAt' | 'endingAt'>)
+          .startingAt)
+  ) {
+    reply.send(new HttpError(400, 'Invalid startingAt'))
+
+    return
+  }
+
+  if (
+    request.body.endingAt <= new Date() ||
+    (hasParentSchedule &&
+      request.body.endingAt >
+        (parentSchedule as Pick<Schedule, 'startingAt' | 'endingAt'>).endingAt)
+  ) {
+    reply.send(new HttpError(400, 'Invalid endingAt'))
 
     return
   }

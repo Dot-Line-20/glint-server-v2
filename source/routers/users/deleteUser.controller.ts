@@ -1,6 +1,5 @@
-import { isUserExists } from '@library/existence'
 import HttpError from '@library/httpError'
-import prisma from '@library/prisma'
+import { isUserExists, prisma } from '@library/prisma'
 import { User } from '@prisma/client'
 import { FastifyRequest, PayloadReply } from 'fastify'
 
