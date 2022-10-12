@@ -1,5 +1,4 @@
 import { FastifyError, FastifyRequest, PayloadReply } from 'fastify'
-import { inspect } from 'util'
 
 export default (
   error: FastifyError,
