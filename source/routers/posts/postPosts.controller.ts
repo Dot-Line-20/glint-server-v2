@@ -11,7 +11,17 @@ export default async (
   reply.send(
     await prisma.post.create({
       select: {
-        postMedias: true,
+        id: true,
+        userId: true,
+        title: true,
+        content: true,
+        createdAt: true,
+        medias: true,
+        _count: {
+          select: {
+            likes: true,
+          },
+        },
       },
       data: Object.assign(request.body, {
         userId: request.user.id,

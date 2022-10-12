@@ -1,6 +1,6 @@
 import { FastifyRequest, PayloadReply } from 'fastify'
 import { User } from '@prisma/client'
-import { prisma } from '@library/prisma'
+import { isUserEmailExists, prisma } from '@library/prisma'
 import HttpError from '@library/httpError'
 import { argon2id, hash } from 'argon2'
 import { randomBytes } from 'crypto'
@@ -12,12 +12,7 @@ export default async (
   }>,
   reply: PayloadReply
 ) => {
-  if (
-    (await prisma.user.findFirst({
-      where: {
-        email: request.body.email,
-      },
-    })) !== null
+  if (await isUserEmailExists(request.body.email)
   ) {
     reply.send(new HttpError(400, 'Duplicated email'))
 

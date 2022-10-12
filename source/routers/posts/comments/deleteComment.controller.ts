@@ -1,6 +1,6 @@
 import { FastifyRequest, PayloadReply } from 'fastify'
 import { Comment, Post } from '@prisma/client'
-import { isCommentExists, prisma } from '@library/prisma'
+import { prisma } from '@library/prisma'
 import HttpError from '@library/httpError'
 
 export default async (
@@ -11,13 +11,23 @@ export default async (
   }>,
   reply: PayloadReply
 ) => {
-  if (!isCommentExists(request.params.postId, request.params.id)) {
+	const comment: Pick<Post, 'userId'> | null = await prisma.comment.findFirst({
+		select: {
+			userId: true
+		},
+		where: {
+			postId: request.params.postId,
+			id: request.params.id
+		}
+	})
+
+  if (comment === null) {
     reply.callNotFound()
 
     return
   }
 
-  if (request.params.id !== request.user.id) {
+  if (comment.userId !== request.user.id) {
     reply.send(new HttpError(401, 'Unauthorized user'))
 
     return
