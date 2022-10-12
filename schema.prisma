@@ -87,6 +87,7 @@ model Post {
   user       User           @relation(fields: [userId], references: [id], onDelete: Cascade, map: "FOREIGN KEY (post.user_id, user.id)")
   comments   Comment[]
   categories PostCategory[]
+  postLikes  PostLike[]     @relation("FOREIGN KEY (post_like.post_id, post.id)")
   postMedias PostMedia[]    @relation("FOREIGN KEY (post_media.post_id, post.id)")
   reports    PostReport[]
 
@@ -105,10 +106,21 @@ model PostCategory {
   @@map("post_category")
 }
 
+model PostLike {
+  postId Int  @map("post_id") @db.UnsignedInt
+  userId Int  @map("user_id") @db.UnsignedInt
+  post   Post @relation("FOREIGN KEY (post_like.post_id, post.id)", fields: [postId], references: [id], onDelete: Cascade, map: "FOREIGN KEY (post_like.post_id, post.id)")
+  user   User @relation("FOREIGN KEY (post_like.user_id, user.id)", fields: [userId], references: [id], onDelete: Cascade, map: "FOREIGN KEY (post_like.user_id, user.id)")
+
+  @@id([postId, userId])
+  @@index([userId], map: "FOREIGN KEY (post_like.user_id, user.id)")
+  @@map("post_like")
+}
+
 model PostMedia {
   postId Int     @map("post_id") @db.UnsignedInt
   id     String  @db.VarChar(64)
-  type   Int     @db.TinyInt()
+  type   Boolean
   post   Post    @relation("FOREIGN KEY (post_media.post_id, post.id)", fields: [postId], references: [id], onDelete: Cascade, map: "FOREIGN KEY (post_media.post_id, post.id)")
 
   @@id([id, type])
@@ -185,6 +197,7 @@ model User {
   comments         Comment[]
   messages         Message[]
   posts            Post[]
+  post_like        PostLike[]      @relation("FOREIGN KEY (post_like.user_id, user.id)")
   reports          Report[]
   schedules        Schedule[]
   targetFollowings UserFollowing[] @relation("FOREIGN KEY (user_following.target_user_id, user.id)")

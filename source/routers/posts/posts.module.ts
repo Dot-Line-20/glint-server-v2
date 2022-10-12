@@ -7,6 +7,8 @@ import getPostController from './getPost.controller'
 import patchPostController from './patchPost.controller'
 import deletePostController from './deletePost.controller'
 import commentsModule from './comments/comments.module'
+import postLikeController from './postLike.controller'
+import deleteLikeController from './deleteLike.controller'
 
 export default new Module({
   routers: [
@@ -67,6 +69,28 @@ export default new Module({
         },
       },
       handler: deletePostController,
+    },
+    {
+      method: 'POST',
+      url: ':id/like',
+      isAuthNeeded: true,
+      schema: {
+        params: {
+          id: postSchema.id.required(),
+        },
+      },
+      handler: postLikeController,
+    },
+    {
+      method: 'DELETE',
+      url: ':id/like',
+      isAuthNeeded: true,
+      schema: {
+        params: {
+          id: postSchema.id.required(),
+        },
+      },
+      handler: deleteLikeController,
     },
   ],
   modules: [commentsModule],
