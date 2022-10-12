@@ -1,6 +1,7 @@
 import { FastifyRequest, PayloadReply } from 'fastify'
 import { Post } from '@prisma/client'
-import { isPostExists, prisma } from '@library/prisma'
+import { prisma } from '@library/prisma'
+import HttpError from '@library/httpError';
 
 export default async (
   request: FastifyRequest<{
@@ -8,8 +9,23 @@ export default async (
   }>,
   reply: PayloadReply
 ) => {
-  if (!isPostExists(request.params.id)) {
-    reply.callNotFound()
+	const post: Pick<Post, 'userId'> | null = await prisma.post.findUnique({
+		select: {
+			userId: true,
+		},
+		where: {
+			id: request.params.id
+		}
+	})
+
+	if(post === null) {
+		reply.callNotFound()
+
+		return
+	}
+
+  if (post.userId !== request.user.id) {
+    reply.send(new HttpError(401, 'Unauthorized user'))
 
     return
   }

@@ -41,6 +41,31 @@ export default new Module({
       },
       handler: getUserController,
     },
+    {
+      url: ':id',
+      method: 'PATCH',
+      isAuthNeeded: true,
+      schema: {
+        params: {
+          id: userSchema.id.required(),
+        },
+				body: {
+					
+				}
+      },
+      handler: getUserController,
+    },
+    {
+      url: ':id',
+      method: 'DELETE',
+      isAuthNeeded: true,
+      schema: {
+        params: {
+          id: userSchema.id.required(),
+        },
+      },
+      handler: getUserController,
+    },
   ],
   modules: [schedulesModule],
   prefix: 'users',

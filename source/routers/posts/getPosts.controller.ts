@@ -1,16 +1,10 @@
 import { prisma } from '@library/prisma'
 import { PageQuery } from '@library/type'
-import { Category, User } from '@prisma/client'
 import { FastifyRequest, PayloadReply } from 'fastify'
 
 export default async (
   request: FastifyRequest<{
-    Querystring: Partial<
-      {
-        userId: User['id']
-        categoryId: Category['id']
-      } & PageQuery
-    >
+    Querystring: Partial<PageQuery>
   }>,
   reply: PayloadReply
 ) => {
@@ -25,7 +19,12 @@ export default async (
         title: true,
         content: true,
         createdAt: true,
-        postMedias: true,
+        medias: true,
+        _count: {
+          select: {
+            likes: true,
+          },
+        },
       },
       where: {
         isDeleted: false,

@@ -120,7 +120,7 @@ model PostLike {
 model PostMedia {
   postId Int     @map("post_id") @db.UnsignedInt
   id     String  @db.VarChar(64)
-  type   Boolean
+  type   String  @db.VarChar(4)
   post   Post    @relation("FOREIGN KEY (post_media.post_id, post.id)", fields: [postId], references: [id], onDelete: Cascade, map: "FOREIGN KEY (post_media.post_id, post.id)")
 
   @@id([id, type])

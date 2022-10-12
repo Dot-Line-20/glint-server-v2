@@ -1,6 +1,6 @@
 import { FastifyRequest, PayloadReply } from 'fastify'
 import { User } from '@prisma/client'
-import { isUserExists, prisma } from '@library/prisma'
+import { isUserEmailExists, isUserIdExists, prisma } from '@library/prisma'
 import HttpError from '@library/httpError'
 
 export default async (
@@ -10,11 +10,17 @@ export default async (
   }>,
   reply: PayloadReply
 ) => {
-  if (!(await isUserExists(request.params.id))) {
+  if (!(await isUserIdExists(request.params.id))) {
     reply.callNotFound()
 
     return
   }
+
+	if(typeof(request.body.email) === 'string' && await isUserEmailExists(request.body.email)) {
+    reply.send(new HttpError(400, 'Duplicated email'))
+
+		return
+	}
 
   if (request.params.id !== request.user.id) {
     reply.send(new HttpError(401, 'Unauthorized user'))

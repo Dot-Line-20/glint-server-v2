@@ -1,23 +1,32 @@
-# Users
+# Comments
 
 ---
 
-## 유저 생성
+## 댓글 생성
 
 ```plain
-[POST] /users
+[POST] /posts/:postId/comments
 ```
 
 ### Request
+
+#### Parameter
+
+|key|type|description|
+|---|---|---|
+|postId|number|자연수인 숫자입니다|
+
+#### Header
+
+|key|type|description|
+|---|---|---|
+|Authorization|string|Bearer 타입의 json web token 형식 문자열입니다 (accessToken)|
 
 #### Body
 
 |key|type|description|
 |---|---|---|
-|email|string|이메일 형식의 문자열입니다|
-|password|string|플레인 텍스트 형식의 문자열입니다|
-|name|string|최소 1자 최대 64자의 길이 제한이 있는 플레인 텍스트 형식의 문자열입니다|
-|birth|string|ISO 8601 Date 형식의 문자열입니다|
+|content|string|최소 1자 최대 65535자의 길이 제한이 있는 플레인 텍스트 형식의 문자열입니다|
 
 ### Response
 
@@ -29,36 +38,29 @@
 		"status": "success",
 		"data": {
 			"id": "<number, positive integer>",
-			"email": "<string, email format>",
-			"name": "<string, length 1 to 64>",
-			"image": "<string, not decided>",
-			"birth": "<string, ISO 8601 Date format>",
-			"createdAt": "<string, ISO 8601 Date and time in UTC format>"
-		}
-	}
-	```
-
-#### 400
-
-- 이미 존재하는 이메일
-	```json
-	{
-		"status": "fail",
-		"data": {
-			"title": "Duplicated email"
+			"userId": "<number, positive integer>",
+			"postId": "<number, positive integer>",
+			"content": "<string, length 1 to 65535>",
+			"createdAt": "<string, ISO 8601 Date and time in UTC format>",
 		}
 	}
 	```
 
 ---
 
-## 모든 유저
+## 모든 댓글
 
 ```plain
-[GET] /users
+[GET] /posts/:postId/comments
 ```
 
 ### Request
+
+#### Parameter
+
+|key|type|description|
+|---|---|---|
+|postId|number|자연수인 숫자입니다|
 
 #### Header
 
@@ -84,21 +86,20 @@
 		"status": "success",
 		"data": {
 			"id": "<number, positive integer>",
-			"email": "<string, email format>",
-			"name": "<string, length 1 to 64>",
-			"image": "<string, not decided>",
-			"birth": "<string, ISO 8601 Date format>",
-			"createdAt": "<string, ISO 8601 Date and time in UTC format>"
+			"userId": "<number, positive integer>",
+			"postId": "<number, positive integer>",
+			"content": "<string, length 1 to 65535>",
+			"createdAt": "<string, ISO 8601 Date and time in UTC format>",
 		}[]
 	}
 	```
 
 ---
 
-## 유저
+## 댓글
 
 ```plain
-[GET] /users/:id
+[GET] /posts/:postId/comments/:id
 ```
 
 ### Request
@@ -107,6 +108,7 @@
 
 |key|type|description|
 |---|---|---|
+|postId|number|자연수인 숫자입니다|
 |id|number|자연수인 숫자입니다|
 
 #### Header
@@ -125,21 +127,20 @@
 		"status": "success",
 		"data": {
 			"id": "<number, positive integer>",
-			"email": "<string, email format>",
-			"name": "<string, length 1 to 64>",
-			"image": "<string, not decided>",
-			"birth": "<string, ISO 8601 Date format>",
-			"createdAt": "<string, ISO 8601 Date and time in UTC format>"
+			"userId": "<number, positive integer>",
+			"postId": "<number, positive integer>",
+			"content": "<string, length 1 to 65535>",
+			"createdAt": "<string, ISO 8601 Date and time in UTC format>",
 		}
 	}
 	```
 
 ---
 
-## 유저 수정
+## 댓글 수정
 
 ```plain
-[PATCH] /users/:id
+[PATCH] /posts/:postId/comments/:id
 ```
 
 ### Request
@@ -148,6 +149,7 @@
 
 |key|type|description|
 |---|---|---|
+|postId|number|자연수인 숫자입니다|
 |id|number|자연수인 숫자입니다|
 
 #### Header
@@ -160,11 +162,7 @@
 
 |key|type|description|
 |---|---|---|
-|email|_string_|이메일 형식의 문자열입니다|
-|password|_string_|플레인 텍스트 형식의 문자열입니다|
-|name|_string_|플레인 텍스트 형식의 문자열입니다|
-|birth|_string_|ISO 8601 Date 형식의 문자열입니다|
-|image|_string_|아직 미정입니다|
+|content|string|최소 1자 최대 65535자의 길이 제한이 있는 플레인 텍스트 형식의 문자열입니다|
 
 ### Response
 
@@ -176,30 +174,17 @@
 		"status": "success",
 		"data": {
 			"id": "<number, positive integer>",
-			"email": "<string, email format>",
-			"name": "<string, length 1 to 64>",
-			"image": "<string, not decided>",
-			"birth": "<string, ISO 8601 Date format>",
-			"createdAt": "<string, ISO 8601 Date and time in UTC format>"
-		}
-	}
-	```
-
-#### 400
-
-- 이미 존재하는 이메일
-	```json
-	{
-		"status": "fail",
-		"data": {
-			"title": "Duplicated email"
+			"userId": "<number, positive integer>",
+			"postId": "<number, positive integer>",
+			"content": "<string, length 1 to 65535>",
+			"createdAt": "<string, ISO 8601 Date and time in UTC format>",
 		}
 	}
 	```
 
 #### 401
 
-- 요청하는 유저와 해당 유저 불일치
+- 요청하는 유저와 작성자 불일치
 	```json
 	{
 		"status": "fail",
@@ -211,10 +196,10 @@
 
 ---
 
-## 유저 삭제
+## 댓글 삭제
 
 ```plain
-[DELETE] /users/:id
+[DELETE] /posts/:postId/comments/:id
 ```
 
 ### Request
@@ -223,6 +208,7 @@
 
 |key|type|description|
 |---|---|---|
+|postId|number|자연수인 숫자입니다|
 |id|number|자연수인 숫자입니다|
 
 #### Header
@@ -245,7 +231,7 @@
 
 #### 401
 
-- 요청하는 유저와 해당 유저 불일치
+- 요청하는 유저와 작성자 불일치
 	```json
 	{
 		"status": "fail",

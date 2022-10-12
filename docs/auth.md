@@ -1,5 +1,7 @@
 # Auth
 
+---
+
 ## 이메일 인증
 
 ```plain
@@ -18,20 +20,24 @@
 
 #### 307
 
-```json
-// 로그인 페이지로 리다이렉트됩니다
-```
+- 성공
+	```json
+	// 로그인 페이지로 리다이렉트됩니다
+	```
 
-#### 400 - 존재하지 않는 인증키
+#### 400
 
-```json
-{
-  "status": "fail",
-  "data": {
-    "title": "Invalid verificationKey"
+- 존재하지 않는 인증키
+	```json
+	{
+		"status": "fail",
+		"data": {
+			"title": "Invalid verificationKey"
+		}
 	}
-}
-```
+	```
+
+---
 
 ## 로그인
 
@@ -52,48 +58,50 @@
 
 #### 200
 
-```json
-{
-	"status": "success",
-	"data": {
-		"refreshToken": "<json web token, expires in 30 days>",
-		"accessToken": "<json web token, expires in 1 hour>"
+- 성공
+	```json
+	{
+		"status": "success",
+		"data": {
+			"refreshToken": "<json web token, expires in 30 days>",
+			"accessToken": "<json web token, expires in 1 hour>"
+		}
 	}
-}
-```
+	```
 
-#### 400 - 존재하지 않는 유저
+#### 400
 
-```json
-{
-  "status": "fail",
-  "data": {
-    "title": "Invalid email"
+- 존재하지 않는 유저
+	```json
+	{
+		"status": "fail",
+		"data": {
+			"title": "Invalid email"
+		}
 	}
-}
-```
+	```
 
-#### 400 - 비밀번호 불일치
-
-```json
-{
-  "status": "fail",
-  "data": {
-    "title": "Invalid password"
+- 비밀번호 불일치
+	```json
+	{
+		"status": "fail",
+		"data": {
+			"title": "Invalid password"
+		}
 	}
-}
-```
+	```
 
-#### 400 - 이메일 인증이 안 된 유저
-
-```json
-{
-  "status": "fail",
-  "data": {
-    "title": "Unverified email"
+- 이메일 인증이 안 된 유저
+	```json
+	{
+		"status": "fail",
+		"data": {
+			"title": "Unverified email"
+		}
 	}
-}
-```
+	```
+
+---
 
 ## 토큰 재생성
 
@@ -113,23 +121,25 @@
 
 #### 200
 
-```json
-{
-	"status": "success",
-	"data": {
-		"refreshToken": "<json web token, expires in left days>",
-		"accessToken": "<json web token, expires in 1 hour>"
+- 성공
+	```json
+	{
+		"status": "success",
+		"data": {
+			"refreshToken": "<json web token, expires in left days>",
+			"accessToken": "<json web token, expires in 1 hour>"
+		}
 	}
-}
-```
+	```
 
-#### 400 - 토큰 형식 오류 및 존재하지 않는 유저
+#### 400
 
-```json
-{
-  "status": "fail",
-  "data": {
-    "title": "Invalid refreshToken"
+- 토큰 형식 오류 및 존재하지 않는 유저
+	```json
+	{
+		"status": "fail",
+		"data": {
+			"title": "Invalid refreshToken"
+		}
 	}
-}
-```
+	```
