@@ -42,7 +42,8 @@ export default new Module({
           {
             depth: commonSchema.positiveInteger,
             isParent: schema.boolean(),
-            isEnded: schema.boolean(),
+            from: commonSchema.dateTime,
+            to: commonSchema.dateTime,
             isSuccess: scheduleSchema.isSuccess,
           },
           pageSchema

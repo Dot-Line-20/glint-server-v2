@@ -1,3 +1,4 @@
+import HttpError from '@library/httpError'
 import { isUserExists, prisma } from '@library/prisma'
 import { PageQuery } from '@library/type'
 import { Prisma, Schedule, User } from '@prisma/client'
@@ -9,10 +10,12 @@ export default async (
       userId: User['id']
     }
     Querystring: Partial<
-      { depth: number; isParent: boolean; isEnded: boolean } & Pick<
-        Schedule,
-        'isSuccess'
-      > &
+      {
+        depth: number
+        isParent: boolean
+        from: Date
+        to: Date
+      } & Pick<Schedule, 'isSuccess'> &
         PageQuery
     >
   }>,
@@ -27,10 +30,31 @@ export default async (
   request.query['page[size]'] ||= 50
   request.query['page[index]'] ||= 0
 
-  const endingAtCondition: Prisma.DateTimeFilter = {}
+  const scheduleCondition: Prisma.ScheduleWhereInput = {
+    parentScheduleId:
+      typeof request.query.isParent === 'boolean' && request.query.isParent
+        ? null
+        : undefined,
+  }
 
-  if (typeof request.query.isEnded === 'boolean') {
-    endingAtCondition[request.query.isEnded ? 'lte' : 'gte'] = new Date()
+  const isToDefined: boolean = typeof request.query.to === 'object'
+
+  if (typeof request.query.from === 'object') {
+    scheduleCondition.startingAt = {
+      gte: request.query.from,
+    }
+
+    if (isToDefined && request.query.from > (request.query.to as Date)) {
+      reply.send(new HttpError(400, 'Invalid from'))
+
+      return
+    }
+  }
+
+  if (isToDefined) {
+    scheduleCondition.endingAt = {
+      lte: request.query.from,
+    }
   }
 
   const select: Prisma.ScheduleSelect = {
@@ -51,9 +75,7 @@ export default async (
     while (request.query.depth--) {
       currentSelect.childSchedules = {
         select: Object.assign({}, select, { childSchedules: false }),
-        where: {
-          endingAt: endingAtCondition,
-        },
+        where: scheduleCondition,
       }
 
       currentSelect = currentSelect.childSchedules
@@ -64,15 +86,13 @@ export default async (
   reply.send(
     await prisma.schedule.findMany({
       select: select,
-      where: {
-        userId: request.params.userId,
-        isSuccess: request.query.isSuccess,
-        parentScheduleId:
-          typeof request.query.isParent === 'boolean' && request.query.isParent
-            ? null
-            : undefined,
-        endingAt: endingAtCondition,
-      },
+      where: Object.assign(
+        {
+          userId: request.params.userId,
+          isSuccess: request.query.isSuccess,
+        },
+        scheduleCondition
+      ),
       skip: request.query['page[size]'] * request.query['page[index]'],
       take: request.query['page[size]'],
       orderBy: {
