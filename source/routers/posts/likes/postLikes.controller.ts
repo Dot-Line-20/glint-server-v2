@@ -5,14 +5,16 @@ import HttpError from '@library/httpError'
 
 export default async (
   request: FastifyRequest<{
-    Params: Pick<Post, 'id'>
+    Params: {
+			postId: Post['id'],
+		}
   }>,
   reply: PayloadReply
 ) => {
   const postLike: PostLike | null = await prisma.postLike.findUnique({
     where: {
       postId_userId: {
-        postId: request.params.id,
+        postId: request.params.postId,
         userId: request.user.id,
       },
     },
@@ -27,7 +29,7 @@ export default async (
   reply.send(
     await prisma.postLike.create({
       data: {
-        postId: request.params.id,
+        postId: request.params.postId,
         userId: request.user.id,
       },
     })
