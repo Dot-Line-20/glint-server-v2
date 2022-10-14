@@ -1,4 +1,4 @@
-import { FastifyRequest, PayloadReply } from 'fastify'
+import { FastifyRequest, FastifyReply } from 'fastify'
 import { Post } from '@prisma/client'
 import { isPostExists, prisma } from '@library/prisma'
 
@@ -9,7 +9,7 @@ export default async (
     }
     Body: Pick<Post, 'content'>
   }>,
-  reply: PayloadReply
+  reply: FastifyReply
 ) => {
   if (!isPostExists(request.params.postId)) {
     reply.callNotFound()
@@ -27,7 +27,7 @@ export default async (
         createdAt: true,
       },
       data: Object.assign(request.body, {
-        userId: request.user.id,
+        userId: request.userId,
         postId: request.params.postId,
       }),
     })

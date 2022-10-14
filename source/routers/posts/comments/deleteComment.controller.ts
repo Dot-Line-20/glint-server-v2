@@ -1,4 +1,4 @@
-import { FastifyRequest, PayloadReply } from 'fastify'
+import { FastifyRequest, FastifyReply } from 'fastify'
 import { Comment, Post } from '@prisma/client'
 import { prisma } from '@library/prisma'
 import HttpError from '@library/httpError'
@@ -9,7 +9,7 @@ export default async (
       postId: Post['id']
     } & Pick<Comment, 'id'>
   }>,
-  reply: PayloadReply
+  reply: FastifyReply
 ) => {
   const comment: Pick<Post, 'userId'> | null = await prisma.comment.findFirst({
     select: {
@@ -27,7 +27,7 @@ export default async (
     return
   }
 
-  if (comment.userId !== request.user.id) {
+  if (comment.userId !== request.userId) {
     reply.send(new HttpError(401, 'Unauthorized user'))
 
     return

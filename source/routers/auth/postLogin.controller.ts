@@ -1,7 +1,7 @@
 import HttpError from '@library/httpError'
 import { prisma } from '@library/prisma'
 import { User } from '@prisma/client'
-import { FastifyRequest, PayloadReply } from 'fastify'
+import { FastifyRequest, FastifyReply } from 'fastify'
 import { verify } from 'argon2'
 import JsonWebToken from '@library/jsonWebToken'
 import { getEpoch } from '@library/utility'
@@ -10,7 +10,7 @@ export default async (
   request: FastifyRequest<{
     Body: Pick<User, 'email' | 'password'>
   }>,
-  reply: PayloadReply
+  reply: FastifyReply
 ) => {
   const user: Pick<User, 'id' | 'password' | 'verificationKey'> | null =
     await prisma.user.findUnique({

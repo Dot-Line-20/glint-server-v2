@@ -1,4 +1,4 @@
-import { FastifyRequest, PayloadReply } from 'fastify'
+import { FastifyRequest, FastifyReply } from 'fastify'
 import { Post, PostLike, User } from '@prisma/client'
 import { prisma } from '@library/prisma'
 import HttpError from '@library/httpError'
@@ -10,7 +10,7 @@ export default async (
       userId: User['id']
     }
   }>,
-  reply: PayloadReply
+  reply: FastifyReply
 ) => {
   const postLike: PostLike | null = await prisma.postLike.findUnique({
     where: {

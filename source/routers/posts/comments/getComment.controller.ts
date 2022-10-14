@@ -1,6 +1,6 @@
 import { prisma } from '@library/prisma'
 import { Comment, Post } from '@prisma/client'
-import { FastifyRequest, PayloadReply } from 'fastify'
+import { FastifyRequest, FastifyReply } from 'fastify'
 
 export default async (
   request: FastifyRequest<{
@@ -8,7 +8,7 @@ export default async (
       postId: Post['id']
     } & Pick<Comment, 'id'>
   }>,
-  reply: PayloadReply
+  reply: FastifyReply
 ) => {
   if (
     (await prisma.comment.findFirst({

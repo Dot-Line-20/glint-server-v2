@@ -1,8 +1,8 @@
-import { DoneFuncWithErrOrRes, FastifyRequest, PayloadReply } from 'fastify'
+import { DoneFuncWithErrOrRes, FastifyRequest, FastifyReply } from 'fastify'
 
 export default (
   request: FastifyRequest,
-  reply: PayloadReply,
+  reply: FastifyReply,
   done: DoneFuncWithErrOrRes
 ) => {
   // Replaces helmet and cors package

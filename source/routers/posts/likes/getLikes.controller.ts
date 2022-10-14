@@ -1,7 +1,7 @@
 import { isPostExists, prisma } from '@library/prisma'
 import { PageQuery } from '@library/type'
 import { Post } from '@prisma/client'
-import { FastifyRequest, PayloadReply } from 'fastify'
+import { FastifyRequest, FastifyReply } from 'fastify'
 
 export default async (
   request: FastifyRequest<{
@@ -10,7 +10,7 @@ export default async (
       postId: Post['id']
     }
   }>,
-  reply: PayloadReply
+  reply: FastifyReply
 ) => {
   if (!isPostExists(request.params.postId)) {
     reply.callNotFound()

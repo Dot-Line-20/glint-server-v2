@@ -1,12 +1,12 @@
 import { prisma } from '@library/prisma'
 import { PageQuery } from '@library/type'
-import { FastifyRequest, PayloadReply } from 'fastify'
+import { FastifyRequest, FastifyReply } from 'fastify'
 
 export default async (
   request: FastifyRequest<{
     Querystring: Partial<PageQuery>
   }>,
-  reply: PayloadReply
+  reply: FastifyReply
 ) => {
   request.query['page[size]'] ||= 50
   request.query['page[index]'] ||= 0

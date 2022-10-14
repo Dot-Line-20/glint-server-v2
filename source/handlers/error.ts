@@ -1,9 +1,9 @@
-import { FastifyError, FastifyRequest, PayloadReply } from 'fastify'
+import { FastifyError, FastifyRequest, FastifyReply } from 'fastify'
 
 export default (
   error: FastifyError,
   request: FastifyRequest,
-  reply: PayloadReply
+  reply: FastifyReply
 ) => {
   if (typeof error.validation === 'object') {
     error.statusCode = 400

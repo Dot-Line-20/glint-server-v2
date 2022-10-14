@@ -1,4 +1,4 @@
-import { FastifyRequest, PayloadReply } from 'fastify'
+import { FastifyRequest, FastifyReply } from 'fastify'
 import { User } from '@prisma/client'
 import { isUserEmailExists, prisma } from '@library/prisma'
 import HttpError from '@library/httpError'
@@ -10,7 +10,7 @@ export default async (
   request: FastifyRequest<{
     Body: Pick<User, 'email' | 'password' | 'name' | 'birth'>
   }>,
-  reply: PayloadReply
+  reply: FastifyReply
 ) => {
   if (await isUserEmailExists(request.body.email)) {
     reply.send(new HttpError(400, 'Duplicated email'))

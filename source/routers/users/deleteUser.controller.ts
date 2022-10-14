@@ -1,13 +1,13 @@
 import HttpError from '@library/httpError'
 import { isUserIdExists, prisma } from '@library/prisma'
 import { User } from '@prisma/client'
-import { FastifyRequest, PayloadReply } from 'fastify'
+import { FastifyRequest, FastifyReply } from 'fastify'
 
 export default async (
   request: FastifyRequest<{
     Params: Pick<User, 'id'>
   }>,
-  reply: PayloadReply
+  reply: FastifyReply
 ) => {
   if (!(await isUserIdExists(request.params.id))) {
     reply.callNotFound()
@@ -15,7 +15,7 @@ export default async (
     return
   }
 
-  if (request.params.id !== request.user.id) {
+  if (request.params.id !== request.userId) {
     reply.send(new HttpError(401, 'Unauthorized user'))
 
     return

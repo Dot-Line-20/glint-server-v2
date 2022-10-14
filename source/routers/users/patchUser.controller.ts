@@ -1,4 +1,4 @@
-import { FastifyRequest, PayloadReply } from 'fastify'
+import { FastifyRequest, FastifyReply } from 'fastify'
 import { User } from '@prisma/client'
 import { isUserEmailExists, isUserIdExists, prisma } from '@library/prisma'
 import HttpError from '@library/httpError'
@@ -8,7 +8,7 @@ export default async (
     Params: Pick<User, 'id'>
     Body: Partial<Omit<User, 'id' | 'verificationKey' | 'createdAt'>>
   }>,
-  reply: PayloadReply
+  reply: FastifyReply
 ) => {
   if (!(await isUserIdExists(request.params.id))) {
     reply.callNotFound()
@@ -25,7 +25,7 @@ export default async (
     return
   }
 
-  if (request.params.id !== request.user.id) {
+  if (request.params.id !== request.userId) {
     reply.send(new HttpError(401, 'Unauthorized user'))
 
     return
