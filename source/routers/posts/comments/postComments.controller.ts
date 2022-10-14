@@ -19,13 +19,13 @@ export default async (
 
   reply.send(
     await prisma.comment.create({
-			select: {
-				id: true,
-				userId: true,
-				postId: true,
-				content: true,
-				createdAt: true,
-			},
+      select: {
+        id: true,
+        userId: true,
+        postId: true,
+        content: true,
+        createdAt: true,
+      },
       data: Object.assign(request.body, {
         userId: request.user.id,
         postId: request.params.postId,

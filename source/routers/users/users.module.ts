@@ -49,9 +49,7 @@ export default new Module({
         params: {
           id: userSchema.id.required(),
         },
-				body: {
-					
-				}
+        body: {},
       },
       handler: getUserController,
     },

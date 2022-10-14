@@ -7,7 +7,7 @@ import getPostController from './getPost.controller'
 import patchPostController from './patchPost.controller'
 import deletePostController from './deletePost.controller'
 import commentsModule from './comments/comments.module'
-import likesModule from './likes/likes.module';
+import likesModule from './likes/likes.module'
 
 export default new Module({
   routers: [

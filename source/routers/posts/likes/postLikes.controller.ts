@@ -6,8 +6,8 @@ import HttpError from '@library/httpError'
 export default async (
   request: FastifyRequest<{
     Params: {
-			postId: Post['id'],
-		}
+      postId: Post['id']
+    }
   }>,
   reply: PayloadReply
 ) => {

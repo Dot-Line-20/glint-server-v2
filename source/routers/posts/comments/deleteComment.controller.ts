@@ -11,15 +11,15 @@ export default async (
   }>,
   reply: PayloadReply
 ) => {
-	const comment: Pick<Post, 'userId'> | null = await prisma.comment.findFirst({
-		select: {
-			userId: true
-		},
-		where: {
-			postId: request.params.postId,
-			id: request.params.id
-		}
-	})
+  const comment: Pick<Post, 'userId'> | null = await prisma.comment.findFirst({
+    select: {
+      userId: true,
+    },
+    where: {
+      postId: request.params.postId,
+      id: request.params.id,
+    },
+  })
 
   if (comment === null) {
     reply.callNotFound()

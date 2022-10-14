@@ -12,8 +12,7 @@ export default async (
   }>,
   reply: PayloadReply
 ) => {
-  if (await isUserEmailExists(request.body.email)
-  ) {
+  if (await isUserEmailExists(request.body.email)) {
     reply.send(new HttpError(400, 'Duplicated email'))
 
     return

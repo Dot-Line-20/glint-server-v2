@@ -14,11 +14,13 @@ export async function isUserIdExists(id: number): Promise<boolean> {
 }
 
 export async function isUserEmailExists(email: string): Promise<boolean> {
-	return (await prisma.user.findFirst({
-		where: {
-			email: email,
-		},
-	})) !== null
+  return (
+    (await prisma.user.findFirst({
+      where: {
+        email: email,
+      },
+    })) !== null
+  )
 }
 
 export async function isScheduleExists(

@@ -16,11 +16,14 @@ export default async (
     return
   }
 
-	if(typeof(request.body.email) === 'string' && await isUserEmailExists(request.body.email)) {
+  if (
+    typeof request.body.email === 'string' &&
+    (await isUserEmailExists(request.body.email))
+  ) {
     reply.send(new HttpError(400, 'Duplicated email'))
 
-		return
-	}
+    return
+  }
 
   if (request.params.id !== request.user.id) {
     reply.send(new HttpError(401, 'Unauthorized user'))
