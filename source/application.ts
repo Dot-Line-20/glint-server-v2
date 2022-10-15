@@ -7,6 +7,7 @@ import notFoundHandler from './handlers/notFound'
 import serializeHandler from './handlers/serialize'
 import optionsHandler from './handlers/options'
 import headerHandler from './handlers/header'
+import fastifyMultipart from '@fastify/multipart'
 
 // App
 export default class {
@@ -30,6 +31,13 @@ export default class {
     this.application.setErrorHandler(errorHandler)
     this.application.setReplySerializer(serializeHandler)
     this.application.addHook('preHandler', headerHandler)
+    this.application.register(fastifyMultipart, {
+      throwFileSizeLimit: true,
+      limits: {
+        files: 10,
+        fileSize: 5242880, // 5mb
+      },
+    })
     // Add more router at here
 
     return

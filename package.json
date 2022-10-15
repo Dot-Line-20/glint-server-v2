@@ -22,6 +22,7 @@
     "pre-commit": "lint-staged"
   },
   "dependencies": {
+    "@fastify/multipart": "^7.2.0",
     "@prisma/client": "^4.2.1",
     "argon2": "^0.29.1",
     "dotenv": "^16.0.1",

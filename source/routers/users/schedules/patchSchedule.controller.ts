@@ -1,4 +1,4 @@
-import { FastifyRequest, PayloadReply } from 'fastify'
+import { FastifyRequest, FastifyReply } from 'fastify'
 import { Schedule, User } from '@prisma/client'
 import { prisma } from '@library/prisma'
 import HttpError from '@library/httpError'
@@ -15,7 +15,7 @@ export default async (
       >
     >
   }>,
-  reply: PayloadReply
+  reply: FastifyReply
 ) => {
   const schedule:
     | ({
@@ -44,7 +44,7 @@ export default async (
     return
   }
 
-  if (request.params.userId !== request.user.id) {
+  if (request.params.userId !== request.userId) {
     reply.send(new HttpError(401, 'Unauthorized user'))
 
     return

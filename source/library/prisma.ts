@@ -4,21 +4,23 @@ export const prisma: PrismaClient = new PrismaClient()
 
 export async function isUserIdExists(id: number): Promise<boolean> {
   return (
-    (await prisma.user.findFirst({
+    (await prisma.user.count({
       where: {
         id: id,
         verificationKey: null,
       },
-    })) !== null
+    })) === 1
   )
 }
 
 export async function isUserEmailExists(email: string): Promise<boolean> {
-	return (await prisma.user.findFirst({
-		where: {
-			email: email,
-		},
-	})) !== null
+  return (
+    (await prisma.user.count({
+      where: {
+        email: email,
+      },
+    })) === 1
+  )
 }
 
 export async function isScheduleExists(
@@ -26,40 +28,82 @@ export async function isScheduleExists(
   id: number
 ): Promise<boolean> {
   return (
-    (await prisma.schedule.findFirst({
+    (await prisma.schedule.count({
       where: {
         id: id,
         userId: userId,
       },
-    })) !== null
+    })) === 1
   )
 }
 
 export async function isPostExists(id: number): Promise<boolean> {
   return (
-    (await prisma.post.findFirst({
+    (await prisma.post.count({
       where: {
         id: id,
         isDeleted: false,
       },
-    })) !== null
+    })) === 1
   )
 }
 
-//export async function isCommentExists(
+export async function isCommentExists(
+  postId: number,
+  id: number
+): Promise<boolean> {
+  return (
+    (await prisma.comment.count({
+      where: {
+        id: id,
+        post: {
+          id: postId,
+          isDeleted: false,
+        },
+        isDeleted: false,
+      },
+    })) === 1
+  )
+}
+
+export async function isLikeExists(
+  postId: number,
+  userId: number
+): Promise<boolean> {
+  return (
+    (await prisma.postLike.count({
+      where: {
+        postId: postId,
+        userId: userId,
+      },
+    })) === 1
+  )
+}
+
+export async function isMediaExists(
+  id: number,
+  userId: number
+): Promise<boolean> {
+  return (
+    (await prisma.media.count({
+      where: {
+        id: id,
+        userId: userId,
+      },
+    })) === 1
+  )
+}
+
+//export async function isPostMediaExists(
 //  postId: number,
-//  id: number
+//  mediaId: number
 //): Promise<boolean> {
 //  return (
-//    (await prisma.comment.findFirst({
+//    (await prisma.postMedia.count({
 //      where: {
-//        id: id,
-//        post: {
-//          id: postId,
-//          isDeleted: false,
-//        },
-//        isDeleted: false,
+//        postId: postId,
+//        mediaId: mediaId,
 //      },
-//    })) !== null
+//    })) === 1
 //  )
 //}

@@ -1,9 +1,9 @@
 import Module from '@library/module'
+import mediaSchema from '@schemas/media'
 import postSchema from '@schemas/post'
-import userSchema from '@schemas/user'
-import deleteLikeController from './deleteLike.controller'
-import getLikesController from './getLikes.controller'
-import postLikesController from './postLikes.controller'
+import deleteMediaController from './deleteMedia.controller'
+import getMediasController from './getMedias.controller'
+import postMediasController from './postMedias.controller'
 
 export default new Module({
   routers: [
@@ -16,7 +16,7 @@ export default new Module({
           postId: postSchema.id.required(),
         },
       },
-      handler: getLikesController,
+      handler: getMediasController,
     },
     {
       method: 'POST',
@@ -26,22 +26,25 @@ export default new Module({
         params: {
           postId: postSchema.id.required(),
         },
+        body: {
+          mediaId: mediaSchema.id.required(),
+        },
       },
-      handler: postLikesController,
+      handler: postMediasController,
     },
     {
       method: 'DELETE',
-      url: ':userId',
+      url: ':mediaId',
       isAuthNeeded: true,
       schema: {
         params: {
           postId: postSchema.id.required(),
-          userId: userSchema.id.required(),
+          mediaId: mediaSchema.id.required(),
         },
       },
-      handler: deleteLikeController,
+      handler: deleteMediaController,
     },
   ],
   modules: [],
-  prefix: ':postsId/likes',
+  prefix: ':postsId/medias',
 })

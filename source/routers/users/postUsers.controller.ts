@@ -1,4 +1,4 @@
-import { FastifyRequest, PayloadReply } from 'fastify'
+import { FastifyRequest, FastifyReply } from 'fastify'
 import { User } from '@prisma/client'
 import { isUserEmailExists, prisma } from '@library/prisma'
 import HttpError from '@library/httpError'
@@ -8,12 +8,11 @@ import { sendMail } from '@library/utility'
 
 export default async (
   request: FastifyRequest<{
-    Body: Pick<User, 'email' | 'password' | 'name' | 'birth'>
+    Body: Pick<User, 'email' | 'password' | 'name' | 'birth' | 'mediaId'>
   }>,
-  reply: PayloadReply
+  reply: FastifyReply
 ) => {
-  if (await isUserEmailExists(request.body.email)
-  ) {
+  if (await isUserEmailExists(request.body.email)) {
     reply.send(new HttpError(400, 'Duplicated email'))
 
     return
@@ -24,11 +23,11 @@ export default async (
   do {
     verificationKey = randomBytes(64).toString('hex')
   } while (
-    (await prisma.user.findUnique({
+    (await prisma.user.count({
       where: {
         verificationKey: verificationKey,
       },
-    })) !== null
+    })) !== 0
   )
 
   await sendMail(
@@ -50,7 +49,7 @@ export default async (
         email: true,
         name: true,
         birth: true,
-        image: true,
+        media: true,
         createdAt: true,
       },
       data: Object.assign(request.body, {

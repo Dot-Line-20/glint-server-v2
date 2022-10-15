@@ -12,27 +12,7 @@ export default async (
   request.query['page[index]'] ||= 0
 
   reply.send(
-    await prisma.post.findMany({
-      select: {
-        id: true,
-        userId: true,
-        title: true,
-        content: true,
-        createdAt: true,
-        medias: {
-          select: {
-            media: true,
-          },
-        },
-        _count: {
-          select: {
-            likes: true,
-          },
-        },
-      },
-      where: {
-        isDeleted: false,
-      },
+    await prisma.media.findMany({
       skip: request.query['page[size]'] * request.query['page[index]'],
       take: request.query['page[size]'],
       orderBy: {

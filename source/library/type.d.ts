@@ -17,6 +17,7 @@ import {
   ObjectSchema,
   StringSchema,
 } from 'fluent-json-schema'
+import { Media } from '@prisma/client'
 
 type RecursiveRecord<T extends string | number | symbol, S> = {
   [key in T]: S | RecursiveRecord<T, S>
@@ -66,4 +67,9 @@ type Schema<T extends string> = Record<
 
 interface PageQuery extends Record<`page[${'index' | 'size'}]`, number> {
   'page[order]': 'desc' | 'asc'
+}
+
+interface TemporaryMedia extends Omit<Media, 'id' | 'name' | 'userId'> {
+  name?: string
+  buffer?: Buffer
 }

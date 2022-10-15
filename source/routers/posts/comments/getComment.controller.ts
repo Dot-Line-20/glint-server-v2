@@ -1,6 +1,6 @@
-import { prisma } from '@library/prisma'
+import { isCommentExists, prisma } from '@library/prisma'
 import { Comment, Post } from '@prisma/client'
-import { FastifyRequest, PayloadReply } from 'fastify'
+import { FastifyRequest, FastifyReply } from 'fastify'
 
 export default async (
   request: FastifyRequest<{
@@ -8,18 +8,9 @@ export default async (
       postId: Post['id']
     } & Pick<Comment, 'id'>
   }>,
-  reply: PayloadReply
+  reply: FastifyReply
 ) => {
-  if ((await prisma.comment.findFirst({
-		where: {
-			id: request.params.id,
-			post: {
-				id: request.params.postId,
-				isDeleted: false,
-			},
-			isDeleted: false,
-		},
-	})) === null) {
+  if (!isCommentExists(request.params.postId, request.params.id)) {
     reply.callNotFound()
 
     return
@@ -27,13 +18,13 @@ export default async (
 
   reply.send(
     await prisma.comment.findUnique({
-			select: {
-				id: true,
-				userId: true,
-				postId: true,
-				content: true,
-				createdAt: true,
-			},
+      select: {
+        id: true,
+        userId: true,
+        postId: true,
+        content: true,
+        createdAt: true,
+      },
       where: {
         id: request.params.id,
       },

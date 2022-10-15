@@ -1,5 +1,5 @@
 import { prisma } from '@library/prisma'
-import { FastifyRequest, PayloadReply } from 'fastify'
+import { FastifyRequest, FastifyReply } from 'fastify'
 import { User } from '@prisma/client'
 import HttpError from '@library/httpError'
 
@@ -9,7 +9,7 @@ export default async (
       verificationKey: string
     }
   }>,
-  reply: PayloadReply
+  reply: FastifyReply
 ) => {
   const user: Pick<User, 'id'> | null = await prisma.user.findUnique({
     select: {

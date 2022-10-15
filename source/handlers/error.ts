@@ -1,15 +1,19 @@
-import { FastifyError, FastifyRequest, PayloadReply } from 'fastify'
+import { FastifyError, FastifyRequest, FastifyReply } from 'fastify'
 
 export default (
   error: FastifyError,
   request: FastifyRequest,
-  reply: PayloadReply
+  reply: FastifyReply
 ) => {
   if (typeof error.validation === 'object') {
     error.statusCode = 400
     error.message = error.message[0].toUpperCase() + error.message.slice(1)
   } else if (typeof error.statusCode !== 'number') {
     error.statusCode = 500
+  }
+
+  if (error.statusCode === 413) {
+    error.message = 'Too large media size'
   }
 
   const isClientError: boolean = (error.statusCode as number) < 500

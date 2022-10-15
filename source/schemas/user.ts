@@ -6,10 +6,10 @@ import commonSchema from '@schemas/common'
 export default {
   id: commonSchema.positiveInteger,
   email: schema.string().format('email'),
-  password: schema.string().minLength(1).maxLength(64),
-  name: schema.string().pattern(/^[a-zA-Z0-9_]{2,32}$/),
+  password: schema.string(),
+  name: schema.string().minLength(1).maxLength(64),
   birth: commonSchema.date,
-  image: schema.string(),
+  mediaId: commonSchema.positiveInteger,
   verificationKey: commonSchema.sha512,
   createdAt: commonSchema.dateTime,
 } as Schema<keyof User>

@@ -1,6 +1,6 @@
 import HttpError from '@library/httpError'
 import { prisma } from '@library/prisma'
-import { FastifyRequest, PayloadReply } from 'fastify'
+import { FastifyRequest, FastifyReply } from 'fastify'
 import { User } from '@prisma/client'
 import JsonWebToken from '@library/jsonWebToken'
 import { getEpoch } from '@library/utility'
@@ -9,7 +9,7 @@ export default async (
   request: FastifyRequest<{
     Body: { refreshToken: string }
   }>,
-  reply: PayloadReply
+  reply: FastifyReply
 ) => {
   const jsonWebToken: JsonWebToken = new JsonWebToken(
     request.body.refreshToken,
