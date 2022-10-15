@@ -8,7 +8,7 @@ import { sendMail } from '@library/utility'
 
 export default async (
   request: FastifyRequest<{
-    Body: Pick<User, 'email' | 'password' | 'name' | 'birth'>
+    Body: Pick<User, 'email' | 'password' | 'name' | 'birth' | 'mediaId'>
   }>,
   reply: FastifyReply
 ) => {
@@ -23,11 +23,11 @@ export default async (
   do {
     verificationKey = randomBytes(64).toString('hex')
   } while (
-    (await prisma.user.findUnique({
+    (await prisma.user.count({
       where: {
         verificationKey: verificationKey,
       },
-    })) !== null
+    })) !== 0
   )
 
   await sendMail(
@@ -49,7 +49,7 @@ export default async (
         email: true,
         name: true,
         birth: true,
-        image: true,
+        media: true,
         createdAt: true,
       },
       data: Object.assign(request.body, {

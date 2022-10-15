@@ -1,3 +1,5 @@
+import { join } from 'path'
+import schema, { ArraySchema, JSONSchema } from 'fluent-json-schema'
 // @ts-expect-error :: No type definition
 import { SMTPChannel } from 'smtp-channel'
 
@@ -45,4 +47,17 @@ export async function sendMail(
 
 export function getEpoch(): number {
   return Math.trunc(Date.now() / 1000)
+}
+
+export function getMediaPath(
+  isImage: boolean,
+  name: string,
+  type: string
+): string {
+  return join(
+    process.cwd(),
+    'medias',
+    isImage ? 'images' : 'videos',
+    name + '.' + type
+  )
 }

@@ -1,6 +1,11 @@
 import { FastifyRequest, FastifyReply } from 'fastify'
 import { User } from '@prisma/client'
-import { isUserEmailExists, isUserIdExists, prisma } from '@library/prisma'
+import {
+  isMediaExists,
+  isUserEmailExists,
+  isUserIdExists,
+  prisma,
+} from '@library/prisma'
 import HttpError from '@library/httpError'
 
 export default async (
@@ -16,6 +21,12 @@ export default async (
     return
   }
 
+  if (request.params.id !== request.userId) {
+    reply.send(new HttpError(401, 'Unauthorized user'))
+
+    return
+  }
+
   if (
     typeof request.body.email === 'string' &&
     (await isUserEmailExists(request.body.email))
@@ -25,8 +36,11 @@ export default async (
     return
   }
 
-  if (request.params.id !== request.userId) {
-    reply.send(new HttpError(401, 'Unauthorized user'))
+  if (
+    typeof request.body.mediaId === 'number' &&
+    !(await isMediaExists(request.body.mediaId, request.userId))
+  ) {
+    reply.send(new HttpError(400, 'Invalid mediaId'))
 
     return
   }
@@ -38,7 +52,7 @@ export default async (
         email: true,
         name: true,
         birth: true,
-        image: true,
+        media: true,
         createdAt: true,
       },
       data: request.body,

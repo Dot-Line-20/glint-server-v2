@@ -1,6 +1,6 @@
 import { FastifyRequest, FastifyReply } from 'fastify'
-import { Post, PostLike } from '@prisma/client'
-import { prisma } from '@library/prisma'
+import { Post } from '@prisma/client'
+import { isLikeExists, prisma } from '@library/prisma'
 import HttpError from '@library/httpError'
 
 export default async (
@@ -11,16 +11,7 @@ export default async (
   }>,
   reply: FastifyReply
 ) => {
-  const postLike: PostLike | null = await prisma.postLike.findUnique({
-    where: {
-      postId_userId: {
-        postId: request.params.postId,
-        userId: request.userId,
-      },
-    },
-  })
-
-  if (postLike !== null) {
+  if (!(await isLikeExists(request.params.postId, request.userId))) {
     reply.send(new HttpError(400, 'Already liked'))
 
     return

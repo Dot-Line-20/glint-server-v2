@@ -16,7 +16,11 @@ export default async (
         title: true,
         content: true,
         createdAt: true,
-        medias: true,
+        medias: {
+          select: {
+            media: true,
+          },
+        },
         _count: {
           select: {
             likes: true,

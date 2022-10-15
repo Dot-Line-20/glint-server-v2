@@ -74,3 +74,9 @@ distribution/
 !.yarn/sdks
 !.yarn/versions
 .pnp.*
+
+## medias ##
+medias/images/*
+medias/videos/*
+!medias/images/.gitkeep
+!medias/videos/.gitkeep

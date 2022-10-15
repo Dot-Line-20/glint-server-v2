@@ -18,7 +18,7 @@ export default async (
         email: true,
         name: true,
         birth: true,
-        image: true,
+        media: true,
         createdAt: true,
       },
       where: {

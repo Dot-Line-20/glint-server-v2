@@ -12,6 +12,10 @@ export default (
     error.statusCode = 500
   }
 
+  if (error.statusCode === 413) {
+    error.message = 'Too large media size'
+  }
+
   const isClientError: boolean = (error.statusCode as number) < 500
   const isStackAvailable: boolean =
     typeof error.stack === 'string' && process.env.NODE_ENV === 'development'

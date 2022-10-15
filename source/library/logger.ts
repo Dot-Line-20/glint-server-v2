@@ -1,5 +1,6 @@
 import { FastifyBaseLogger, LogLevel } from 'fastify'
 import { Socket } from 'net'
+import { inspect } from 'util'
 
 export default class Logger implements FastifyBaseLogger {
   level: LogLevel | 'silent' = 'silent'
@@ -10,6 +11,11 @@ export default class Logger implements FastifyBaseLogger {
       let levelColor = 32
 
       switch (level) {
+        case 'debug':
+        case 'trace': {
+          return
+        }
+
         case 'error':
         case 'fatal': {
           print = process.stderr.write.bind(process.stderr)
@@ -22,11 +28,11 @@ export default class Logger implements FastifyBaseLogger {
           levelColor++
         }
 
-        // Not to use break statement was intended
         /* eslint-disable */
         default: {
           print = process.stdout.write.bind(process.stdout)
         }
+        /* eslint-enable */
       }
 
       print(
@@ -65,6 +71,8 @@ export default class Logger implements FastifyBaseLogger {
                 Math.trunc(_arguments[0].responseTime) +
                 'ms)'
             )
+          } else {
+            print(inspect(_arguments[0], false, null))
           }
 
           break

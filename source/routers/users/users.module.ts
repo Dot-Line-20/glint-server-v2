@@ -26,6 +26,7 @@ export default new Module({
           password: userSchema.password.required(),
           name: userSchema.name.required(),
           birth: userSchema.birth.required(),
+          mediaId: userSchema.mediaId,
         },
       },
       handler: postUsersController,
@@ -49,7 +50,13 @@ export default new Module({
         params: {
           id: userSchema.id.required(),
         },
-        body: {},
+        body: {
+          email: userSchema.email,
+          password: userSchema.password,
+          name: userSchema.name,
+          birth: userSchema.birth,
+          mediaId: userSchema.mediaId,
+        },
       },
       handler: getUserController,
     },
