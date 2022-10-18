@@ -8,7 +8,7 @@ import { sendMail } from '@library/utility'
 
 export default async (
   request: FastifyRequest<{
-    Body: Pick<User, 'email' | 'password' | 'name' | 'birth' | 'mediaId'>
+    Body: Pick<User, 'email' | 'password' | 'name' | 'birth'>
   }>,
   reply: FastifyReply
 ) => {

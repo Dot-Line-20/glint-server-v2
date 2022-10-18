@@ -57,7 +57,7 @@ export default async (
     }
   }
 
-  const select: Prisma.ScheduleSelect = {
+  const selection: Prisma.ScheduleSelect = {
     id: true,
     userId: true,
     parentScheduleId: true,
@@ -70,22 +70,22 @@ export default async (
   }
 
   if (typeof request.query.depth === 'number') {
-    let currentSelect: Prisma.ScheduleSelect = select
+    let currentSelection: Prisma.ScheduleSelect = selection
 
     while (request.query.depth--) {
-      currentSelect.childSchedules = {
-        select: Object.assign({}, select, { childSchedules: false }),
+      currentSelection.childSchedules = {
+        select: Object.assign({}, selection, { childSchedules: false }),
         where: scheduleCondition,
       }
 
-      currentSelect = currentSelect.childSchedules
+      currentSelection = currentSelection.childSchedules
         .select as Prisma.ScheduleSelect
     }
   }
 
   reply.send(
     await prisma.schedule.findMany({
-      select: select,
+      select: selection,
       where: Object.assign(
         {
           userId: request.params.userId,
