@@ -1,12 +1,6 @@
 import { join } from 'path'
-import schema, {
-  ArraySchema,
-  JSONSchema,
-  ObjectSchema,
-} from 'fluent-json-schema'
 // @ts-expect-error :: No type definition
 import { SMTPChannel } from 'smtp-channel'
-import { RouteOptions } from './type'
 
 const smtp: SMTPChannel = new SMTPChannel({
   host: 'smtp.gmail.com',
@@ -65,39 +59,4 @@ export function getMediaPath(
     isImage ? 'images' : 'videos',
     name + '.' + type
   )
-}
-
-export function getArraySchema(jsonSchemas: JSONSchema[]): ArraySchema {
-  return schema.array().items(jsonSchemas).additionalItems(false).readOnly(true)
-}
-
-export function getObjectSchema(
-  object: Required<Required<RouteOptions>['schema']>['body']
-): ObjectSchema {
-  const schmeaNames: readonly string[] = Object.keys(object)
-
-  let _schema: ObjectSchema = schema.object().additionalProperties(false)
-
-  if (typeof object.$isRequired === 'boolean' && object.$isRequired) {
-    _schema = _schema.required()
-  }
-
-  for (let i = 0; i < schmeaNames.length; i++) {
-    if (schmeaNames[i] !== '$isRequired') {
-      _schema = _schema.prop(
-        schmeaNames[i],
-        Object.prototype.hasOwnProperty.call(
-          // @ts-expect-error :: fault of typescript
-          object[schmeaNames[i]],
-          'isFluentJSONSchema'
-        )
-          ? // @ts-expect-error :: fault of typescript
-            object[schmeaNames[i]]
-          : // @ts-expect-error :: fault of typescript
-            getObjectSchema(object[schmeaNames[i]])
-      )
-    }
-  }
-
-  return _schema.readOnly(true)
 }

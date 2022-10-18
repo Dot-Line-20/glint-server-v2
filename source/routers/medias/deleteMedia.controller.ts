@@ -37,7 +37,7 @@ export default async (
   }
 
   const mediaPath: string = getMediaPath(media.isImage, media.name, media.type)
-	const mediaBuffer: Buffer = await readFile(mediaPath)
+  const mediaBuffer: Buffer = await readFile(mediaPath)
 
   try {
     await unlink(mediaPath)

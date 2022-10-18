@@ -1,10 +1,6 @@
 import { FastifyRequest, FastifyReply } from 'fastify'
 import { User } from '@prisma/client'
-import {
-  isUserEmailExists,
-  isUserIdExists,
-  prisma,
-} from '@library/prisma'
+import { isUserEmailExists, isUserIdExists, prisma } from '@library/prisma'
 import HttpError from '@library/httpError'
 
 export default async (

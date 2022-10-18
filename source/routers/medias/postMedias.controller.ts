@@ -91,6 +91,12 @@ export default async (request: FastifyRequest, reply: FastifyReply) => {
     media.name = randomBytes(64).toString('hex')
   }
 
+  if (media.isImage && media.buffer.byteLength > 1048576 /* 1mb */) {
+    reply.send(new HttpError(413, ''))
+
+    return
+  }
+
   if (isUserMedia && !(await isUserIdExists(targetId))) {
     reply.send(new HttpError(400, 'Invalid user id'))
 
