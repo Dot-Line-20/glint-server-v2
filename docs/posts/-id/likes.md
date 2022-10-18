@@ -44,7 +44,7 @@
 	{
 		"status": "fail",
 		"data": {
-			"title": "Already liked"
+			"title": "Duplicated liked"
 		}
 	}
 	```
