@@ -2,8 +2,9 @@ import { FastifyInstance } from 'fastify'
 import { join } from 'path/posix'
 import { ModuleOptions, RouteOptions, SchemaKey } from '@library/type'
 import authHandler from '../handlers/auth'
-import schema, { ObjectSchema } from 'fluent-json-schema'
+import { ObjectSchema } from 'fluent-json-schema'
 import { FastifySchemaValidationError } from 'fastify/types/schema'
+import { getObjectSchema } from '@library/utility'
 
 // Module
 export default class {
@@ -16,37 +17,6 @@ export default class {
     this.options = options as Required<ModuleOptions>
 
     return
-  }
-
-  private getObjectSchema(
-    object: Required<Required<RouteOptions>['schema']>['body']
-  ): ObjectSchema {
-    const schmeaNames: readonly string[] = Object.keys(object)
-
-    let _schema: ObjectSchema = schema.object().additionalProperties(false)
-
-    if (typeof object.$isRequired === 'boolean' && object.$isRequired) {
-      _schema = _schema.required()
-    }
-
-    for (let i = 0; i < schmeaNames.length; i++) {
-      if (schmeaNames[i] !== '$isRequired') {
-        _schema = _schema.prop(
-          schmeaNames[i],
-          Object.prototype.hasOwnProperty.call(
-            // @ts-expect-error :: fault of typescript
-            object[schmeaNames[i]],
-            'isFluentJSONSchema'
-          )
-            ? // @ts-expect-error :: fault of typescript
-              object[schmeaNames[i]]
-            : // @ts-expect-error :: fault of typescript
-              this.getObjectSchema(object[schmeaNames[i]])
-        )
-      }
-    }
-
-    return _schema.readOnly(true)
   }
 
   private schemaErrorFormatter(
@@ -81,7 +51,7 @@ export default class {
         ) as SchemaKey[]
 
         for (let j = 0; j < schemaKeys.length; j++) {
-          _schema[schemaKeys[j]] = this.getObjectSchema(
+          _schema[schemaKeys[j]] = getObjectSchema(
             (
               this.options.routers[i].schema as Required<
                 Required<RouteOptions>['schema']

@@ -1,109 +1,175 @@
-import { FastifyRequest, FastifyReply } from 'fastify'
-import { prisma } from '@library/prisma'
 import { MultipartFile } from '@fastify/multipart'
 import HttpError from '@library/httpError'
-import { randomBytes } from 'crypto'
-import { writeFile } from 'fs/promises'
-import { join } from 'path/posix'
-import { TemporaryMedia } from '@library/type'
-import { Media } from '@prisma/client'
+import { prisma } from '@library/prisma'
 import { getMediaPath } from '@library/utility'
+import { Media } from '@prisma/client'
+import { randomBytes } from 'crypto'
+import { FastifyReply, FastifyRequest } from 'fastify'
+import { writeFile } from 'fs/promises'
+import { join } from 'path'
 
 const fileMagicNumber = {
-  gif: Buffer.from([71, 73, 70, 56]),
-  jpg: Buffer.from([255, 216, 255, 224]),
-  png: Buffer.from([137, 80, 78, 71]),
-  mp4: Buffer.from([102, 116, 121, 112, 105, 115, 111, 109]),
-  mov: Buffer.from([109, 111, 111, 118]),
+  gif: Buffer.from([0x47, 0x49, 0x46, 0x38]),
+  jpg: Buffer.from([0xff, 0xd8, 0xff, 0xe0]),
+  png: Buffer.from([0x89, 0x50, 0x4e, 0x47]),
+  mp4: Buffer.from([0x66, 0x74, 0x79, 0x70, 0x69, 0x73, 0x6f, 0x6d]),
+  mov: Buffer.from([0x66, 0x74, 0x79, 0x70]),
 } as const
 
 export default async (request: FastifyRequest, reply: FastifyReply) => {
-  const files: AsyncIterableIterator<MultipartFile> = request.files()
-  let currentFile: MultipartFile | undefined
-  const temporaryMedias: TemporaryMedia[] = []
+  const multipartFile: MultipartFile | undefined = await request.file()
 
-  while (typeof (currentFile = (await files.next()).value) === 'object') {
-    const temporaryMedia: TemporaryMedia = {
-      type: currentFile.filename.split('.').pop() as string,
-      isImage: true,
-      buffer: await currentFile.toBuffer(),
-    }
-
-    if (temporaryMedia.type === 'jpeg') {
-      temporaryMedia.type = 'jpg'
-    }
-
-    switch (temporaryMedia.type) {
-      case 'mp4':
-      case 'mov': {
-        temporaryMedia.isImage = false
-      }
-      /*eslint-disable */
-      case 'jpg':
-      case 'gif':
-      case 'png': {
-        if (
-          (temporaryMedia.buffer as Buffer)
-            .subarray(0, 12)
-            .includes(fileMagicNumber[temporaryMedia.type])
-        ) {
-          break
-        }
-      }
-      default: {
-        reply.send(new HttpError(422, 'Invalid file type'))
-
-        return
-      }
-      /*eslint-enable */
-    }
-
-    do {
-      temporaryMedia.name = randomBytes(64).toString('hex')
-    } while (
-      (await prisma.media.findFirst({
-        where: {
-          name: temporaryMedia.name,
-        },
-      })) !== null
-    )
-
-    temporaryMedias.push(temporaryMedia)
-  }
-
-  if (temporaryMedias.length === 0) {
-    reply.send(new HttpError(400, 'Empty media'))
+  if (typeof multipartFile !== 'object') {
+    reply.send(new HttpError(400, 'Lack of media'))
 
     return
   }
 
-  const result: object[] = []
+  let isUserMedia = false
+  let targetId: number
 
-  for (let i = 0; i < temporaryMedias.length; i++) {
-    await writeFile(
-      join(
-        getMediaPath(
-          temporaryMedias[i].isImage,
-          temporaryMedias[i].name as string,
-          temporaryMedias[i].type
-        )
-      ),
-      temporaryMedias[i].buffer as Buffer
-    )
+  switch (multipartFile.fieldname.slice(0, 7)) {
+    case 'userId:': {
+      isUserMedia = true
+    }
+    /* eslint-disable */
+    case 'postId:': {
+      const slicedFilename: string = multipartFile.fieldname.slice(7)
 
-    result.push(
-      await prisma.media.create({
-        data: {
-          name: temporaryMedias[i].name as string,
-          type: temporaryMedias[i].type,
-          isImage: temporaryMedias[i].isImage,
-          userId: request.userId,
-        },
-      })
-    )
+      if (/^[1-9][0-9]*$/.test(slicedFilename)) {
+        targetId = Number.parseInt(slicedFilename, 10)
+
+        break
+      }
+    }
+    default: {
+      reply.send(new HttpError(400, 'Invalid field name'))
+
+      return
+    }
+    /* eslint-enable */
   }
 
-  reply.send(result)
+  const media: {
+    buffer: Buffer
+  } & Omit<Media, 'id'> &
+    Partial<Pick<Media, 'id'>> = {
+    name: randomBytes(64).toString('hex'),
+    type: multipartFile.filename.split('.').pop() as string,
+    userId: request.userId,
+    isImage: true,
+    buffer: await multipartFile.toBuffer(),
+  }
+
+  switch (media.type) {
+    case 'mp4':
+    case 'mov': {
+      media.isImage = false
+    }
+    /*eslint-disable */
+    case 'jpg':
+    case 'gif':
+    case 'png': {
+      if (media.buffer.subarray(0, 12).includes(fileMagicNumber[media.type])) {
+        break
+      }
+    }
+    default: {
+      reply.send(new HttpError(422, 'Invalid file type'))
+
+      return
+    }
+    /*eslint-enable */
+  }
+
+  while (
+    (await prisma.media.findFirst({
+      where: {
+        name: media.name,
+      },
+    })) !== null
+  ) {
+    media.name = randomBytes(64).toString('hex')
+  }
+
+  media.id = (
+    isUserMedia
+      ? ((
+          await prisma.user.update({
+            select: {
+              media: {
+                select: {
+                  id: true,
+                },
+              },
+            },
+            data: {
+              media: {
+                create: Object.assign(
+                  {
+                    user: {
+                      connect: {
+                        id: request.userId,
+                      },
+                    },
+                  },
+                  media,
+                  {
+                    buffer: undefined,
+                  }
+                ),
+              },
+            },
+            where: {
+              id: targetId,
+            },
+          })
+        ).media as Pick<Media, 'id'>)
+      : (
+          await prisma.postMedia.create({
+            select: {
+              media: {
+                select: {
+                  id: true,
+                },
+              },
+            },
+            data: {
+              post: {
+                connect: {
+                  id: targetId,
+                },
+              },
+              media: {
+                create: Object.assign(
+                  {
+                    user: {
+                      connect: {
+                        id: request.userId,
+                      },
+                    },
+                  },
+                  media,
+                  {
+                    buffer: undefined,
+                  }
+                ),
+              },
+            },
+          })
+        ).media
+  ).id
+
+  await writeFile(
+    join(getMediaPath(media.isImage, media.name, media.type)),
+    media.buffer as Buffer
+  )
+
+  reply.send(
+    Object.assign(media, {
+      buffer: undefined,
+    })
+  )
 
   return
 }

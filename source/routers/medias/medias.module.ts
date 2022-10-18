@@ -5,6 +5,8 @@ import deleteMediaController from './deleteMedia.controller'
 import getMediaController from './getMedia.controller'
 import getMediasController from './getMedias.controller'
 import postMediasController from './postMedias.controller'
+import postSchema from '@schemas/post'
+import { getArraySchema, getObjectSchema } from '@library/utility'
 
 export default new Module({
   routers: [
@@ -12,6 +14,18 @@ export default new Module({
       method: 'POST',
       url: '',
       isAuthNeeded: true,
+      schema: {
+        body: {
+          medias: getArraySchema([
+            getObjectSchema({
+              userId: userSchema.id.required(),
+            }),
+            getObjectSchema({
+              postId: postSchema.id.required(),
+            }),
+          ]).required(),
+        },
+      },
       handler: postMediasController,
     },
     {

@@ -68,8 +68,3 @@ type Schema<T extends string> = Record<
 interface PageQuery extends Record<`page[${'index' | 'size'}]`, number> {
   'page[order]': 'desc' | 'asc'
 }
-
-interface TemporaryMedia extends Omit<Media, 'id' | 'name' | 'userId'> {
-  name?: string
-  buffer?: Buffer
-}

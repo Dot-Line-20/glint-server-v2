@@ -12,25 +12,12 @@ export default async (
   }>,
   reply: FastifyReply
 ) => {
-  const media:
-    | (Omit<Media, 'id'> & {
-        _count: {
-          posts: number
-          user_: number
-        }
-      })
-    | null = await prisma.media.findFirst({
+  const media: Omit<Media, 'id'> | null = await prisma.media.findFirst({
     select: {
       name: true,
       type: true,
       userId: true,
       isImage: true,
-      _count: {
-        select: {
-          posts: true,
-          user_: true,
-        },
-      },
     },
     where: {
       id: request.params.id,
@@ -44,8 +31,8 @@ export default async (
     return
   }
 
-  if (media._count.posts !== 0 || media._count.user_ !== 0) {
-    reply.send(new HttpError(400, 'Using media'))
+  if (media.userId !== request.userId) {
+    reply.send(new HttpError(401, 'Unauthorized user'))
 
     return
   }

@@ -34,7 +34,7 @@ export default class {
     this.application.register(fastifyMultipart, {
       throwFileSizeLimit: true,
       limits: {
-        files: 10,
+        files: 1,
         fileSize: 5242880, // 5mb
       },
     })

@@ -80,15 +80,11 @@ export async function isLikeExists(
   )
 }
 
-export async function isMediaExists(
-  id: number,
-  userId: number
-): Promise<boolean> {
+export async function isMediaExists(id: number): Promise<boolean> {
   return (
     (await prisma.media.count({
       where: {
         id: id,
-        userId: userId,
       },
     })) === 1
   )

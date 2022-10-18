@@ -12,14 +12,12 @@ export default class {
       this._payload = JSON.parse(
         Buffer.from(token.split('.')[1], 'base64url').toString('utf-8')
       )
+
+      this.deepFreeze(this._payload)
     } catch {
       this._payload = null
     }
     this._secretKey = secretKey
-
-    if (this._payload !== null) {
-      this.deepFreeze(this._payload)
-    }
 
     return
   }
