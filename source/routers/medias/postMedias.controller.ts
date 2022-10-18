@@ -1,6 +1,6 @@
 import { MultipartFile } from '@fastify/multipart'
 import HttpError from '@library/httpError'
-import { prisma } from '@library/prisma'
+import { prisma, isUserIdExists } from '@library/prisma'
 import { getMediaPath } from '@library/utility'
 import { Media } from '@prisma/client'
 import { randomBytes } from 'crypto'
@@ -92,6 +92,12 @@ export default async (request: FastifyRequest, reply: FastifyReply) => {
     media.name = randomBytes(64).toString('hex')
   }
 
+	if(isUserMedia && !await isUserIdExists(targetId)) {
+		reply.send(new HttpError(400, 'Invalid user id'))
+
+		return
+	}
+
   media.id = (
     isUserMedia
       ? ((
@@ -160,16 +166,27 @@ export default async (request: FastifyRequest, reply: FastifyReply) => {
         ).media
   ).id
 
-  await writeFile(
-    join(getMediaPath(media.isImage, media.name, media.type)),
-    media.buffer as Buffer
-  )
+	try {
+		await writeFile(
+			join(getMediaPath(media.isImage, media.name, media.type)),
+			media.buffer as Buffer
+		)
 
-  reply.send(
-    Object.assign(media, {
-      buffer: undefined,
-    })
-  )
+		reply.send(
+			Object.assign(media, {
+				buffer: undefined,
+			})
+		)
+	} catch(error: any) {
+		await prisma.media.delete({
+			where: {
+				id: media.id
+			}
+		})
+
+		reply.send(error)
+	}
+
 
   return
 }

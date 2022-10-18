@@ -1,8 +1,8 @@
 import { FastifyRequest, FastifyReply } from 'fastify'
-import { Media } from '@prisma/client'
+import { Media, PostMedia, User } from '@prisma/client'
 import { prisma } from '@library/prisma'
 import HttpError from '@library/httpError'
-import { unlink } from 'fs/promises'
+import { readFile, unlink, writeFile } from 'fs/promises'
 import { join } from 'path/posix'
 import { getMediaPath } from '@library/utility'
 
@@ -12,12 +12,17 @@ export default async (
   }>,
   reply: FastifyReply
 ) => {
-  const media: Omit<Media, 'id'> | null = await prisma.media.findFirst({
+  const media: {
+		posts: PostMedia[];
+		user_: User[];
+	} & Omit<Media, 'id'> | null = await prisma.media.findFirst({
     select: {
       name: true,
       type: true,
       userId: true,
       isImage: true,
+			posts: true,
+			user_: true
     },
     where: {
       id: request.params.id,
@@ -37,13 +42,29 @@ export default async (
     return
   }
 
-  await prisma.media.delete({
-    where: {
-      id: request.params.id,
-    },
-  })
+	const mediaPath: string = join(getMediaPath(media.isImage, media.name, media.type))
 
-  await unlink(join(getMediaPath(media.isImage, media.name, media.type)))
+	try {
+		await unlink(join(getMediaPath(media.isImage, media.name, media.type)))
+	} catch(error: any) {
+		reply.send(error)
+
+		return
+	}
+
+	try {
+		await prisma.media.delete({
+			where: {
+				id: request.params.id,
+			},
+		})
+	} catch(error: any) {
+		await writeFile(mediaPath, await readFile(mediaPath))
+
+		reply.send(error)
+
+		return
+	}
 
   reply.send(null)
 

@@ -17,7 +17,6 @@ import {
   ObjectSchema,
   StringSchema,
 } from 'fluent-json-schema'
-import { Media } from '@prisma/client'
 
 type RecursiveRecord<T extends string | number | symbol, S> = {
   [key in T]: S | RecursiveRecord<T, S>
