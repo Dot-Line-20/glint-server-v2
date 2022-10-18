@@ -12,17 +12,12 @@ export default async (
   }>,
   reply: FastifyReply
 ) => {
-  const media: {
-		posts: PostMedia[];
-		user_: User[];
-	} & Omit<Media, 'id'> | null = await prisma.media.findFirst({
+  const media: Omit<Media, 'id'> | null = await prisma.media.findFirst({
     select: {
       name: true,
       type: true,
       userId: true,
-      isImage: true,
-			posts: true,
-			user_: true
+      isImage: true
     },
     where: {
       id: request.params.id,
