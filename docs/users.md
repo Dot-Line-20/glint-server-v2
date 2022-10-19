@@ -31,8 +31,14 @@
 			"id": "<number, positive integer>",
 			"email": "<string, email format>",
 			"name": "<string, length 1 to 64>",
-			"image": "<string, not decided>",
 			"birth": "<string, ISO 8601 Date format>",
+			"media": {
+				"id": "<number, positive number>",
+				"name": "<string, hex encoded and length 128>",
+				"type": "<string, length 3>",
+				"userId": "<number, positive number>",
+				"isImage": "<boolean>"
+			}/* | null */,
 			"createdAt": "<string, ISO 8601 Date and time in UTC format>"
 		}
 	}
@@ -86,8 +92,14 @@
 			"id": "<number, positive integer>",
 			"email": "<string, email format>",
 			"name": "<string, length 1 to 64>",
-			"image": "<string, not decided>",
 			"birth": "<string, ISO 8601 Date format>",
+			"media": {
+				"id": "<number, positive number>",
+				"name": "<string, hex encoded and length 128>",
+				"type": "<string, length 3>",
+				"userId": "<number, positive number>",
+				"isImage": "<boolean>"
+			}/* | null */,
 			"createdAt": "<string, ISO 8601 Date and time in UTC format>"
 		}[]
 	}
@@ -127,8 +139,14 @@
 			"id": "<number, positive integer>",
 			"email": "<string, email format>",
 			"name": "<string, length 1 to 64>",
-			"image": "<string, not decided>",
 			"birth": "<string, ISO 8601 Date format>",
+			"media": {
+				"id": "<number, positive number>",
+				"name": "<string, hex encoded and length 128>",
+				"type": "<string, length 3>",
+				"userId": "<number, positive number>",
+				"isImage": "<boolean>"
+			}/* | null */,
 			"createdAt": "<string, ISO 8601 Date and time in UTC format>"
 		}
 	}
@@ -164,7 +182,6 @@
 |password|_string_|플레인 텍스트 형식의 문자열입니다|
 |name|_string_|플레인 텍스트 형식의 문자열입니다|
 |birth|_string_|ISO 8601 Date 형식의 문자열입니다|
-|image|_string_|아직 미정입니다|
 
 ### Response
 
@@ -178,8 +195,14 @@
 			"id": "<number, positive integer>",
 			"email": "<string, email format>",
 			"name": "<string, length 1 to 64>",
-			"image": "<string, not decided>",
 			"birth": "<string, ISO 8601 Date format>",
+			"media": {
+				"id": "<number, positive number>",
+				"name": "<string, hex encoded and length 128>",
+				"type": "<string, length 3>",
+				"userId": "<number, positive number>",
+				"isImage": "<boolean>"
+			}/* | null */,
 			"createdAt": "<string, ISO 8601 Date and time in UTC format>"
 		}
 	}

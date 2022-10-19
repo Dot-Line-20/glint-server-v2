@@ -96,8 +96,8 @@
 				"birth": "<string, ISO 8601 Date format>",
 				"createdAt": "<string, ISO 8601 Date and time in UTC format>"
 			}
-		}
-	}[]
+		}[]
+	}
 	```
 
 ---
