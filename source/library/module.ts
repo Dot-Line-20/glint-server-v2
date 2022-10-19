@@ -39,7 +39,7 @@ export default class {
 
     let _schema: ObjectSchema = schema.object().additionalProperties(false)
 
-    if (typeof object.$isRequired === 'boolean' && object.$isRequired) {
+    if (object.$isRequired === true) {
       _schema = _schema.required()
     }
 

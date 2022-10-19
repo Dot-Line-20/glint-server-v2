@@ -38,9 +38,13 @@
 			"content": "<string, length 1 to 65535>",
 			"createdAt": "<string, ISO 8601 Date and time in UTC format>",
 			"medias": {
-				"postId": "<number, positive integer>",
-				"id": "<string, hex encoded and length 128>",
-				"type": "<string, length 3 to 4>"
+				"media": {
+					"id": "<number, positive number>",
+					"name": "<string, hex encoded and length 128>",
+					"type": "<string, length 3>",
+					"userId": "<number, positive number>",
+					"isImage": "<boolean>"
+				}
 			}[],
 			"_count": {
 				"likes": "<number, positive number>"
@@ -88,15 +92,19 @@
 			"content": "<string, length 1 to 65535>",
 			"createdAt": "<string, ISO 8601 Date and time in UTC format>",
 			"medias": {
-				"postId": "<number, positive integer>",
-				"id": "<string, hex encoded and length 128>",
-				"type": "<string, length 3 to 4>"
+				"media": {
+					"id": "<number, positive number>",
+					"name": "<string, hex encoded and length 128>",
+					"type": "<string, length 3>",
+					"userId": "<number, positive number>",
+					"isImage": "<boolean>"
+				}
 			}[],
 			"_count": {
 				"likes": "<number, positive number>"
 			}
-		}
-	}[]
+		}[]
+	}
 	```
 
 ---
@@ -136,9 +144,13 @@
 			"content": "<string, length 1 to 65535>",
 			"createdAt": "<string, ISO 8601 Date and time in UTC format>",
 			"medias": {
-				"postId": "<number, positive integer>",
-				"id": "<string, hex encoded and length 128>",
-				"type": "<string, length 3 to 4>"
+				"media": {
+					"id": "<number, positive number>",
+					"name": "<string, hex encoded and length 128>",
+					"type": "<string, length 3>",
+					"userId": "<number, positive number>",
+					"isImage": "<boolean>"
+				}
 			}[],
 			"_count": {
 				"likes": "<number, positive number>"
@@ -191,9 +203,13 @@
 			"content": "<string, length 1 to 65535>",
 			"createdAt": "<string, ISO 8601 Date and time in UTC format>",
 			"medias": {
-				"postId": "<number, positive integer>",
-				"id": "<string, hex encoded and length 128>",
-				"type": "<string, length 3 to 4>"
+				"media": {
+					"id": "<number, positive number>",
+					"name": "<string, hex encoded and length 128>",
+					"type": "<string, length 3>",
+					"userId": "<number, positive number>",
+					"isImage": "<boolean>"
+				}
 			}[],
 			"_count": {
 				"likes": "<number, positive number>"
