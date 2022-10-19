@@ -182,34 +182,26 @@ export default async (request: FastifyRequest, reply: FastifyReply) => {
 
   media.id = (
     isUserMedia
-      ? ((
-          await prisma.user.update({
-            select: {
-              media: {
-                select: {
-                  id: true,
-                },
-              },
-            },
-            data: {
-              media: {
-                create: {
-                  name: media.name,
-                  type: media.type,
-                  isImage: media.isImage,
-                  user: {
-                    connect: {
-                      id: request.userId,
-                    },
-                  },
-                },
-              },
-            },
-            where: {
-              id: targetId,
-            },
-          })
-        ).media as Pick<Media, 'id'>)
+      ? (await prisma.media.create({
+				select: {
+					id: true,
+				},
+				data: {
+					name: media.name,
+					type: media.type,
+					isImage: media.isImage,
+					user: {
+						connect: {
+							id: request.userId,
+						},
+					},
+					user_: {
+						connect: {
+							id: targetId
+						}
+					}
+				}
+			}))
       : (
           await prisma.postMedia.create({
             select: {
