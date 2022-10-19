@@ -12,7 +12,7 @@ export default async (
   reply: FastifyReply
 ) => {
   if (!(await isLikeExists(request.params.postId, request.userId))) {
-    reply.send(new HttpError(400, 'Already liked'))
+    reply.send(new HttpError(400, 'Duplicated liked'))
 
     return
   }

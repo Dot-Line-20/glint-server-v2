@@ -8,7 +8,7 @@ export default async (
   }>,
   reply: FastifyReply
 ) => {
-  if (!(await isMediaExists(request.params.id, request.userId))) {
+  if (!(await isMediaExists(request.params.id))) {
     reply.callNotFound()
 
     return

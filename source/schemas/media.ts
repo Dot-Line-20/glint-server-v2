@@ -2,7 +2,7 @@ import { Schema } from '@library/type'
 import { Media } from '@prisma/client'
 import schema from 'fluent-json-schema'
 import commonSchema from '@schemas/common'
-import userSchema from './user'
+import userSchema from '@schemas/user'
 
 export default {
   id: commonSchema.positiveInteger,

@@ -34,8 +34,8 @@ export default class {
     this.application.register(fastifyMultipart, {
       throwFileSizeLimit: true,
       limits: {
-        files: 10,
-        fileSize: 5242880, // 5mb
+        files: 1,
+        fileSize: 52428800, // 50mb
       },
     })
     // Add more router at here

@@ -1,5 +1,4 @@
 import { join } from 'path'
-import schema, { ArraySchema, JSONSchema } from 'fluent-json-schema'
 // @ts-expect-error :: No type definition
 import { SMTPChannel } from 'smtp-channel'
 

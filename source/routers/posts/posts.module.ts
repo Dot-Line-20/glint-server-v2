@@ -8,7 +8,6 @@ import patchPostController from './patchPost.controller'
 import deletePostController from './deletePost.controller'
 import commentsModule from './comments/comments.module'
 import likesModule from './likes/likes.module'
-import mediasModule from './medias/medias.module'
 
 export default new Module({
   routers: [
@@ -71,6 +70,6 @@ export default new Module({
       handler: deletePostController,
     },
   ],
-  modules: [commentsModule, likesModule, mediasModule],
+  modules: [commentsModule, likesModule],
   prefix: 'posts',
 })

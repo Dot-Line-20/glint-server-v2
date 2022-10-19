@@ -1,17 +1,12 @@
 import { FastifyRequest, FastifyReply } from 'fastify'
 import { User } from '@prisma/client'
-import {
-  isMediaExists,
-  isUserEmailExists,
-  isUserIdExists,
-  prisma,
-} from '@library/prisma'
+import { isUserEmailExists, isUserIdExists, prisma } from '@library/prisma'
 import HttpError from '@library/httpError'
 
 export default async (
   request: FastifyRequest<{
     Params: Pick<User, 'id'>
-    Body: Partial<Omit<User, 'id' | 'verificationKey' | 'createdAt'>>
+    Body: Partial<Pick<User, 'email' | 'password' | 'name' | 'birth'>>
   }>,
   reply: FastifyReply
 ) => {
@@ -32,15 +27,6 @@ export default async (
     (await isUserEmailExists(request.body.email))
   ) {
     reply.send(new HttpError(400, 'Duplicated email'))
-
-    return
-  }
-
-  if (
-    typeof request.body.mediaId === 'number' &&
-    !(await isMediaExists(request.body.mediaId, request.userId))
-  ) {
-    reply.send(new HttpError(400, 'Invalid mediaId'))
 
     return
   }

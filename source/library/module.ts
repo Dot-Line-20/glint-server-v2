@@ -18,6 +18,20 @@ export default class {
     return
   }
 
+  private schemaErrorFormatter(
+    errors: readonly FastifySchemaValidationError[],
+    dataVariableName: string
+  ): Error {
+    return new Error(
+      dataVariableName +
+        ' ' +
+        (errors[0].instancePath.length !== 0
+          ? errors[0].instancePath.slice(1) + ' '
+          : '') +
+        errors[0].message
+    )
+  }
+
   private getObjectSchema(
     object: Required<Required<RouteOptions>['schema']>['body']
   ): ObjectSchema {
@@ -47,20 +61,6 @@ export default class {
     }
 
     return _schema.readOnly(true)
-  }
-
-  private schemaErrorFormatter(
-    errors: readonly FastifySchemaValidationError[],
-    dataVariableName: string
-  ): Error {
-    return new Error(
-      dataVariableName +
-        ' ' +
-        (errors[0].instancePath.length !== 0
-          ? errors[0].instancePath.slice(1) + ' '
-          : '') +
-        errors[0].message
-    )
   }
 
   public appendPrefix(prefix: string): void {

@@ -2,8 +2,7 @@ import { FastifyRequest, FastifyReply } from 'fastify'
 import { Media } from '@prisma/client'
 import { prisma } from '@library/prisma'
 import HttpError from '@library/httpError'
-import { unlink } from 'fs/promises'
-import { join } from 'path/posix'
+import { readFile, unlink, writeFile } from 'fs/promises'
 import { getMediaPath } from '@library/utility'
 
 export default async (
@@ -12,25 +11,12 @@ export default async (
   }>,
   reply: FastifyReply
 ) => {
-  const media:
-    | (Omit<Media, 'id'> & {
-        _count: {
-          posts: number
-          user_: number
-        }
-      })
-    | null = await prisma.media.findFirst({
+  const media: Omit<Media, 'id'> | null = await prisma.media.findFirst({
     select: {
       name: true,
       type: true,
       userId: true,
       isImage: true,
-      _count: {
-        select: {
-          posts: true,
-          user_: true,
-        },
-      },
     },
     where: {
       id: request.params.id,
@@ -44,19 +30,36 @@ export default async (
     return
   }
 
-  if (media._count.posts !== 0 || media._count.user_ !== 0) {
-    reply.send(new HttpError(400, 'Using media'))
+  if (media.userId !== request.userId) {
+    reply.send(new HttpError(401, 'Unauthorized user'))
 
     return
   }
 
-  await prisma.media.delete({
-    where: {
-      id: request.params.id,
-    },
-  })
+  const mediaPath: string = getMediaPath(media.isImage, media.name, media.type)
+  const mediaBuffer: Buffer = await readFile(mediaPath)
 
-  await unlink(join(getMediaPath(media.isImage, media.name, media.type)))
+  try {
+    await unlink(mediaPath)
+  } catch (error: any) {
+    reply.send(error)
+
+    return
+  }
+
+  try {
+    await prisma.media.delete({
+      where: {
+        id: request.params.id,
+      },
+    })
+  } catch (error: any) {
+    await writeFile(mediaPath, mediaBuffer)
+
+    reply.send(error)
+
+    return
+  }
 
   reply.send(null)
 
