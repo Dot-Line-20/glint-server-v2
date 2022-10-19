@@ -97,10 +97,18 @@ export default async (request: FastifyRequest, reply: FastifyReply) => {
     return
   }
 
-  if (isUserMedia && !(await isUserIdExists(targetId))) {
-    reply.send(new HttpError(400, 'Invalid user id'))
+  if (isUserMedia) {
+    if (!(await isUserIdExists(targetId))) {
+      reply.send(new HttpError(400, 'Invalid user id'))
 
-    return
+      return
+    }
+
+    if (targetId !== request.userId) {
+      reply.send(new HttpError(401, 'Unauthorized user'))
+
+      return
+    }
   }
 
   media.id = (
