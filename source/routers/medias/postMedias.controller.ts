@@ -1,8 +1,8 @@
 import { MultipartFile } from '@fastify/multipart'
 import HttpError from '@library/httpError'
-import { prisma, isUserIdExists } from '@library/prisma'
+import { prisma } from '@library/prisma'
 import { getMediaPath } from '@library/utility'
-import { Media } from '@prisma/client'
+import { Media, Post, User } from '@prisma/client'
 import { randomBytes } from 'crypto'
 import { FastifyReply, FastifyRequest } from 'fastify'
 import { writeFile } from 'fs/promises'
@@ -49,16 +49,15 @@ export default async (request: FastifyRequest, reply: FastifyReply) => {
     /* eslint-enable */
   }
 
-  const media: {
-    buffer: Buffer
-  } & Omit<Media, 'id'> &
-    Partial<Pick<Media, 'id'>> = {
+  const media: Omit<Media, 'id'> & Partial<Pick<Media, 'id'>> = {
+    id: undefined,
     name: randomBytes(64).toString('hex'),
     type: multipartFile.filename.split('.').pop() as string,
     userId: request.userId,
     isImage: true,
-    buffer: await multipartFile.toBuffer(),
   }
+
+  const mediaBuffer: Buffer = await multipartFile.toBuffer()
 
   switch (media.type) {
     case 'mp4':
@@ -66,10 +65,17 @@ export default async (request: FastifyRequest, reply: FastifyReply) => {
       media.isImage = false
     }
     /*eslint-disable */
+    case 'jpeg': {
+      media.type = 'jpg'
+    }
     case 'jpg':
     case 'gif':
     case 'png': {
-      if (media.buffer.subarray(0, 12).includes(fileMagicNumber[media.type])) {
+      if (
+        mediaBuffer
+          .subarray(0, 12)
+          .includes(fileMagicNumber[media.type as keyof typeof fileMagicNumber])
+      ) {
         break
       }
     }
@@ -91,21 +97,84 @@ export default async (request: FastifyRequest, reply: FastifyReply) => {
     media.name = randomBytes(64).toString('hex')
   }
 
-  if (media.isImage && media.buffer.byteLength > 1048576 /* 1mb */) {
+  if (media.isImage && mediaBuffer.byteLength > 1048576 /* 1mb */) {
     reply.send(new HttpError(413, ''))
 
     return
   }
 
   if (isUserMedia) {
-    if (!(await isUserIdExists(targetId))) {
+    if (targetId !== request.userId) {
+      reply.send(new HttpError(401, 'Unauthorized user'))
+
+      return
+    }
+
+    if (!media.isImage) {
+      reply.send(new HttpError(400, 'Invalid media type'))
+
+      return
+    }
+
+    const user: Pick<User, 'mediaId'> | null = await prisma.user.findUnique({
+      select: {
+        mediaId: true,
+      },
+      where: {
+        id: targetId,
+      },
+    })
+
+    if (user === null) {
       reply.send(new HttpError(400, 'Invalid user id'))
 
       return
     }
 
-    if (targetId !== request.userId) {
+    if (user.mediaId !== null) {
+      console.log(
+        await request.server.inject({
+          method: 'DELETE',
+          url: '/medias/' + user.mediaId,
+          headers: request.headers,
+        })
+      )
+    }
+  } else {
+    const post:
+      | ({
+          _count: {
+            medias: number
+          }
+        } & Pick<Post, 'userId'>)
+      | null = await prisma.post.findUnique({
+      select: {
+        userId: true,
+        _count: {
+          select: {
+            medias: true,
+          },
+        },
+      },
+      where: {
+        id: targetId,
+      },
+    })
+
+    if (post === null) {
+      reply.send(new HttpError(400, 'Invalid post id'))
+
+      return
+    }
+
+    if (post.userId !== request.userId) {
       reply.send(new HttpError(401, 'Unauthorized user'))
+
+      return
+    }
+
+    if (post._count.medias > 9) {
+      reply.send(new HttpError(400, 'Too many medias'))
 
       return
     }
@@ -124,19 +193,16 @@ export default async (request: FastifyRequest, reply: FastifyReply) => {
             },
             data: {
               media: {
-                create: Object.assign(
-                  {
-                    user: {
-                      connect: {
-                        id: request.userId,
-                      },
+                create: {
+                  name: media.name,
+                  type: media.type,
+                  isImage: media.isImage,
+                  user: {
+                    connect: {
+                      id: request.userId,
                     },
                   },
-                  media,
-                  {
-                    buffer: undefined,
-                  }
-                ),
+                },
               },
             },
             where: {
@@ -160,19 +226,16 @@ export default async (request: FastifyRequest, reply: FastifyReply) => {
                 },
               },
               media: {
-                create: Object.assign(
-                  {
-                    user: {
-                      connect: {
-                        id: request.userId,
-                      },
+                create: {
+                  name: media.name,
+                  type: media.type,
+                  isImage: media.isImage,
+                  user: {
+                    connect: {
+                      id: request.userId,
                     },
                   },
-                  media,
-                  {
-                    buffer: undefined,
-                  }
-                ),
+                },
               },
             },
           })
@@ -182,14 +245,10 @@ export default async (request: FastifyRequest, reply: FastifyReply) => {
   try {
     await writeFile(
       getMediaPath(media.isImage, media.name, media.type),
-      media.buffer as Buffer
+      mediaBuffer
     )
 
-    reply.send(
-      Object.assign(media, {
-        buffer: undefined,
-      })
-    )
+    reply.send(media)
   } catch (error: any) {
     await prisma.media.delete({
       where: {
