@@ -31,10 +31,7 @@ export default async (
   request.query['page[index]'] ||= 0
 
   const scheduleCondition: Prisma.ScheduleWhereInput = {
-    parentScheduleId:
-      typeof request.query.isParent === 'boolean' && request.query.isParent
-        ? null
-        : undefined,
+    parentScheduleId: request.query.isParent === true ? null : undefined,
   }
 
   const isToDefined: boolean = typeof request.query.to === 'object'

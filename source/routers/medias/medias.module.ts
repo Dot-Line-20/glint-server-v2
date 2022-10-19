@@ -1,4 +1,5 @@
 import Module from '@library/module'
+import schema from 'fluent-json-schema'
 import pageSchema from '@schemas/page'
 import userSchema from '@schemas/user'
 import deleteMediaController from './deleteMedia.controller'
@@ -12,6 +13,11 @@ export default new Module({
       method: 'POST',
       url: '',
       isAuthNeeded: true,
+      schema: {
+        querystring: {
+          isUserMedia: schema.boolean(),
+        },
+      },
       handler: postMediasController,
     },
     {

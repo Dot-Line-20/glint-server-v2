@@ -15,7 +15,16 @@ const fileMagicNumber = {
   mov: Buffer.from([0x66, 0x74, 0x79, 0x70]),
 } as const
 
-export default async (request: FastifyRequest, reply: FastifyReply) => {
+export default async (
+  request: FastifyRequest<{
+    Querystring: {
+      isUserMedia?: boolean
+    }
+  }>,
+  reply: FastifyReply
+) => {
+  request.query.isUserMedia ??= false
+
   const multipartFile: MultipartFile | undefined = await request.file()
 
   if (typeof multipartFile !== 'object') {
@@ -24,30 +33,13 @@ export default async (request: FastifyRequest, reply: FastifyReply) => {
     return
   }
 
-  let isUserMedia = false
-  let targetId: number
+  if (!/^[1-9][0-9]*$/.test(multipartFile.fieldname)) {
+    reply.send(new HttpError(400, 'Invalid field name'))
 
-  switch (multipartFile.fieldname.slice(0, 7)) {
-    case 'userId:': {
-      isUserMedia = true
-    }
-    /* eslint-disable */
-    case 'postId:': {
-      const slicedFilename: string = multipartFile.fieldname.slice(7)
-
-      if (/^[1-9][0-9]*$/.test(slicedFilename)) {
-        targetId = Number.parseInt(slicedFilename, 10)
-
-        break
-      }
-    }
-    default: {
-      reply.send(new HttpError(400, 'Invalid field name'))
-
-      return
-    }
-    /* eslint-enable */
+    return
   }
+
+  const targetId = Number.parseInt(multipartFile.fieldname, 10)
 
   const media: Omit<Media, 'id'> & Partial<Pick<Media, 'id'>> = {
     id: undefined,
@@ -80,7 +72,7 @@ export default async (request: FastifyRequest, reply: FastifyReply) => {
       }
     }
     default: {
-      reply.send(new HttpError(422, 'Invalid file type'))
+      reply.send(new HttpError(422, 'Invalid media type'))
 
       return
     }
@@ -103,7 +95,7 @@ export default async (request: FastifyRequest, reply: FastifyReply) => {
     return
   }
 
-  if (isUserMedia) {
+  if (request.query.isUserMedia) {
     if (targetId !== request.userId) {
       reply.send(new HttpError(401, 'Unauthorized user'))
 
@@ -111,7 +103,7 @@ export default async (request: FastifyRequest, reply: FastifyReply) => {
     }
 
     if (!media.isImage) {
-      reply.send(new HttpError(400, 'Invalid media type'))
+      reply.send(new HttpError(422, 'Invalid media type'))
 
       return
     }
@@ -126,7 +118,7 @@ export default async (request: FastifyRequest, reply: FastifyReply) => {
     })
 
     if (user === null) {
-      reply.send(new HttpError(400, 'Invalid user id'))
+      reply.send(new HttpError(400, 'Invalid userId'))
 
       return
     }
@@ -162,7 +154,7 @@ export default async (request: FastifyRequest, reply: FastifyReply) => {
     })
 
     if (post === null) {
-      reply.send(new HttpError(400, 'Invalid post id'))
+      reply.send(new HttpError(400, 'Invalid postId'))
 
       return
     }
@@ -181,7 +173,7 @@ export default async (request: FastifyRequest, reply: FastifyReply) => {
   }
 
   media.id = (
-    isUserMedia
+    request.query.isUserMedia
       ? ((
           await prisma.user.update({
             select: {
