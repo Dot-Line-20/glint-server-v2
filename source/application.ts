@@ -35,7 +35,7 @@ export default class {
       throwFileSizeLimit: true,
       limits: {
         files: 1,
-        fileSize: 5242880, // 5mb
+        fileSize: 52428800, // 50mb
       },
     })
     // Add more router at here
