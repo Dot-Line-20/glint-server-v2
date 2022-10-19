@@ -132,13 +132,11 @@ export default async (request: FastifyRequest, reply: FastifyReply) => {
     }
 
     if (user.mediaId !== null) {
-      console.log(
-        await request.server.inject({
-          method: 'DELETE',
-          url: '/medias/' + user.mediaId,
-          headers: request.headers,
-        })
-      )
+      await request.server.inject({
+        method: 'DELETE',
+        url: '/medias/' + user.mediaId,
+        headers: request.headers,
+      })
     }
   } else {
     const post:
@@ -182,26 +180,26 @@ export default async (request: FastifyRequest, reply: FastifyReply) => {
 
   media.id = (
     isUserMedia
-      ? (await prisma.media.create({
-				select: {
-					id: true,
-				},
-				data: {
-					name: media.name,
-					type: media.type,
-					isImage: media.isImage,
-					user: {
-						connect: {
-							id: request.userId,
-						},
-					},
-					user_: {
-						connect: {
-							id: targetId
-						}
-					}
-				}
-			}))
+      ? await prisma.media.create({
+          select: {
+            id: true,
+          },
+          data: {
+            name: media.name,
+            type: media.type,
+            isImage: media.isImage,
+            user: {
+              connect: {
+                id: request.userId,
+              },
+            },
+            user_: {
+              connect: {
+                id: targetId,
+              },
+            },
+          },
+        })
       : (
           await prisma.postMedia.create({
             select: {
