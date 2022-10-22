@@ -2,7 +2,7 @@
 
 ---
 
-## 미디어 생성
+## 미디어 단일 생성
 
 ```plain
 [POST] /medias
@@ -16,17 +16,11 @@
 |---|---|---|
 |Authorization|string|Bearer 타입의 json web token 형식 문자열입니다 (accessToken)|
 
-#### Query
-
-|key|type|description|
-|---|---|---|
-|isUserMedia|_boolean_|불리언입니다|
-
 #### Body
 
 |key|type|description|
 |---|---|---|
-|(number)|media|gif, jpg(jpeg), png, mp4, mov의 형식의 미디어입니다|
+||media|gif, jpg(jpeg), png, mp4, mov의 형식의 미디어이며, 단일 필드입니다|
 
 ### Response
 
@@ -41,7 +35,8 @@
 			"name": "<string, hex encoded and length 128>",
 			"type": "<string, length 3>",
 			"userId": "<number, positive number>",
-			"isImage": "<boolean>"
+			"isImage": "<boolean>",
+			"createdAt": "<string, ISO 8601 Date and time in UTC format>"
 		}
 	}
 	```
@@ -58,54 +53,12 @@
 		}
 	```
 
-- 필드 이름 형식 불일치
-	```json
-		{
-			"status": "fail",
-			"data": {
-				"title": "Invalid field name"
-			}
-		}
-	```
-
-- 존재하지 않는 대상 유저
+- 미디어 갯수 초과
 	```json
 	{
 		"status": "fail",
 		"data": {
-			"title": "Invalid userId"
-		}
-	}
-	```
-
-- 존재하지 않는 대상 게시글
-	```json
-	{
-		"status": "fail",
-		"data": {
-			"title": "Invalid postId"
-		}
-	}
-	```
-
-- 게시글 미디어 개수 초과
-	```json
-	{
-		"status": "fail",
-		"data": {
-			"title": "Too many medias"
-		}
-	}
-	```
-
-#### 401
-
-- 요청하는 유저와 대상 유저 불일치
-	```json
-	{
-		"status": "fail",
-		"data": {
-			"title": "Unauthorized user"
+			"title": "Too many media"
 		}
 	}
 	```
@@ -122,16 +75,103 @@
 	}
 	```
 
-#### 422
+#### 415
 
 - 미디어 형식 불일치
+	```json
+	{
+		"status": "fail",
+		"data": {
+			"title": "Invalid media type"
+		}
+	}
+	```
+
+---
+
+## 미디어 다중 생성
+
+```plain
+[POST] /medias/many
+```
+
+### Request
+
+#### Header
+
+|key|type|description|
+|---|---|---|
+|Authorization|string|Bearer 타입의 json web token 형식 문자열입니다 (accessToken)|
+
+#### Body
+
+|key|type|description|
+|---|---|---|
+||media|gif, jpg(jpeg), png, mp4, mov의 형식의 미디어이며, 다중 필드입니다|
+
+### Response
+
+#### 200
+
+- 성공
+	```json
+	{
+		"status": "success",
+		"data": {
+			"id": "<number, positive number>",
+			"name": "<string, hex encoded and length 128>",
+			"type": "<string, length 3>",
+			"userId": "<number, positive number>",
+			"isImage": "<boolean>",
+			"createdAt": "<string, ISO 8601 Date and time in UTC format>"
+		}[]
+	}
+	```
+
+#### 400
+
+- 미디어 개수 부족
 	```json
 		{
 			"status": "fail",
 			"data": {
-				"title": "Invalid media type"
+				"title": "Lack of media"
 			}
 		}
+	```
+
+- 미디어 갯수 초과
+	```json
+	{
+		"status": "fail",
+		"data": {
+			"title": "Too many media"
+		}
+	}
+	```
+
+#### 413
+
+- 미디어 크기 초과
+	```json
+	{
+		"status": "fail",
+		"data": {
+			"title": "Too large media size"
+		}
+	}
+	```
+
+#### 415
+
+- 미디어 형식 불일치
+	```json
+	{
+		"status": "fail",
+		"data": {
+			"title": "Invalid media type"
+		}
+	}
 	```
 
 ---
@@ -171,7 +211,8 @@
 			"name": "<string, hex encoded and length 128>",
 			"type": "<string, length 3>",
 			"userId": "<number, positive number>",
-			"isImage": "<boolean>"
+			"isImage": "<boolean>",
+			"createdAt": "<string, ISO 8601 Date and time in UTC format>"
 		}[]
 	}
 	```
@@ -211,14 +252,15 @@
 			"name": "<string, hex encoded and length 128>",
 			"type": "<string, length 3>",
 			"userId": "<number, positive number>",
-			"isImage": "<boolean>"
+			"isImage": "<boolean>",
+			"createdAt": "<string, ISO 8601 Date and time in UTC format>"
 		}
 	}
 	```
 
 ---
 
-## 미디어 삭제
+## 미디어 단일 삭제
 
 ```plain
 [DELETE] /medias/:id
@@ -252,7 +294,75 @@
 
 #### 401
 
-- 요청하는 유저와 작성자 불일치
+- 요청하는 유저와 업로더 불일치
+	```json
+	{
+		"status": "fail",
+		"data": {
+			"title": "Unauthorized user"
+		}
+	}
+	```
+
+---
+
+## 미디어 다중 삭제
+
+```plain
+[DELETE] /medias/many
+```
+
+### Request
+
+#### Header
+
+|key|type|description|
+|---|---|---|
+|Authorization|string|Bearer 타입의 json web token 형식 문자열입니다 (accessToken)|
+
+### Body
+
+|key|type|description|
+|---|---|---|
+|mediaIds|number[]|자연수로 이루어진 배열입니다|
+
+### Response
+
+#### 200
+
+- 성공
+	```json
+	{
+		"status": "success",
+		"data": null
+	}
+	```
+
+#### 400
+
+- 미디어 개수 부족
+	```json
+		{
+			"status": "fail",
+			"data": {
+				"title": "Lack of mediaIds"
+			}
+		}
+	```
+
+- 미디어 개수 불일치
+	```json
+		{
+			"status": "fail",
+			"data": {
+				"title": "Invalid mediaIds"
+			}
+		}
+	```
+
+#### 401
+
+- 요청하는 유저와 업로더 불일치
 	```json
 	{
 		"status": "fail",

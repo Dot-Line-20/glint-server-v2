@@ -37,14 +37,15 @@
 				"name": "<string, hex encoded and length 128>",
 				"type": "<string, length 3>",
 				"userId": "<number, positive number>",
-				"isImage": "<boolean>"
+				"isImage": "<boolean>",
+				"createdAt": "<string, ISO 8601 Date and time in UTC format>"
 			}/* | null */,
 			"createdAt": "<string, ISO 8601 Date and time in UTC format>"
 		}
 	}
 	```
 
-#### 400
+#### 409
 
 - 이미 존재하는 이메일
 	```json
@@ -98,7 +99,8 @@
 				"name": "<string, hex encoded and length 128>",
 				"type": "<string, length 3>",
 				"userId": "<number, positive number>",
-				"isImage": "<boolean>"
+				"isImage": "<boolean>",
+				"createdAt": "<string, ISO 8601 Date and time in UTC format>"
 			}/* | null */,
 			"createdAt": "<string, ISO 8601 Date and time in UTC format>"
 		}[]
@@ -145,7 +147,8 @@
 				"name": "<string, hex encoded and length 128>",
 				"type": "<string, length 3>",
 				"userId": "<number, positive number>",
-				"isImage": "<boolean>"
+				"isImage": "<boolean>",
+				"createdAt": "<string, ISO 8601 Date and time in UTC format>"
 			}/* | null */,
 			"createdAt": "<string, ISO 8601 Date and time in UTC format>"
 		}
@@ -182,6 +185,7 @@
 |password|_string_|플레인 텍스트 형식의 문자열입니다|
 |name|_string_|플레인 텍스트 형식의 문자열입니다|
 |birth|_string_|ISO 8601 Date 형식의 문자열입니다|
+|mediaId|_number_|자연수인 숫자입니다|
 
 ### Response
 
@@ -201,7 +205,8 @@
 				"name": "<string, hex encoded and length 128>",
 				"type": "<string, length 3>",
 				"userId": "<number, positive number>",
-				"isImage": "<boolean>"
+				"isImage": "<boolean>",
+				"createdAt": "<string, ISO 8601 Date and time in UTC format>"
 			}/* | null */,
 			"createdAt": "<string, ISO 8601 Date and time in UTC format>"
 		}
@@ -209,6 +214,30 @@
 	```
 
 #### 400
+
+- 존재하지 않는 미디어
+	```json
+	{
+		"status": "fail",
+		"data": {
+			"title": "Invalid mediaId"
+		}
+	}
+	```
+
+#### 401
+
+- 요청하는 유저와 해당 유저 불일치 또는 요청하는 유저와 미디어 업로더 불일치
+	```json
+	{
+		"status": "fail",
+		"data": {
+			"title": "Unauthorized user"
+		}
+	}
+	```
+
+#### 409
 
 - 이미 존재하는 이메일
 	```json
@@ -220,14 +249,24 @@
 	}
 	```
 
-#### 401
-
-- 요청하는 유저와 해당 유저 불일치
+- 이미 사용중인 미디어
 	```json
 	{
 		"status": "fail",
 		"data": {
-			"title": "Unauthorized user"
+			"title": "Duplicated media usuage"
+		}
+	}
+	```
+
+#### 415
+
+- 미디어 형식 불일치
+	```json
+	{
+		"status": "fail",
+		"data": {
+			"title": "Invalid media type"
 		}
 	}
 	```
