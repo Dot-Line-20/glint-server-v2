@@ -15,7 +15,7 @@ export default async (
   reply: FastifyReply
 ) => {
   if (request.body.mediaIds.length === 0) {
-    reply.send(new HttpError(400, 'Lack of medias'))
+    reply.send(new HttpError(400, 'Lack of mediaIds'))
 
     return
   }

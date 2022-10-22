@@ -16,6 +16,12 @@ export default async (
   }[] = []
 
   if (request.body.mediaIds.length !== 0) {
+		if (request.body.mediaIds.length > 10) {
+			reply.send(new HttpError(400, 'Too many mediaIds'))
+
+			return
+		}
+
     const medias: ({
       _count: {
         posts: number

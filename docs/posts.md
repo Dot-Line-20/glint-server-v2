@@ -22,6 +22,7 @@
 |---|---|---|
 |title|string|최소 1자 최대 64자의 길이 제한이 있는 플레인 텍스트 형식의 문자열입니다|
 |content|string|최소 1자 최대 65535자의 길이 제한이 있는 플레인 텍스트 형식의 문자열입니다|
+|mediaIds|number[]|자연수로 이루어진 배열입니다|
 
 ### Response
 
@@ -43,12 +44,59 @@
 					"name": "<string, hex encoded and length 128>",
 					"type": "<string, length 3>",
 					"userId": "<number, positive number>",
-					"isImage": "<boolean>"
+					"isImage": "<boolean>",
+					"createdAt": "<string, ISO 8601 Date and time in UTC format>"
 				}
 			}[],
 			"_count": {
 				"likes": "<number, positive number>"
 			}
+		}
+	}
+	```
+
+#### 400
+
+- 존재하지 않는 미디어
+	```json
+	{
+		"status": "fail",
+		"data": {
+			"title": "Invalid mediaIds"
+		}
+	}
+	```
+
+- 미디어 갯수 초과
+	```json
+	{
+		"status": "fail",
+		"data": {
+			"title": "Too many mediaIds"
+		}
+	}
+	```
+
+#### 401
+
+- 요청하는 유저와 미디어 업로더 불일치
+	```json
+	{
+		"status": "fail",
+		"data": {
+			"title": "Unauthorized user"
+		}
+	}
+	```
+
+#### 409
+
+- 이미 사용중인 미디어
+	```json
+	{
+		"status": "fail",
+		"data": {
+			"title": "Duplicated media usuage"
 		}
 	}
 	```
@@ -97,7 +145,8 @@
 					"name": "<string, hex encoded and length 128>",
 					"type": "<string, length 3>",
 					"userId": "<number, positive number>",
-					"isImage": "<boolean>"
+					"isImage": "<boolean>",
+					"createdAt": "<string, ISO 8601 Date and time in UTC format>"
 				}
 			}[],
 			"_count": {
@@ -149,7 +198,8 @@
 					"name": "<string, hex encoded and length 128>",
 					"type": "<string, length 3>",
 					"userId": "<number, positive number>",
-					"isImage": "<boolean>"
+					"isImage": "<boolean>",
+					"createdAt": "<string, ISO 8601 Date and time in UTC format>"
 				}
 			}[],
 			"_count": {
@@ -187,6 +237,7 @@
 |---|---|---|
 |title|string|최소 1자 최대 64자의 길이 제한이 있는 플레인 텍스트 형식의 문자열입니다|
 |content|string|최소 1자 최대 65535자의 길이 제한이 있는 플레인 텍스트 형식의 문자열입니다|
+|mediaIds|number[]|자연수로 이루어진 배열입니다|
 
 ### Response
 
@@ -208,7 +259,8 @@
 					"name": "<string, hex encoded and length 128>",
 					"type": "<string, length 3>",
 					"userId": "<number, positive number>",
-					"isImage": "<boolean>"
+					"isImage": "<boolean>",
+					"createdAt": "<string, ISO 8601 Date and time in UTC format>"
 				}
 			}[],
 			"_count": {
@@ -218,14 +270,48 @@
 	}
 	```
 
+#### 400
+
+- 존재하지 않는 미디어
+	```json
+	{
+		"status": "fail",
+		"data": {
+			"title": "Invalid mediaIds"
+		}
+	}
+	```
+
+- 미디어 갯수 초과
+	```json
+	{
+		"status": "fail",
+		"data": {
+			"title": "Too many mediaIds"
+		}
+	}
+	```
+
 #### 401
 
-- 요청하는 유저와 작성자 불일치
+- 요청하는 유저와 작성자 불일치 또는 요청하는 유저와 미디어 업로더 불일치
 	```json
 	{
 		"status": "fail",
 		"data": {
 			"title": "Unauthorized user"
+		}
+	}
+	```
+
+#### 409
+
+- 이미 사용중인 미디어
+	```json
+	{
+		"status": "fail",
+		"data": {
+			"title": "Duplicated media usuage"
 		}
 	}
 	```
