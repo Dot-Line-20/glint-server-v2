@@ -1,10 +1,10 @@
 import Module from '@library/module'
 import pageSchema from '@schemas/page'
 import userSchema from '@schemas/user'
-import deleteUserController from './deleteUser.controller';
+import deleteUserController from './deleteUser.controller'
 import getUserController from './getUser.controller'
 import getUsersController from './getUsers.controller'
-import patchUserController from './patchUser.controller';
+import patchUserController from './patchUser.controller'
 import postUsersController from './postUsers.controller'
 import schedulesModule from './schedules/schedules.module'
 

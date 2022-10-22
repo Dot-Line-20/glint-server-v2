@@ -39,7 +39,7 @@ export default async (
   if (medias.length !== request.body.mediaIds.length) {
     reply.send(new HttpError(400, 'Invalid mediaIds'))
 
-		return
+    return
   }
 
   const mediaBuffers: Buffer[] = []

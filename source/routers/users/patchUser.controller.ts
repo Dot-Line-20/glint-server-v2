@@ -43,7 +43,7 @@ export default async (
       | null = await prisma.media.findUnique({
       select: {
         userId: true,
-				isImage: true,
+        isImage: true,
         _count: {
           select: {
             posts: true,
@@ -61,11 +61,11 @@ export default async (
       return
     }
 
-		if (!media.isImage) {
-			reply.send(new HttpError(415, 'Invalid media type'))
+    if (!media.isImage) {
+      reply.send(new HttpError(415, 'Invalid media type'))
 
-			return
-		}
+      return
+    }
 
     if (media.userId !== request.userId) {
       reply.send(new HttpError(401, 'Unauthorized user'))

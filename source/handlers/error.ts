@@ -25,7 +25,7 @@ export default (
       //case 'FST_FILES_LIMIT':
       default: {
         error.message += 'many'
-				error.statusCode = 400
+        error.statusCode = 400
 
         break
       }

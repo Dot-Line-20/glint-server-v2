@@ -9,10 +9,10 @@ import { unlink, writeFile } from 'fs/promises'
 
 export default async (request: FastifyRequest, reply: FastifyReply) => {
   const files: AsyncIterableIterator<MultipartFile> = request.files({
-		limits: {
-			files: 10
-		}
-	})
+    limits: {
+      files: 10,
+    },
+  })
   let file: MultipartFile | undefined = (await files.next()).value
 
   if (typeof file === 'undefined') {
