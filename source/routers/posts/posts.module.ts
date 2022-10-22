@@ -8,6 +8,8 @@ import patchPostController from './patchPost.controller'
 import deletePostController from './deletePost.controller'
 import commentsModule from './comments/comments.module'
 import likesModule from './likes/likes.module'
+import { getArraySchema } from '@library/utility'
+import mediaSchema from '@schemas/media'
 
 export default new Module({
   routers: [
@@ -19,6 +21,10 @@ export default new Module({
         body: {
           title: postSchema.title.required(),
           content: postSchema.content.required(),
+          mediaIds: getArraySchema([mediaSchema.id], {
+            minimumLength: 0,
+            maximumLength: 10,
+          }).required(),
         },
       },
       handler: postPostsController,
@@ -54,6 +60,10 @@ export default new Module({
         body: {
           title: postSchema.title,
           content: postSchema.content,
+          mediaIds: getArraySchema([mediaSchema.id], {
+            minimumLength: 0,
+            maximumLength: 10,
+          }),
         },
       },
       handler: patchPostController,

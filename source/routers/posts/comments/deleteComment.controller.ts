@@ -11,15 +11,16 @@ export default async (
   }>,
   reply: FastifyReply
 ) => {
-  const comment: Pick<Post, 'userId'> | null = await prisma.comment.findFirst({
-    select: {
-      userId: true,
-    },
-    where: {
-      postId: request.params.postId,
-      id: request.params.id,
-    },
-  })
+  const comment: Pick<Comment, 'userId'> | null =
+    await prisma.comment.findFirst({
+      select: {
+        userId: true,
+      },
+      where: {
+        postId: request.params.postId,
+        id: request.params.id,
+      },
+    })
 
   if (comment === null) {
     reply.callNotFound()

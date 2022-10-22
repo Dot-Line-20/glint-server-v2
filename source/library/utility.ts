@@ -1,3 +1,5 @@
+import { Media } from '@prisma/client'
+import schema, { ArraySchema, JSONSchema } from 'fluent-json-schema'
 import { join } from 'path'
 // @ts-expect-error :: No type definition
 import { SMTPChannel } from 'smtp-channel'
@@ -6,6 +8,15 @@ const smtp: SMTPChannel = new SMTPChannel({
   host: 'smtp.gmail.com',
   post: 465,
 })
+
+const fileMagicNumber = {
+  gif: Buffer.from([0x47, 0x49, 0x46, 0x38]),
+  jpg: Buffer.from([0xff, 0xd8, 0xff, 0xe0]),
+  png: Buffer.from([0x89, 0x50, 0x4e, 0x47]),
+  mp4_: Buffer.from([0x66, 0x74, 0x79, 0x70, 0x69, 0x73, 0x6f, 0x6d]), // mp4 version 2
+  mp4: Buffer.from([0x66, 0x74, 0x79, 0x70, 0x6d, 0x70, 0x34, 0x32]),
+  mov: Buffer.from([0x66, 0x74, 0x79, 0x70]),
+} as const
 
 export async function sendMail(
   email: string,
@@ -49,14 +60,50 @@ export function getEpoch(): number {
 }
 
 export function getMediaPath(
-  isImage: boolean,
-  name: string,
-  type: string
+  media: Omit<Media, 'id' | 'userId' | 'createdAt'>
 ): string {
   return join(
     process.cwd(),
     'medias',
-    isImage ? 'images' : 'videos',
-    name + '.' + type
+    media.isImage ? 'images' : 'videos',
+    media.name + '.' + media.type
   )
+}
+
+export function isCorrectFileType(type: string, buffer: Buffer): boolean {
+  switch (type) {
+    /* eslint-disable */
+    case 'mp4': {
+      if (buffer.includes(fileMagicNumber.mp4_)) {
+        return true
+      }
+    }
+    default: {
+      return buffer.includes(
+        fileMagicNumber[type as keyof typeof fileMagicNumber]
+      )
+    }
+    /* eslint-enable */
+  }
+}
+
+export function getArraySchema(
+  jsonSchemas: JSONSchema[],
+  options: Partial<Record<`${'max' | 'min'}imumLength`, number>> = {}
+): ArraySchema {
+  let _schema: ArraySchema = schema.array()
+
+  for (let i = 0; i < jsonSchemas.length; i++) {
+    _schema = _schema.items(jsonSchemas[i])
+  }
+
+  if (typeof options.maximumLength === 'number') {
+    _schema = _schema.maxItems(options.maximumLength)
+  }
+
+  if (typeof options.minimumLength === 'number') {
+    _schema = _schema.minItems(options.minimumLength)
+  }
+
+  return _schema.readOnly(true)
 }

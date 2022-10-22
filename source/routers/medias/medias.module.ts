@@ -1,11 +1,14 @@
 import Module from '@library/module'
-import schema from 'fluent-json-schema'
+import { getArraySchema } from '@library/utility'
+import mediaSchema from '@schemas/media'
 import pageSchema from '@schemas/page'
 import userSchema from '@schemas/user'
 import deleteMediaController from './deleteMedia.controller'
+import deleteMediasManyController from './deleteMediasMany.controller'
 import getMediaController from './getMedia.controller'
 import getMediasController from './getMedias.controller'
 import postMediasController from './postMedias.controller'
+import postMediasManyController from './postMediasMany.controller'
 
 export default new Module({
   routers: [
@@ -13,11 +16,6 @@ export default new Module({
       method: 'POST',
       url: '',
       isAuthNeeded: true,
-      schema: {
-        querystring: {
-          isUserMedia: schema.boolean(),
-        },
-      },
       handler: postMediasController,
     },
     {
@@ -50,6 +48,23 @@ export default new Module({
         },
       },
       handler: deleteMediaController,
+    },
+    {
+      method: 'POST',
+      url: 'many',
+      isAuthNeeded: true,
+      handler: postMediasManyController,
+    },
+    {
+      method: 'DELETE',
+      url: 'many',
+      isAuthNeeded: true,
+      schema: {
+        body: {
+          mediaIds: getArraySchema([mediaSchema.id]),
+        },
+      },
+      handler: deleteMediasManyController,
     },
   ],
   prefix: 'medias',
