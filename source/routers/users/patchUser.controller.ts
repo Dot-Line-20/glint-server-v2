@@ -28,7 +28,7 @@ export default async (
     typeof request.body.email === 'string' &&
     (await isUserEmailExists(request.body.email))
   ) {
-    reply.send(new HttpError(400, 'Duplicated email'))
+    reply.send(new HttpError(409, 'Duplicated email'))
 
     return
   }
@@ -39,10 +39,11 @@ export default async (
           _count: {
             posts: number
           }
-        } & Pick<Media, 'userId'>)
+        } & Pick<Media, 'userId' | 'isImage'>)
       | null = await prisma.media.findUnique({
       select: {
         userId: true,
+        isImage: true,
         _count: {
           select: {
             posts: true,
@@ -60,6 +61,12 @@ export default async (
       return
     }
 
+    if (!media.isImage) {
+      reply.send(new HttpError(415, 'Invalid media type'))
+
+      return
+    }
+
     if (media.userId !== request.userId) {
       reply.send(new HttpError(401, 'Unauthorized user'))
 
@@ -67,7 +74,7 @@ export default async (
     }
 
     if (media._count.posts !== 0) {
-      reply.send(new HttpError(400, 'Duplicated media usage'))
+      reply.send(new HttpError(409, 'Duplicated media usage'))
 
       return
     }

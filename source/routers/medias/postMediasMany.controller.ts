@@ -8,7 +8,11 @@ import { FastifyReply, FastifyRequest } from 'fastify'
 import { unlink, writeFile } from 'fs/promises'
 
 export default async (request: FastifyRequest, reply: FastifyReply) => {
-  const files: AsyncIterableIterator<MultipartFile> = request.files()
+  const files: AsyncIterableIterator<MultipartFile> = request.files({
+    limits: {
+      files: 10,
+    },
+  })
   let file: MultipartFile | undefined = (await files.next()).value
 
   if (typeof file === 'undefined') {
@@ -48,7 +52,7 @@ export default async (request: FastifyRequest, reply: FastifyReply) => {
         }
       }
       default: {
-        reply.send(new HttpError(422, 'Invalid media type'))
+        reply.send(new HttpError(415, 'Invalid media type'))
 
         return
       }

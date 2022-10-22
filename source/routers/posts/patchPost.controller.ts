@@ -115,7 +115,7 @@ export default async (
         }
 
         if (medias[i]._count.posts !== 0 || medias[i]._count.user_ !== 0) {
-          reply.send(new HttpError(400, 'Duplicated media usage'))
+          reply.send(new HttpError(409, 'Duplicated media usage'))
 
           return
         }

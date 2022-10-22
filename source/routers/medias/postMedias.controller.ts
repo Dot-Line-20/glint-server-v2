@@ -8,23 +8,29 @@ import { FastifyReply, FastifyRequest } from 'fastify'
 import { unlink, writeFile } from 'fs/promises'
 
 export default async (request: FastifyRequest, reply: FastifyReply) => {
-  const resultFile: IteratorResult<MultipartFile, any> = await request
-    .files()
-    .next()
+  const files: AsyncIterableIterator<MultipartFile> = request.files({
+    limits: {
+      files: 1,
+    },
+  })
+  const file: MultipartFile = (await files.next()).value
 
-  if (resultFile.done !== true) {
-    reply.send(new HttpError(400, 'Too many medias'))
+  if (typeof file !== 'object') {
+    reply.send(new HttpError(400, 'Lack of file'))
 
     return
   }
 
-  const mediaBuffer: Buffer = await resultFile.value.toBuffer()
+  const mediaBuffer: Buffer = await file.toBuffer()
   const media: Omit<Media, 'id' | 'createdAt'> = {
     name: randomBytes(64).toString('hex'),
-    type: resultFile.value.filename.split('.').pop() as string,
+    type: file.filename.split('.').pop() as string,
     isImage: true,
     userId: request.userId,
   }
+
+  // Triggers the error of the files limit
+  ;(await files.next()).done
 
   if (media.type === 'jpeg') {
     media.type = 'jpg'
@@ -44,7 +50,7 @@ export default async (request: FastifyRequest, reply: FastifyReply) => {
       }
     }
     default: {
-      reply.send(new HttpError(422, 'Invalid media type'))
+      reply.send(new HttpError(415, 'Invalid media type'))
 
       return
     }
