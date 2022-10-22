@@ -12,12 +12,13 @@ export default async (
   reply: FastifyReply
 ) => {
   const user: {
-    medias: Omit<Media, 'id' | 'userId'>[]
-    media: Omit<Media, 'id' | 'userId'> | null
+    medias: Omit<Media, 'userId' | 'createdAt'>[]
+    media: Omit<Media, 'userId' | 'createdAt'> | null
   } | null = await prisma.user.findUnique({
     select: {
       medias: {
         select: {
+          id: true,
           name: true,
           type: true,
           isImage: true,
@@ -25,6 +26,7 @@ export default async (
       },
       media: {
         select: {
+          id: true,
           name: true,
           type: true,
           isImage: true,
@@ -52,19 +54,26 @@ export default async (
     user.medias.push(user.media)
   }
 
+  const mediaIds: number[] = []
+
   for (let i = 0; i < user.medias.length; i++) {
-    await unlink(
-      getMediaPath(
-        user.medias[i].isImage,
-        user.medias[i].name,
-        user.medias[i].type
-      )
-    )
+    await unlink(getMediaPath(user.medias[i]))
+
+    mediaIds.push(user.medias[i].id)
   }
 
-  await prisma.user.delete({
-    where: request.params,
-  })
+  await prisma.$transaction([
+    prisma.media.deleteMany({
+      where: {
+        id: {
+          in: mediaIds,
+        },
+      },
+    }),
+    prisma.user.delete({
+      where: request.params,
+    }),
+  ])
 
   reply.send(null)
 

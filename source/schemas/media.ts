@@ -10,4 +10,5 @@ export default {
   type: schema.string().enum(['gif', 'jpg', 'jpeg', 'png', 'mp4', 'mov']),
   userId: userSchema.id,
   isImage: schema.boolean(),
+  createdAt: commonSchema.dateTime,
 } as Schema<keyof Media>

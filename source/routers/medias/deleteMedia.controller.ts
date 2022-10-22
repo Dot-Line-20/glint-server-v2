@@ -11,18 +11,18 @@ export default async (
   }>,
   reply: FastifyReply
 ) => {
-  const media: Omit<Media, 'id'> | null = await prisma.media.findFirst({
-    select: {
-      name: true,
-      type: true,
-      userId: true,
-      isImage: true,
-    },
-    where: {
-      id: request.params.id,
-      userId: request.userId,
-    },
-  })
+  const media: Omit<Media, 'id' | 'createdAt'> | null =
+    await prisma.media.findFirst({
+      select: {
+        name: true,
+        type: true,
+        userId: true,
+        isImage: true,
+      },
+      where: {
+        id: request.params.id,
+      },
+    })
 
   if (media === null) {
     reply.callNotFound()
@@ -36,7 +36,7 @@ export default async (
     return
   }
 
-  const mediaPath: string = getMediaPath(media.isImage, media.name, media.type)
+  const mediaPath: string = getMediaPath(media)
   const mediaBuffer: Buffer = await readFile(mediaPath)
 
   try {
