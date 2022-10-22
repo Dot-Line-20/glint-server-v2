@@ -13,7 +13,7 @@ export default async (
   reply: FastifyReply
 ) => {
   if (await isUserEmailExists(request.body.email)) {
-    reply.send(new HttpError(400, 'Duplicated email'))
+    reply.send(new HttpError(409, 'Duplicated email'))
 
     return
   }

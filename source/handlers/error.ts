@@ -13,7 +13,25 @@ export default (
   }
 
   if (error.statusCode === 413) {
-    error.message = 'Too large media size'
+    error.message = 'Too '
+
+    switch (error.code) {
+      case 'FST_REQ_FILE_TOO_LARGE': {
+        error.message += 'large'
+
+        break
+      }
+
+      //case 'FST_FILES_LIMIT':
+      default: {
+        error.message += 'many'
+				error.statusCode = 400
+
+        break
+      }
+    }
+
+    error.message += ' media'
   }
 
   const isClientError: boolean = (error.statusCode as number) < 500
