@@ -16,7 +16,7 @@ export default async (request: FastifyRequest, reply: FastifyReply) => {
   const file: MultipartFile = (await files.next()).value
 
   if (typeof file !== 'object') {
-    reply.send(new HttpError(400, 'Lack of file'))
+    reply.send(new HttpError(400, 'Lack of media'))
 
     return
   }
