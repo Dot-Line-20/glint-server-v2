@@ -23,10 +23,10 @@
   },
   "dependencies": {
     "@fastify/multipart": "^7.2.0",
-    "@prisma/client": "^4.2.1",
+    "@prisma/client": "^4.5.0",
     "argon2": "^0.29.1",
-    "dotenv": "^16.0.1",
-    "fastify": "^4.5.3",
+    "dotenv": "^16.0.3",
+    "fastify": "^4.9.2",
     "fluent-json-schema": "^3.1.0",
     "ioredis": "^5.2.3",
     "mariadb": "^3.0.1",
@@ -34,16 +34,16 @@
     "tsconfig-paths": "^4.1.0"
   },
   "devDependencies": {
-    "@types/node": "^18.7.18",
-    "@typescript-eslint/eslint-plugin": "^5.35.1",
-    "@typescript-eslint/parser": "^5.35.1",
-    "eslint": "^8.22.0",
+    "@types/node": "^18.11.3",
+    "@typescript-eslint/eslint-plugin": "^5.40.1",
+    "@typescript-eslint/parser": "^5.40.1",
+    "eslint": "^8.26.0",
     "eslint-config-prettier": "^8.5.0",
     "husky": "^8.0.1",
     "lint-staged": "^13.0.3",
     "prettier": "^2.7.1",
-    "prisma": "^4.2.1",
+    "prisma": "^4.5.0",
     "ts-node-dev": "^2.0.0",
-    "typescript": "^4.8.2"
+    "typescript": "^4.8.4"
   }
 }
