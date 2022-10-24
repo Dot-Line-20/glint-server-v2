@@ -260,10 +260,10 @@ model UserReport {
 }
 
 model UserSocial {
-  userId Int     @map("user_id") @db.UnsignedInt
-  type   Int     @db.UnsignedInt
-  token  String  @unique(map: "UNIQUE INDEX (token)") @db.VarChar(128)
-  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade, map: "FOREIGN KEY (user_social.user_id, user.id)")
+  userId Int    @map("user_id") @db.UnsignedInt
+  type   Int    @db.UnsignedInt
+  token  String @unique(map: "UNIQUE INDEX (token)") @db.VarChar(128)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, map: "FOREIGN KEY (user_social.user_id, user.id)")
 
   @@id([userId, type])
   @@map("user_social")
