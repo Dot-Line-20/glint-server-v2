@@ -1,6 +1,5 @@
 import { FastifyRequest, FastifyReply } from 'fastify'
 import {
-  Category,
   Prisma,
   PrismaPromise,
   Schedule,
