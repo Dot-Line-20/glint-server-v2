@@ -8,7 +8,7 @@ export default async (
     Params: {
       postId: Post['id']
     } & Pick<Comment, 'id'>
-    Body: Pick<Comment, 'content'>
+    Body: Partial<Pick<Comment, 'content'>>
   }>,
   reply: FastifyReply
 ) => {

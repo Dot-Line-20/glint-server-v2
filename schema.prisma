@@ -65,7 +65,7 @@ model CommentReport {
 
 model Media {
   id        Int         @id @default(autoincrement()) @db.UnsignedInt
-  name      String      @db.VarChar(512)
+  name      String      @unique(map: "UNIQUE INDEX (name)") @db.VarChar(512)
   type      String      @db.VarChar(4)
   userId    Int         @map("user_id") @db.UnsignedInt
   isImage   Boolean     @map("is_image")
@@ -74,7 +74,6 @@ model Media {
   posts     PostMedia[] @relation("FOREIGN KEY (post_media.media_id, media.id)")
   user_     User[]      @relation("FOREIGN KEY (user.media_id, media.id)")
 
-  @@unique([name, type], map: "UNIQUE INDEX (name, type)")
   @@index([userId], map: "FOREIGN KEY (media.user_id, user.id)")
   @@map("media")
 }
@@ -170,18 +169,20 @@ model Report {
 }
 
 model Schedule {
-  id               Int                @id @default(autoincrement()) @db.UnsignedInt
-  userId           Int                @map("user_id") @db.UnsignedInt
-  parentScheduleId Int?               @map("parent_schedule_id") @db.UnsignedInt
-  name             String             @db.VarChar(64)
-  startingAt       DateTime           @map("starting_at") @db.DateTime(0)
-  endingAt         DateTime           @map("ending_at") @db.DateTime(0)
-  isSuccess        Boolean?           @default(false) @map("is_success")
-  createdAt        DateTime           @default(now()) @map("created_at") @db.DateTime(0)
-  parentSchedule   Schedule?          @relation("FOREIGN KEY (schedule.parent_schedule_id, schedule.id)", fields: [parentScheduleId], references: [id], onDelete: Cascade, map: "FOREIGN KEY (schedule.parent_schedule_id, schedule.id)")
-  user             User               @relation(fields: [userId], references: [id], onDelete: Cascade, map: "FOREIGN KEY (schedule.user_id, user.id)")
-  childSchedules   Schedule[]         @relation("FOREIGN KEY (schedule.parent_schedule_id, schedule.id)")
+  id               Int                  @id @default(autoincrement()) @db.UnsignedInt
+  userId           Int                  @map("user_id") @db.UnsignedInt
+  parentScheduleId Int?                 @map("parent_schedule_id") @db.UnsignedInt
+  type             Int                  @db.UnsignedTinyInt
+  name             String               @db.VarChar(64)
+  startingAt       DateTime             @map("starting_at") @db.DateTime(0)
+  endingAt         DateTime             @map("ending_at") @db.DateTime(0)
+  isSuccess        Boolean?             @default(false) @map("is_success")
+  createdAt        DateTime             @default(now()) @map("created_at") @db.DateTime(0)
+  parentSchedule   Schedule?            @relation("FOREIGN KEY (schedule.parent_schedule_id, schedule.id)", fields: [parentScheduleId], references: [id], onDelete: Cascade, map: "FOREIGN KEY (schedule.parent_schedule_id, schedule.id)")
+  user             User                 @relation(fields: [userId], references: [id], onDelete: Cascade, map: "FOREIGN KEY (schedule.user_id, user.id)")
+  childSchedules   Schedule[]           @relation("FOREIGN KEY (schedule.parent_schedule_id, schedule.id)")
   categories       ScheduleCategory[]
+  repetitions      ScheduleRepetition[] @relation("FOREIGN KEY (schedule_repetition.schedule_id, schedule.id)")
 
   @@index([parentScheduleId], map: "FOREIGN KEY (schedule.parent_schedule_id, schedule.id)")
   @@index([userId], map: "FOREIGN KEY (schedule.user_id, user.id)")
@@ -198,6 +199,15 @@ model ScheduleCategory {
   @@index([categoryId], map: "FOREIGN KEY (schedule_category.category_id, category.id)")
   @@index([scheduleId], map: "FOREIGN KEY (schedule_category.schedule_id, schedule.id)")
   @@map("schedule_category")
+}
+
+model ScheduleRepetition {
+  scheduleId  Int      @map("schedule_id") @db.UnsignedInt
+  repeatingAt DateTime @map("repeating_at") @db.DateTime(0)
+  schedule    Schedule @relation("FOREIGN KEY (schedule_repetition.schedule_id, schedule.id)", fields: [scheduleId], references: [id], onDelete: Cascade, map: "FOREIGN KEY (schedule_repetition.schedule_id, schedule.id)")
+
+  @@id([scheduleId, repeatingAt])
+  @@map("schedule_repetition")
 }
 
 model User {
@@ -250,10 +260,10 @@ model UserReport {
 }
 
 model UserSocial {
-  userId Int    @map("user_id") @db.UnsignedInt
-  type   Int    @db.UnsignedInt
-  token  String @unique(map: "UNIQUE INDEX (token)") @db.VarChar(128)
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, map: "FOREIGN KEY (user_social.user_id, user.id)")
+  userId Int     @map("user_id") @db.UnsignedInt
+  type   Boolean
+  token  String  @unique(map: "UNIQUE INDEX (token)") @db.VarChar(128)
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade, map: "FOREIGN KEY (user_social.user_id, user.id)")
 
   @@id([userId, type])
   @@map("user_social")

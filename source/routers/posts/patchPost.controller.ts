@@ -6,9 +6,11 @@ import HttpError from '@library/httpError'
 export default async (
   request: FastifyRequest<{
     Params: Pick<Post, 'id'>
-    Body: {
-      mediaIds: number[]
-    } & Pick<Post, 'title' | 'content'>
+    Body: Partial<
+      {
+        mediaIds: number[]
+      } & Pick<Post, 'title' | 'content'>
+    >
   }>,
   reply: FastifyReply
 ) => {
@@ -55,16 +57,13 @@ export default async (
       } & Omit<Post, 'isDeleted'>)
   >[] = []
 
-  if (
-    Array.isArray(request.body.mediaIds) &&
-    request.body.mediaIds.length !== 0
-  ) {
-		if (request.body.mediaIds.length > 10) {
-			reply.send(new HttpError(400, 'Too many mediaIds'))
+  if (Array.isArray(request.body.mediaIds)) {
+    if (request.body.mediaIds.length > 10) {
+      reply.send(new HttpError(400, 'Too many mediaIds'))
 
-			return
-		}
-		
+      return
+    }
+
     prismaPromises.push(
       prisma.postMedia.deleteMany({
         where: {

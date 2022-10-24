@@ -23,12 +23,14 @@ export default async (
     id: true,
     userId: true,
     parentScheduleId: true,
+    type: true,
     name: true,
     startingAt: true,
     endingAt: true,
     isSuccess: true,
     createdAt: true,
     categories: true,
+    repetitions: true,
   }
 
   if (typeof request.query.depth === 'number') {

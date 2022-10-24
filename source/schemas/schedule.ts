@@ -1,5 +1,5 @@
 import { Schema } from '@library/type'
-import schema from 'fluent-json-schema'
+import schema, { IntegerSchema } from 'fluent-json-schema'
 import { Schedule } from '@prisma/client'
 import userSchema from '@schemas/user'
 import commonSchema from '@schemas/common'
@@ -8,6 +8,7 @@ export default {
   id: commonSchema.positiveInteger,
   userId: userSchema.id,
   parentScheduleId: commonSchema.positiveInteger.raw({ nullable: true }),
+  type: (commonSchema.positiveInteger as IntegerSchema).maximum(4),
   name: schema.string().minLength(1).maxLength(64),
   startingAt: commonSchema.dateTime,
   endingAt: commonSchema.dateTime,

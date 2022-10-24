@@ -24,7 +24,9 @@ export default new Module({
           mediaIds: getArraySchema([mediaSchema.id], {
             minimumLength: 0,
             maximumLength: 10,
-          }).required(),
+          })
+            .uniqueItems(true)
+            .required(),
         },
       },
       handler: postPostsController,
@@ -63,7 +65,7 @@ export default new Module({
           mediaIds: getArraySchema([mediaSchema.id], {
             minimumLength: 0,
             maximumLength: 10,
-          }),
+          }).uniqueItems(true),
         },
       },
       handler: patchPostController,
