@@ -10,9 +10,9 @@ export default async (
     }
     Body: {
       repetitions: Date[]
-    } & Pick<
+    } & Omit<
       Schedule,
-      'parentScheduleId' | 'type' | 'name' | 'startingAt' | 'endingAt'
+			'id' | 'userId' | 'createdAt'
     >
   }>,
   reply: FastifyReply
