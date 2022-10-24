@@ -18,19 +18,14 @@ export default async (
     Body: Partial<
       {
         repetitions: Date[]
-      } & Pick<
-        Schedule,
-        | 'parentScheduleId'
-        | 'type'
-        | 'name'
-        | 'startingAt'
-        | 'endingAt'
-        | 'isSuccess'
-      >
+      } & Omit<Schedule, 'id' | 'userId' | 'createdAt'>
     >
   }>,
   reply: FastifyReply
 ) => {
+  const isParentScheduleIdDefined: boolean =
+    typeof request.body.parentScheduleId === 'number'
+
   const schedule:
     | ({
         parentSchedule: Pick<Schedule, 'startingAt' | 'endingAt'> | null
@@ -40,12 +35,14 @@ export default async (
       type: true,
       startingAt: true,
       endingAt: true,
-      parentSchedule: {
-        select: {
-          startingAt: true,
-          endingAt: true,
-        },
-      },
+      parentSchedule: isParentScheduleIdDefined
+        ? undefined
+        : {
+            select: {
+              startingAt: true,
+              endingAt: true,
+            },
+          },
     },
     where: {
       id: request.params.id,
@@ -65,7 +62,21 @@ export default async (
     return
   }
 
+  if (isParentScheduleIdDefined) {
+    schedule.parentSchedule = await prisma.schedule.findUnique({
+      where: {
+        id: request.body.parentScheduleId as number,
+      },
+    })
+  }
+
   const hasParentSchedule: boolean = schedule.parentSchedule !== null
+
+  if (isParentScheduleIdDefined && !hasParentSchedule) {
+    reply.send(new HttpError(400, 'Invalid parentScheduleId'))
+
+    return
+  }
 
   if (
     typeof request.body.endingAt === 'object' &&

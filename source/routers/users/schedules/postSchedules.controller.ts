@@ -10,10 +10,7 @@ export default async (
     }
     Body: {
       repetitions: Date[]
-    } & Pick<
-      Schedule,
-      'parentScheduleId' | 'type' | 'name' | 'startingAt' | 'endingAt'
-    >
+    } & Omit<Schedule, 'id' | 'userId' | 'createdAt'>
   }>,
   reply: FastifyReply
 ) => {
