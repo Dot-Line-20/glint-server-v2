@@ -28,5 +28,4 @@ process.env.PORT ||= '3000'
 
 process.env.TZ = 'UTC'
 
-//process.env.JWT_SECRET = randomBytes(64).toString('hex')
-process.env.JWT_SECRET = 'd'
+process.env.JWT_SECRET = randomBytes(64).toString('hex')
