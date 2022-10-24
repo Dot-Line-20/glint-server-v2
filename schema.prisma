@@ -261,7 +261,7 @@ model UserReport {
 
 model UserSocial {
   userId Int     @map("user_id") @db.UnsignedInt
-  type   Boolean
+  type   Int     @db.UnsignedInt
   token  String  @unique(map: "UNIQUE INDEX (token)") @db.VarChar(128)
   user   User    @relation(fields: [userId], references: [id], onDelete: Cascade, map: "FOREIGN KEY (user_social.user_id, user.id)")
 
