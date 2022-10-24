@@ -1,5 +1,13 @@
 import { FastifyRequest, FastifyReply } from 'fastify'
-import { Schedule, User } from '@prisma/client'
+import {
+  Category,
+  Prisma,
+  PrismaPromise,
+  Schedule,
+  ScheduleCategory,
+  ScheduleRepetition,
+  User,
+} from '@prisma/client'
 import { prisma } from '@library/prisma'
 import HttpError from '@library/httpError'
 
@@ -9,9 +17,16 @@ export default async (
       userId: User['id']
     } & Pick<Schedule, 'id'>
     Body: Partial<
-      Pick<
+      {
+        repetitions: Date[]
+      } & Pick<
         Schedule,
-        'parentScheduleId' | 'name' | 'startingAt' | 'endingAt' | 'isSuccess'
+        | 'parentScheduleId'
+        | 'type'
+        | 'name'
+        | 'startingAt'
+        | 'endingAt'
+        | 'isSuccess'
       >
     >
   }>,
@@ -20,9 +35,10 @@ export default async (
   const schedule:
     | ({
         parentSchedule: Pick<Schedule, 'startingAt' | 'endingAt'> | null
-      } & Pick<Schedule, 'startingAt' | 'endingAt'>)
+      } & Pick<Schedule, 'type' | 'startingAt' | 'endingAt'>)
     | null = await prisma.schedule.findFirst({
     select: {
+      type: true,
       startingAt: true,
       endingAt: true,
       parentSchedule: {
@@ -78,13 +94,141 @@ export default async (
     return
   }
 
-  reply.send(
-    await prisma.schedule.update({
-      data: request.body,
+  const prismaPromises: PrismaPromise<
+    | Schedule
+    | ({
+        categories: ScheduleCategory[]
+        repetitions: ScheduleRepetition[]
+      } & Schedule)
+    | Prisma.BatchPayload
+  >[] = []
+
+  const isRepetitionsDefined: boolean = Array.isArray(request.body.repetitions)
+
+  schedule.type = request.body.type || schedule.type
+
+  if (schedule.type === 0 && isRepetitionsDefined) {
+    reply.send(new HttpError(400, 'Invalid type'))
+
+    return
+  }
+
+  if (isRepetitionsDefined) {
+    prismaPromises.push(
+      prisma.scheduleRepetition.deleteMany({
+        where: {
+          scheduleId: request.params.id,
+        },
+      })
+    )
+
+    const repetitions: ScheduleRepetition[] = []
+    const repetitionTimes: Set<number> = new Set<number>()
+
+    for (
+      let i = 0;
+      i < (request.body as Required<typeof request.body>).repetitions.length;
+      i++
+    ) {
+      const repeatingAt: Date = new Date(1212, 11, 12, 12, 12, 12)
+
+      switch (schedule.type) {
+        case 1: {
+          repeatingAt.setHours(
+            new Date(
+              (request.body as Required<typeof request.body>).repetitions[i]
+            ).getHours()
+          )
+
+          break
+        }
+
+        case 2: {
+          repeatingAt.setDate(
+            ((new Date(
+              (request.body as Required<typeof request.body>).repetitions[i]
+            ).getDay() +
+              1) %
+              7) +
+              1
+          )
+
+          break
+        }
+
+        case 3: {
+          repeatingAt.setDate(
+            new Date(
+              (request.body as Required<typeof request.body>).repetitions[i]
+            ).getDate()
+          )
+
+          break
+        }
+
+        //case 4:
+        default: {
+          repeatingAt.setMonth(
+            new Date(
+              (request.body as Required<typeof request.body>).repetitions[i]
+            ).getMonth()
+          )
+
+          break
+        }
+      }
+
+      const repetitionTime: number = repeatingAt.getTime()
+
+      if (repetitionTimes.has(repetitionTime)) {
+        reply.send(new HttpError(409, 'Duplicated repetitions'))
+
+        return
+      }
+
+      repetitionTimes.add(repetitionTime)
+
+      repetitions.push({
+        scheduleId: request.params.id,
+        repeatingAt: repeatingAt,
+      })
+    }
+
+    prismaPromises.push(
+      prisma.scheduleRepetition.createMany({
+        data: repetitions,
+      })
+    )
+  }
+
+  prismaPromises.push(
+    prisma.schedule.update({
+      select: {
+        id: true,
+        userId: true,
+        parentScheduleId: true,
+        type: true,
+        name: true,
+        startingAt: true,
+        endingAt: true,
+        isSuccess: true,
+        createdAt: true,
+        categories: true,
+        repetitions: true,
+      },
+      data: Object.assign(request.body, {
+        repetitions: undefined,
+      }),
       where: {
         id: request.params.id,
       },
     })
+  )
+
+  reply.send(
+    prismaPromises.length === 1
+      ? await prismaPromises[0]
+      : (await prisma.$transaction(prismaPromises))[2]
   )
 
   return

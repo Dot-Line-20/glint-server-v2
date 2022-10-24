@@ -3,6 +3,7 @@ import schema from 'fluent-json-schema'
 import commonSchema from '@schemas/common'
 import pageSchema from '@schemas/page'
 import scheduleSchema from '@schemas/schedule'
+import scheduleRepetitionSchema from '@schemas/scheduleRepetition'
 import userSchema from '@schemas/user'
 import deleteScheduleController from './deleteSchedule.controller'
 import getScheduleController from './getSchedule.controller'
@@ -10,6 +11,7 @@ import getSchedulesController from './getSchedules.controller'
 import getSuccessRateController from './getSuccessRate.controller'
 import patchScheduleController from './patchSchedule.controller'
 import postSchedulesController from './postSchedules.controller'
+import { getArraySchema } from '@library/utility'
 
 export default new Module({
   routers: [
@@ -22,10 +24,14 @@ export default new Module({
           userId: userSchema.id.required(),
         },
         body: {
+          type: scheduleSchema.type.required(),
           parentScheduleId: scheduleSchema.parentScheduleId.required(),
           name: scheduleSchema.name.required(),
           startingAt: scheduleSchema.startingAt.required(),
           endingAt: scheduleSchema.endingAt.required(),
+          repetitions: getArraySchema([scheduleRepetitionSchema.repeatingAt])
+            .uniqueItems(true)
+            .required(),
         },
       },
       handler: postSchedulesController,
@@ -77,10 +83,14 @@ export default new Module({
         },
         body: {
           parentScheduleId: scheduleSchema.parentScheduleId,
+          type: scheduleSchema.type,
           name: scheduleSchema.name,
           startingAt: scheduleSchema.startingAt,
           endingAt: scheduleSchema.endingAt,
           isSuccess: scheduleSchema.isSuccess,
+          repetitions: getArraySchema([
+            scheduleRepetitionSchema.repeatingAt,
+          ]).uniqueItems(true),
         },
       },
       handler: patchScheduleController,

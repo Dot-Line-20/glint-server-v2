@@ -15,10 +15,7 @@ export default async (
     mediaId: Media['id']
   }[] = []
 
-  if (
-    Array.isArray(request.body.mediaIds) &&
-    request.body.mediaIds.length !== 0
-  ) {
+  if (request.body.mediaIds.length !== 0) {
     if (request.body.mediaIds.length > 10) {
       reply.send(new HttpError(400, 'Too many mediaIds'))
 

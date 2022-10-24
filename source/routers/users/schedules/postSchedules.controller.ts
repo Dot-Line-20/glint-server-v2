@@ -1,5 +1,5 @@
 import { FastifyRequest, FastifyReply } from 'fastify'
-import { Schedule, User } from '@prisma/client'
+import { Schedule, ScheduleRepetition, User } from '@prisma/client'
 import { isUserIdExists, prisma } from '@library/prisma'
 import HttpError from '@library/httpError'
 
@@ -8,9 +8,11 @@ export default async (
     Params: {
       userId: User['id']
     }
-    Body: Pick<
+    Body: {
+      repetitions: Date[]
+    } & Pick<
       Schedule,
-      'parentScheduleId' | 'name' | 'startingAt' | 'endingAt'
+      'parentScheduleId' | 'type' | 'name' | 'startingAt' | 'endingAt'
     >
   }>,
   reply: FastifyReply
@@ -72,12 +74,86 @@ export default async (
     return
   }
 
+  if (request.body.type === 0 && request.body.repetitions.length !== 0) {
+    reply.send(new HttpError(400, 'Invalid type'))
+
+    return
+  }
+
+  const repetitions: Pick<ScheduleRepetition, 'repeatingAt'>[] = []
+  const repetitionTimes: Set<number> = new Set<number>()
+
+  for (let i = 0; i < request.body.repetitions.length; i++) {
+    const repeatingAt: Date = new Date(1212, 11, 12, 12, 12, 12)
+
+    switch (request.body.type) {
+      case 1: {
+        repeatingAt.setHours(new Date(request.body.repetitions[i]).getHours())
+
+        break
+      }
+
+      case 2: {
+        repeatingAt.setDate(
+          ((new Date(request.body.repetitions[i]).getDay() + 1) % 7) + 1
+        )
+
+        break
+      }
+
+      case 3: {
+        repeatingAt.setDate(new Date(request.body.repetitions[i]).getDate())
+
+        break
+      }
+
+      //case 4:
+      default: {
+        repeatingAt.setMonth(new Date(request.body.repetitions[i]).getMonth())
+
+        break
+      }
+    }
+
+    const repetitionTime: number = repeatingAt.getTime()
+
+    if (repetitionTimes.has(repetitionTime)) {
+      reply.send(new HttpError(409, 'Duplicated repetitions'))
+
+      return
+    }
+
+    repetitionTimes.add(repetitionTime)
+
+    repetitions.push({
+      repeatingAt: repeatingAt,
+    })
+  }
+
   reply.send(
     await prisma.schedule.create({
+      select: {
+        id: true,
+        userId: true,
+        parentScheduleId: true,
+        type: true,
+        name: true,
+        startingAt: true,
+        endingAt: true,
+        isSuccess: true,
+        createdAt: true,
+        categories: true,
+        repetitions: true,
+      },
       data: Object.assign(request.body, {
         userId: request.params.userId,
         startingAt: new Date(request.body.startingAt),
         endingAt: new Date(request.body.endingAt),
+        repetitions: {
+          createMany: {
+            data: repetitions,
+          },
+        },
       }),
     })
   )
