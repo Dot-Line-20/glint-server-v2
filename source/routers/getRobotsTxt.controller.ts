@@ -1,9 +1,8 @@
 import { FastifyRequest, FastifyReply } from 'fastify'
 
 export default async (request: FastifyRequest, reply: FastifyReply) => {
-  reply.send({
-    message: 'glint',
-  })
+  reply.raw.write('User-agent: *\nDisallow: /')
+  reply.raw.end()
 
   return
 }
