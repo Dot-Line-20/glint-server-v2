@@ -39,6 +39,7 @@
 			"content": "<string, length 1 to 65535>",
 			"createdAt": "<string, ISO 8601 Date and time in UTC format>",
 			"medias": {
+				"index": "<number, positive number>",
 				"media": {
 					"id": "<number, positive number>",
 					"name": "<string, hex encoded and length 128>",
@@ -140,6 +141,7 @@
 			"content": "<string, length 1 to 65535>",
 			"createdAt": "<string, ISO 8601 Date and time in UTC format>",
 			"medias": {
+				"index": "<number, positive number>",
 				"media": {
 					"id": "<number, positive number>",
 					"name": "<string, hex encoded and length 128>",
@@ -193,6 +195,7 @@
 			"content": "<string, length 1 to 65535>",
 			"createdAt": "<string, ISO 8601 Date and time in UTC format>",
 			"medias": {
+				"index": "<number, positive number>",
 				"media": {
 					"id": "<number, positive number>",
 					"name": "<string, hex encoded and length 128>",
@@ -254,6 +257,7 @@
 			"content": "<string, length 1 to 65535>",
 			"createdAt": "<string, ISO 8601 Date and time in UTC format>",
 			"medias": {
+				"index": "<number, positive number>",
 				"media": {
 					"id": "<number, positive number>",
 					"name": "<string, hex encoded and length 128>",
