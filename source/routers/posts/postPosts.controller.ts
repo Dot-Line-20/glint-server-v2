@@ -78,6 +78,7 @@ export default async (
         createdAt: true,
         medias: {
           select: {
+						index: true,
             media: true,
           },
         },
