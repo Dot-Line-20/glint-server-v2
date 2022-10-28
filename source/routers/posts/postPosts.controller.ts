@@ -1,5 +1,5 @@
 import { FastifyRequest, FastifyReply } from 'fastify'
-import { Media, Post } from '@prisma/client'
+import { Media, Post, Prisma } from '@prisma/client'
 import { prisma } from '@library/prisma'
 import HttpError from '@library/httpError'
 
@@ -11,9 +11,7 @@ export default async (
   }>,
   reply: FastifyReply
 ) => {
-  const mediaConditions: {
-    mediaId: Media['id']
-  }[] = []
+  const mediaConditions: Prisma.PostMediaUncheckedCreateWithoutPostInput[] = []
 
   if (request.body.mediaIds.length !== 0) {
     if (request.body.mediaIds.length > 10) {
@@ -65,6 +63,7 @@ export default async (
 
       mediaConditions.push({
         mediaId: request.body.mediaIds[i],
+        index: i,
       })
     }
   }

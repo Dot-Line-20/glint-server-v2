@@ -124,6 +124,7 @@ model PostCategory {
 model PostMedia {
   postId  Int   @map("post_id") @db.UnsignedInt
   mediaId Int   @map("media_id") @db.UnsignedInt
+	index   Int   @db.UnsignedTinyInt
   media   Media @relation("FOREIGN KEY (post_media.media_id, media.id)", fields: [mediaId], references: [id], onDelete: Cascade, map: "FOREIGN KEY (post_media.media_id, media.id)")
   post    Post  @relation("FOREIGN KEY (post_media.post_id, post.id)", fields: [postId], references: [id], onDelete: Cascade, map: "FOREIGN KEY (post_media.post_id, post.id)")
 
