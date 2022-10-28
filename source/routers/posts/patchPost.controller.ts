@@ -72,10 +72,7 @@ export default async (
       })
     )
 
-    const postMediaConditions: {
-      postId: Post['id']
-      mediaId: Media['id']
-    }[] = []
+    const postMediaConditions: Prisma.PostMediaCreateManyInput[] = []
 
     const currentMediaIds: Set<number> = new Set<number>()
 
@@ -129,6 +126,7 @@ export default async (
       postMediaConditions.push({
         postId: request.params.id,
         mediaId: request.body.mediaIds[i],
+        index: i,
       })
     }
 
