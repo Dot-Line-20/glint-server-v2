@@ -10,12 +10,6 @@
 
 ### Request
 
-#### Parameter
-
-|key|type|description|
-|---|---|---|
-|id|number|자연수인 숫자입니다|
-
 #### Header
 
 |key|type|description|
@@ -58,12 +52,6 @@
 ```
 
 ### Request
-
-#### Parameter
-
-|key|type|description|
-|---|---|---|
-|id|number|자연수인 숫자입니다|
 
 #### Header
 

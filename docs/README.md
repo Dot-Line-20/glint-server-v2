@@ -5,6 +5,8 @@
 		- email ([GET](auth.md#이메일-인증))
 		- login ([POST](auth.md#로그인))
 		- token ([POST](auth.md#토큰-재생성))
+	- ***categories*** ([POST](categories.md#카테고리-생성), [GET](categories.md#모든-카테고리))
+		- :id ([GET](categories.md#카테고리))
 	- ***medias*** ([POST](medias.md#미디어-단일-생성), [GET](medias.md#모든-미디어))
 		- :id ([GET](medias.md#미디어), [DELETE](medias.md#미디어-단일-삭제))
 		- many ([POST](medias.md#미디어-다중-생성), [DELETE](medias.md#미디어-다중-삭제))
