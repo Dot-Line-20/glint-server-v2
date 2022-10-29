@@ -1,5 +1,6 @@
 import { FastifyRequest, FastifyReply } from 'fastify'
 import {
+  Category,
   Prisma,
   PrismaPromise,
   Schedule,
@@ -17,6 +18,7 @@ export default async (
     } & Pick<Schedule, 'id'>
     Body: Partial<
       {
+        categoryIds: Category['id'][]
         repetitions: Date[]
       } & Omit<Schedule, 'id' | 'userId' | 'createdAt'>
     >
@@ -124,14 +126,6 @@ export default async (
   }
 
   if (isRepetitionsDefined) {
-    prismaPromises.push(
-      prisma.scheduleRepetition.deleteMany({
-        where: {
-          scheduleId: request.params.id,
-        },
-      })
-    )
-
     const repetitions: ScheduleRepetition[] = []
     const repetitionTimes: Set<number> = new Set<number>()
 
@@ -205,10 +199,61 @@ export default async (
     }
 
     prismaPromises.push(
-      prisma.scheduleRepetition.createMany({
-        data: repetitions,
+      prisma.scheduleRepetition.deleteMany({
+        where: {
+          scheduleId: request.params.id,
+        },
       })
     )
+
+    if (repetitions.length !== 0) {
+      prismaPromises.push(
+        prisma.scheduleRepetition.createMany({
+          data: repetitions,
+        })
+      )
+    }
+  }
+
+  if (Array.isArray(request.body.categoryIds)) {
+    if (
+      (await prisma.category.count({
+        where: {
+          id: {
+            in: request.body.categoryIds,
+          },
+        },
+      })) !== request.body.categoryIds.length
+    ) {
+      reply.send(new HttpError(400, 'Invalid categoryIds'))
+
+      return
+    }
+
+    prismaPromises.push(
+      prisma.postCategory.deleteMany({
+        where: {
+          postId: request.params.id,
+        },
+      })
+    )
+
+    const postCategoryConditions: Prisma.PostCategoryCreateManyInput[] = []
+
+    for (let i = 0; i < request.body.categoryIds.length; i++) {
+      postCategoryConditions.push({
+        postId: request.params.id,
+        categoryId: request.body.categoryIds[i],
+      })
+    }
+
+    if (postCategoryConditions.length !== 0) {
+      prismaPromises.push(
+        prisma.postCategory.createMany({
+          data: postCategoryConditions,
+        })
+      )
+    }
   }
 
   prismaPromises.push(
@@ -238,7 +283,7 @@ export default async (
   reply.send(
     prismaPromises.length === 1
       ? await prismaPromises[0]
-      : (await prisma.$transaction(prismaPromises))[2]
+      : (await prisma.$transaction(prismaPromises))[prismaPromises.length - 1]
   )
 
   return

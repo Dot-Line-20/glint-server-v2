@@ -9,7 +9,7 @@ export default {
   id: commonSchema.positiveInteger,
   userId: userSchema.id,
   postId: postSchema.id,
-  content: commonSchema.text,
+  content: commonSchema.content,
   isDeleted: schema.boolean(),
   createdAt: commonSchema.dateTime,
 } as Schema<keyof Comment>

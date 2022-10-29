@@ -1,5 +1,6 @@
 import Module from '@library/module'
 import schema from 'fluent-json-schema'
+import categorySchema from '@schemas/category'
 import commonSchema from '@schemas/common'
 import pageSchema from '@schemas/page'
 import scheduleSchema from '@schemas/schedule'
@@ -29,6 +30,9 @@ export default new Module({
           name: scheduleSchema.name.required(),
           startingAt: scheduleSchema.startingAt.required(),
           endingAt: scheduleSchema.endingAt.required(),
+          categoryIds: getArraySchema([categorySchema.id])
+            .uniqueItems(true)
+            .required(),
           repetitions: getArraySchema([scheduleRepetitionSchema.repeatingAt])
             .uniqueItems(true)
             .required(),
@@ -88,6 +92,7 @@ export default new Module({
           startingAt: scheduleSchema.startingAt,
           endingAt: scheduleSchema.endingAt,
           isSuccess: scheduleSchema.isSuccess,
+          categoryIds: getArraySchema([categorySchema.id]).uniqueItems(true),
           repetitions: getArraySchema([
             scheduleRepetitionSchema.repeatingAt,
           ]).uniqueItems(true),

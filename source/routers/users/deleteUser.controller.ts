@@ -54,7 +54,7 @@ export default async (
     user.medias.push(user.media)
   }
 
-  const mediaIds: number[] = []
+  const mediaIds: Media['id'][] = []
 
   for (let i = 0; i < user.medias.length; i++) {
     await unlink(getMediaPath(user.medias[i]))

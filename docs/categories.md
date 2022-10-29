@@ -1,11 +1,11 @@
-# Likes
+# Category
 
 ---
 
-## 좋아요 생성
+## 카테고리 생성
 
 ```plain
-[POST] /posts/:postId/likes
+[POST] /categories
 ```
 
 ### Request
@@ -31,30 +31,30 @@
 	{
 		"status": "success",
 		"data": {
-			"postId": "<number, positive integer>",
-			"userId": "<number, positive integer>",
+			"id": "<number, positive integer>",
+			"name": "<string, length 1 to 64>",
 		}
 	}
 	```
 
 #### 409
 
-- 이미 좋아요한 게시글
+- 이미 존재하는 이름
 	```json
 	{
 		"status": "fail",
 		"data": {
-			"title": "Duplicated like"
+			"title": "Duplicated name"
 		}
 	}
 	```
 
 ---
 
-## 모든 좋아요
+## 모든 카테고리
 
 ```plain
-[GET] /posts/:postId/likes
+[GET] /categories
 ```
 
 ### Request
@@ -77,6 +77,10 @@
 |---|---|---|
 |page[size]|_number_|자연수이며 기본 50입니다|
 |page[index]|_number_|양의 정수이며 기본 0입니다|
+|page[order]|_'asc' \| 'desc'_|'asc' 또는 'desc'이며 기본 'desc'입니다|
+|page[index]|_number_|양의 정수이며 기본 0입니다|
+|name|_string_|최소 1자 최대 64자의 길이 제한이 있는 플레인 텍스트 형식의 문자열입니다|
+|partialName|_string_|최소 1자 최대 64자의 길이 제한이 있는 플레인 텍스트 형식의 문자열입니다|
 
 ### Response
 
@@ -87,25 +91,31 @@
 	{
 		"status": "success",
 		"data": {
-			"postId": "<number, positive integer>",
-			"user": {
-				"id": "<number, positive integer>",
-				"email": "<string, email format>",
-				"name": "<string, length 1 to 64>",
-				"image": "<string, not decided>",
-				"birth": "<string, ISO 8601 Date format>",
-				"createdAt": "<string, ISO 8601 Date and time in UTC format>"
-			}
+			"id": "<number, positive integer>",
+			"name": "<string, length 1 to 64>",
 		}[]
 	}
 	```
 
+#### 400
+
+- 이미 존재하는 이름 조건
+	```json
+	{
+		"status": "fail",
+		"data": {
+			"title": "Duplicated name condition"
+		}
+	}
+	```
+
+
 ---
 
-## 좋아요 삭제
+## 카테고리
 
 ```plain
-[DELETE] /posts/:postId/likes/:userId
+[GET] /categories/:id
 ```
 
 ### Request
@@ -130,18 +140,9 @@
 	```json
 	{
 		"status": "success",
-		"data": null
-	}
-	```
-
-#### 400
-
-- 좋아요 하지 않은 게시글
-	```json
-	{
-		"status": "fail",
 		"data": {
-			"title": "Not liked"
+			"id": "<number, positive integer>",
+			"name": "<string, length 1 to 64>",
 		}
 	}
 	```

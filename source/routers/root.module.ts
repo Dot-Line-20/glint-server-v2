@@ -1,5 +1,6 @@
 import Module from '@library/module'
 import authModule from './auth/auth.module'
+import categoriesModule from './categories/categories.module'
 import getRobotsTxtController from './getRobotsTxt.controller'
 import getRootController from './getRoot.controller'
 import mediasModule from './medias/medias.module'
@@ -19,6 +20,12 @@ export default new Module({
       handler: getRobotsTxtController,
     },
   ],
-  modules: [authModule, mediasModule, postsModule, usersModule],
+  modules: [
+    authModule,
+    categoriesModule,
+    mediasModule,
+    postsModule,
+    usersModule,
+  ],
   prefix: '',
 })

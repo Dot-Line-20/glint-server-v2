@@ -1,5 +1,6 @@
 import { prisma } from '@library/prisma'
 import { PageQuery } from '@library/type'
+import { Media, Post, PostLike, PostMedia } from '@prisma/client'
 import { FastifyRequest, FastifyReply } from 'fastify'
 
 export default async (
@@ -11,36 +12,62 @@ export default async (
   request.query['page[size]'] ||= 50
   request.query['page[index]'] ||= 0
 
-  reply.send(
-    await prisma.post.findMany({
-      select: {
-        id: true,
-        userId: true,
-        title: true,
-        content: true,
-        createdAt: true,
-        medias: {
-          select: {
-						index: true,
-            media: true,
-          },
+  const posts: ({
+    medias: ({
+      media: Media
+    } & Pick<PostMedia, 'index'>)[]
+    likes?: PostLike[]
+    _count: {
+      likes: number
+    }
+    isLiked?: boolean
+  } & Omit<Post, 'isDeleted'>)[] = await prisma.post.findMany({
+    select: {
+      id: true,
+      userId: true,
+      title: true,
+      content: true,
+      createdAt: true,
+      medias: {
+        select: {
+          index: true,
+          media: true,
         },
-        _count: {
-          select: {
-            likes: true,
-          },
+      },
+      categories: {
+        select: {
+          category: true,
         },
       },
-      where: {
-        isDeleted: false,
+      likes: {
+        where: {
+          userId: request.userId,
+        },
       },
-      skip: request.query['page[size]'] * request.query['page[index]'],
-      take: request.query['page[size]'],
-      orderBy: {
-        id: request.query['page[order]'] === 'asc' ? 'asc' : 'desc',
+      _count: {
+        select: {
+          likes: true,
+        },
       },
+    },
+    where: {
+      isDeleted: false,
+    },
+    skip: request.query['page[size]'] * request.query['page[index]'],
+    take: request.query['page[size]'],
+    orderBy: {
+      id: request.query['page[order]'] === 'asc' ? 'asc' : 'desc',
+    },
+  })
+
+  for (let i = 0; i < posts.length; i++) {
+    Object.assign(posts[i], {
+      likes: undefined,
+      isLiked: (posts[i].likes as PostLike[]).length === 1,
     })
-  )
+  }
+
+  reply.send(posts)
 
   return
 }

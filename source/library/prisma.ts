@@ -73,7 +73,10 @@ export async function isLikeExists(
   return (
     (await prisma.postLike.count({
       where: {
-        postId: postId,
+        post: {
+          id: postId,
+          isDeleted: false,
+        },
         userId: userId,
       },
     })) === 1
@@ -90,16 +93,12 @@ export async function isMediaExists(id: number): Promise<boolean> {
   )
 }
 
-//export async function isPostMediaExists(
-//  postId: number,
-//  mediaId: number
-//): Promise<boolean> {
-//  return (
-//    (await prisma.postMedia.count({
-//      where: {
-//        postId: postId,
-//        mediaId: mediaId,
-//      },
-//    })) === 1
-//  )
-//}
+export async function isCategoryExists(id: number): Promise<boolean> {
+  return (
+    (await prisma.category.count({
+      where: {
+        id: id,
+      },
+    })) === 1
+  )
+}

@@ -43,5 +43,5 @@ export default new Module({
     },
   ],
   modules: [],
-  prefix: ':postsId/likes',
+  prefix: ':postId/likes',
 })

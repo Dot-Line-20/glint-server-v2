@@ -17,7 +17,10 @@ export default async (
         userId: true,
       },
       where: {
-        postId: request.params.postId,
+        post: {
+          id: request.params.postId,
+          isDeleted: false,
+        },
         id: request.params.id,
       },
     })

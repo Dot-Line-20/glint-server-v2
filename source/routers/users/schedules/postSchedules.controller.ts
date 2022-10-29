@@ -1,5 +1,5 @@
 import { FastifyRequest, FastifyReply } from 'fastify'
-import { Schedule, ScheduleRepetition, User } from '@prisma/client'
+import { Category, Prisma, Schedule, User } from '@prisma/client'
 import { isUserIdExists, prisma } from '@library/prisma'
 import HttpError from '@library/httpError'
 
@@ -9,6 +9,7 @@ export default async (
       userId: User['id']
     }
     Body: {
+      categoryIds: Category['id'][]
       repetitions: Date[]
     } & Omit<Schedule, 'id' | 'userId' | 'createdAt'>
   }>,
@@ -77,54 +78,83 @@ export default async (
     return
   }
 
-  const repetitions: Pick<ScheduleRepetition, 'repeatingAt'>[] = []
-  const repetitionTimes: Set<number> = new Set<number>()
+  const categoryConditions: Prisma.PostCategoryUncheckedCreateWithoutPostInput[] =
+    []
 
-  for (let i = 0; i < request.body.repetitions.length; i++) {
-    const repeatingAt: Date = new Date(1212, 11, 12, 12, 12, 12)
-
-    switch (request.body.type) {
-      case 1: {
-        repeatingAt.setHours(new Date(request.body.repetitions[i]).getHours())
-
-        break
-      }
-
-      case 2: {
-        repeatingAt.setDate(
-          ((new Date(request.body.repetitions[i]).getDay() + 1) % 7) + 1
-        )
-
-        break
-      }
-
-      case 3: {
-        repeatingAt.setDate(new Date(request.body.repetitions[i]).getDate())
-
-        break
-      }
-
-      //case 4:
-      default: {
-        repeatingAt.setMonth(new Date(request.body.repetitions[i]).getMonth())
-
-        break
-      }
-    }
-
-    const repetitionTime: number = repeatingAt.getTime()
-
-    if (repetitionTimes.has(repetitionTime)) {
-      reply.send(new HttpError(409, 'Duplicated repetitions'))
+  if (request.body.categoryIds.length !== 0) {
+    if (
+      (await prisma.category.count({
+        where: {
+          id: {
+            in: request.body.categoryIds,
+          },
+        },
+      })) !== request.body.categoryIds.length
+    ) {
+      reply.send(new HttpError(400, 'Invalid categoryIds'))
 
       return
     }
 
-    repetitionTimes.add(repetitionTime)
+    for (let i = 0; i < request.body.categoryIds.length; i++) {
+      categoryConditions.push({
+        categoryId: request.body.categoryIds[i],
+      })
+    }
+  }
 
-    repetitions.push({
-      repeatingAt: repeatingAt,
-    })
+  const repetitions: Prisma.ScheduleRepetitionUncheckedCreateWithoutScheduleInput[] =
+    []
+
+  if (request.body.repetitions.length !== 0) {
+    const repetitionTimes: Set<number> = new Set<number>()
+
+    for (let i = 0; i < request.body.repetitions.length; i++) {
+      const repeatingAt: Date = new Date(1212, 11, 12, 12, 12, 12)
+
+      switch (request.body.type) {
+        case 1: {
+          repeatingAt.setHours(new Date(request.body.repetitions[i]).getHours())
+
+          break
+        }
+
+        case 2: {
+          repeatingAt.setDate(
+            ((new Date(request.body.repetitions[i]).getDay() + 1) % 7) + 1
+          )
+
+          break
+        }
+
+        case 3: {
+          repeatingAt.setDate(new Date(request.body.repetitions[i]).getDate())
+
+          break
+        }
+
+        //case 4:
+        default: {
+          repeatingAt.setMonth(new Date(request.body.repetitions[i]).getMonth())
+
+          break
+        }
+      }
+
+      const repetitionTime: number = repeatingAt.getTime()
+
+      if (repetitionTimes.has(repetitionTime)) {
+        reply.send(new HttpError(409, 'Duplicated repetitions'))
+
+        return
+      }
+
+      repetitionTimes.add(repetitionTime)
+
+      repetitions.push({
+        repeatingAt: repeatingAt,
+      })
+    }
   }
 
   reply.send(
@@ -142,16 +172,32 @@ export default async (
         categories: true,
         repetitions: true,
       },
-      data: Object.assign(request.body, {
-        userId: request.params.userId,
-        startingAt: new Date(request.body.startingAt),
-        endingAt: new Date(request.body.endingAt),
-        repetitions: {
-          createMany: {
-            data: repetitions,
-          },
+      data: Object.assign(
+        request.body,
+        {
+          userId: request.params.userId,
+          startingAt: new Date(request.body.startingAt),
+          endingAt: new Date(request.body.endingAt),
+          categoryIds: undefined,
+          repetitions: undefined,
         },
-      }),
+        repetitions.length !== 0
+          ? {
+              repetitions: {
+                createMany: {
+                  data: repetitions,
+                },
+              },
+            }
+          : undefined,
+        categoryConditions.length !== 0
+          ? {
+              categories: {
+                create: categoryConditions,
+              },
+            }
+          : undefined
+      ),
     })
   )
 

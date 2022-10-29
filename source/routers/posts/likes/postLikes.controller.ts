@@ -11,8 +11,8 @@ export default async (
   }>,
   reply: FastifyReply
 ) => {
-  if (!(await isLikeExists(request.params.postId, request.userId))) {
-    reply.send(new HttpError(409, 'Duplicated liked'))
+  if (await isLikeExists(request.params.postId, request.userId)) {
+    reply.send(new HttpError(409, 'Duplicated like'))
 
     return
   }

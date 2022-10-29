@@ -23,6 +23,7 @@
 |title|string|최소 1자 최대 64자의 길이 제한이 있는 플레인 텍스트 형식의 문자열입니다|
 |content|string|최소 1자 최대 65535자의 길이 제한이 있는 플레인 텍스트 형식의 문자열입니다|
 |mediaIds|number[]|자연수로 이루어진 배열입니다|
+|categoryIds|number[]|자연수로 이루어진 배열입니다|
 
 ### Response
 
@@ -49,9 +50,16 @@
 					"createdAt": "<string, ISO 8601 Date and time in UTC format>"
 				}
 			}[],
+			"categories": {
+				"category": {
+					"id": "<number, positive integer>",
+					"name": "<string, length 1 to 64>",
+				}
+			}[],
 			"_count": {
 				"likes": "<number, positive number>"
-			}
+			},
+			"isLiked": "<boolean>"
 		}
 	}
 	```
@@ -74,6 +82,16 @@
 		"status": "fail",
 		"data": {
 			"title": "Too many mediaIds"
+		}
+	}
+	```
+
+- 존재하지 않는 카테고리
+	```json
+	{
+		"status": "fail",
+		"data": {
+			"title": "Invalid categoryIds"
 		}
 	}
 	```
@@ -151,9 +169,16 @@
 					"createdAt": "<string, ISO 8601 Date and time in UTC format>"
 				}
 			}[],
+			"categories": {
+				"category": {
+					"id": "<number, positive integer>",
+					"name": "<string, length 1 to 64>",
+				}
+			}[],
 			"_count": {
 				"likes": "<number, positive number>"
-			}
+			},
+			"isLiked": "<boolean>"
 		}[]
 	}
 	```
@@ -205,9 +230,16 @@
 					"createdAt": "<string, ISO 8601 Date and time in UTC format>"
 				}
 			}[],
+			"categories": {
+				"category": {
+					"id": "<number, positive integer>",
+					"name": "<string, length 1 to 64>",
+				}
+			}[],
 			"_count": {
 				"likes": "<number, positive number>"
-			}
+			},
+			"isLiked": "<boolean>"
 		}
 	}
 	```
@@ -241,6 +273,7 @@
 |title|string|최소 1자 최대 64자의 길이 제한이 있는 플레인 텍스트 형식의 문자열입니다|
 |content|string|최소 1자 최대 65535자의 길이 제한이 있는 플레인 텍스트 형식의 문자열입니다|
 |mediaIds|number[]|자연수로 이루어진 배열입니다|
+|categoryIds|number[]|자연수로 이루어진 배열입니다|
 
 ### Response
 
@@ -267,9 +300,16 @@
 					"createdAt": "<string, ISO 8601 Date and time in UTC format>"
 				}
 			}[],
+			"categories": {
+				"category": {
+					"id": "<number, positive integer>",
+					"name": "<string, length 1 to 64>",
+				}
+			}[],
 			"_count": {
 				"likes": "<number, positive number>"
-			}
+			},
+			"isLiked": "<boolean>"
 		}
 	}
 	```
@@ -292,6 +332,16 @@
 		"status": "fail",
 		"data": {
 			"title": "Too many mediaIds"
+		}
+	}
+	```
+
+- 존재하지 않는 카테고리
+	```json
+	{
+		"status": "fail",
+		"data": {
+			"title": "Invalid categoryIds"
 		}
 	}
 	```
