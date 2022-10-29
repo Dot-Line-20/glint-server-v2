@@ -31,6 +31,7 @@
 |name|string|최소 1자 최대 64자의 길이 제한이 있는 플레인 텍스트 형식의 문자열입니다|
 |startingAt|string|ISO 8601 Date and time in UTC 형식의 문자열입니다|
 |endingAt|string|ISO 8601 Date and time in UTC 형식의 문자열입니다|
+|categoryIds|number[]|자연수로 이루어진 배열입니다|
 |repetitions|string[]|ISO 8601 Date and time in UTC 형식의 문자열로 이루어진 배열입니다|
 
 ### Response
@@ -59,6 +60,12 @@
 						"name": "<string, length 1 to 64>"
 				}
 			}[],
+			"categories": {
+				"category": {
+					"id": "<number, positive integer>",
+					"name": "<string, length 1 to 64>",
+				}
+			}[],
 			"repetitions": "<string[], ISO 8601 Date and time in UTC format>"
 		}
 	}
@@ -82,6 +89,16 @@
 		"status": "fail",
 		"data": {
 			"title": "Invalid type"
+		}
+	}
+	```
+
+- 존재하지 않는 카테고리
+	```json
+	{
+		"status": "fail",
+		"data": {
+			"title": "Invalid categoryIds"
 		}
 	}
 	```
@@ -170,6 +187,12 @@
 						"name": "<string, length 1 to 64>"
 				}
 			}[],
+			"categories": {
+				"category": {
+					"id": "<number, positive integer>",
+					"name": "<string, length 1 to 64>",
+				}
+			}[],
 			"childSchedules": {
 				/* Same as parent */
 			}[]/* | undefined */,
@@ -232,6 +255,12 @@
 						"name": "<string, length 1 to 64>"
 				}
 			}[],
+			"categories": {
+				"category": {
+					"id": "<number, positive integer>",
+					"name": "<string, length 1 to 64>",
+				}
+			}[],
 			"childSchedules": {
 				/* Same as parent */
 			}[]/* | undefined */,
@@ -273,6 +302,7 @@
 |startingAt|_string_|ISO 8601 Date and time in UTC 형식의 문자열입니다|
 |endingAt|_string_|ISO 8601 Date and time in UTC 형식의 문자열입니다|
 |isSuccess|_boolean_|불리언입니다|
+|categoryIds|number[]|자연수로 이루어진 배열입니다|
 |repetitions|_string[]_|ISO 8601 Date and time in UTC 형식의 문자열로 이루어진 배열입니다|
 
 ### Response
@@ -301,6 +331,12 @@
 						"name": "<string, length 1 to 64>"
 				}
 			}[],
+			"categories": {
+				"category": {
+					"id": "<number, positive integer>",
+					"name": "<string, length 1 to 64>",
+				}
+			}[],
 			"repetitions": "<string[], ISO 8601 Date and time in UTC format>"
 		}
 	}
@@ -324,6 +360,16 @@
 		"status": "fail",
 		"data": {
 			"title": "Invalid type"
+		}
+	}
+	```
+
+- 존재하지 않는 카테고리
+	```json
+	{
+		"status": "fail",
+		"data": {
+			"title": "Invalid categoryIds"
 		}
 	}
 	```
