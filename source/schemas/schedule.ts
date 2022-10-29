@@ -9,7 +9,7 @@ export default {
   userId: userSchema.id,
   parentScheduleId: commonSchema.positiveInteger.raw({ nullable: true }),
   type: (commonSchema.positiveInteger as IntegerSchema).maximum(4),
-  name: schema.string().minLength(1).maxLength(64),
+  name: commonSchema.name,
   startingAt: commonSchema.dateTime,
   endingAt: commonSchema.dateTime,
   isSuccess: schema.boolean(),

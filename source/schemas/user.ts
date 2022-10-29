@@ -7,7 +7,7 @@ export default {
   id: commonSchema.positiveInteger,
   email: schema.string().format('email'),
   password: schema.string(),
-  name: schema.string().minLength(1).maxLength(64),
+  name: commonSchema.name,
   birth: commonSchema.date,
   mediaId: commonSchema.positiveInteger,
   verificationKey: commonSchema.sha512,
