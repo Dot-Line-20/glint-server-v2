@@ -38,6 +38,11 @@ export default async (
           media: true,
         },
       },
+      categories: {
+        select: {
+          category: true,
+        },
+      },
       likes: {
         where: {
           userId: request.userId,
