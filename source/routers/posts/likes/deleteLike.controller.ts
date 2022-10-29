@@ -12,7 +12,7 @@ export default async (
   }>,
   reply: FastifyReply
 ) => {
-  if (await isLikeExists(request.params.postId, request.params.userId)) {
+  if (!(await isLikeExists(request.params.postId, request.params.userId))) {
     reply.send(new HttpError(400, 'Not liked'))
 
     return
