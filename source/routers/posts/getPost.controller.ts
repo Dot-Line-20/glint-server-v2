@@ -1,5 +1,5 @@
 import { isPostExists, prisma } from '@library/prisma'
-import { Post } from '@prisma/client'
+import { Media, Post, PostLike, PostMedia } from '@prisma/client'
 import { FastifyRequest, FastifyReply } from 'fastify'
 
 export default async (
@@ -14,31 +14,53 @@ export default async (
     return
   }
 
-  reply.send(
-    await prisma.post.findUnique({
-      select: {
-        id: true,
-        userId: true,
-        title: true,
-        content: true,
-        createdAt: true,
-        medias: {
-          select: {
-						index: true,
-            media: true,
-          },
-        },
+  const post:
+    | ({
+        medias: ({
+          media: Media
+        } & Pick<PostMedia, 'index'>)[]
+        likes?: PostLike[]
         _count: {
-          select: {
-            likes: true,
-          },
+          likes: number
+        }
+        isLiked?: boolean
+      } & Omit<Post, 'isDeleted'>)
+    | null = await prisma.post.findUnique({
+    select: {
+      id: true,
+      userId: true,
+      title: true,
+      content: true,
+      createdAt: true,
+      medias: {
+        select: {
+          index: true,
+          media: true,
         },
       },
-      where: {
-        id: request.params.id,
+      likes: {
+        where: {
+          userId: request.userId,
+        },
       },
-    })
-  )
+      _count: {
+        select: {
+          likes: true,
+        },
+      },
+    },
+    where: {
+      id: request.params.id,
+    },
+  })
+
+  Object.assign(post as NonNullable<typeof post>, {
+    likes: undefined,
+    isLiked:
+      ((post as NonNullable<typeof post>).likes as PostLike[]).length === 1,
+  })
+
+  reply.send(post)
 
   return
 }

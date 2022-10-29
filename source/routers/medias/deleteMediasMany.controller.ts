@@ -9,7 +9,7 @@ export default async (
   request: FastifyRequest<{
     Params: Pick<Media, 'id'>
     Body: {
-      mediaIds: number[]
+      mediaIds: Media['id'][]
     }
   }>,
   reply: FastifyReply

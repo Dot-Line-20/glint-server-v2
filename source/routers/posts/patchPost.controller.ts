@@ -1,5 +1,13 @@
 import { FastifyRequest, FastifyReply } from 'fastify'
-import { Media, Post, PostMedia, Prisma, PrismaPromise } from '@prisma/client'
+import {
+  Category,
+  Media,
+  Post,
+  PostLike,
+  PostMedia,
+  Prisma,
+  PrismaPromise,
+} from '@prisma/client'
 import { prisma } from '@library/prisma'
 import HttpError from '@library/httpError'
 
@@ -8,7 +16,8 @@ export default async (
     Params: Pick<Post, 'id'>
     Body: Partial<
       {
-        mediaIds: number[]
+        mediaIds: Media['id'][]
+        categoryIds: Category['id'][]
       } & Pick<Post, 'title' | 'content'>
     >
   }>,
@@ -17,6 +26,7 @@ export default async (
   const post:
     | ({
         medias: Pick<PostMedia, 'mediaId'>[]
+        likes: PostLike[]
       } & Pick<Post, 'userId'>)
     | null = await prisma.post.findUnique({
     select: {
@@ -24,6 +34,11 @@ export default async (
       medias: {
         select: {
           mediaId: true,
+        },
+      },
+      likes: {
+        where: {
+          userId: request.userId,
         },
       },
     },
@@ -48,9 +63,9 @@ export default async (
     | Prisma.BatchPayload
     | PostMedia
     | ({
-        medias: {
+        medias: ({
           media: Media
-        }[]
+        } & Pick<PostMedia, 'index'>)[]
         _count: {
           likes: number
         }
@@ -62,22 +77,6 @@ export default async (
       reply.send(new HttpError(400, 'Too many mediaIds'))
 
       return
-    }
-
-    prismaPromises.push(
-      prisma.postMedia.deleteMany({
-        where: {
-          postId: request.params.id,
-        },
-      })
-    )
-
-    const postMediaConditions: Prisma.PostMediaCreateManyInput[] = []
-
-    const currentMediaIds: Set<number> = new Set<number>()
-
-    for (let i = 0; i < post.medias.length; i++) {
-      currentMediaIds.add(post.medias[i].mediaId)
     }
 
     const medias: ({
@@ -108,6 +107,14 @@ export default async (
       return
     }
 
+    const postMediaConditions: Prisma.PostMediaCreateManyInput[] = []
+
+    const currentMediaIds: Set<number> = new Set<number>()
+
+    for (let i = 0; i < post.medias.length; i++) {
+      currentMediaIds.add(post.medias[i].mediaId)
+    }
+
     for (let i = 0; i < medias.length; i++) {
       if (!currentMediaIds.has(request.body.mediaIds[i])) {
         if (medias[i].userId !== request.userId) {
@@ -123,6 +130,14 @@ export default async (
         }
       }
 
+      prismaPromises.push(
+        prisma.postMedia.deleteMany({
+          where: {
+            postId: request.params.id,
+          },
+        })
+      )
+
       postMediaConditions.push({
         postId: request.params.id,
         mediaId: request.body.mediaIds[i],
@@ -130,11 +145,54 @@ export default async (
       })
     }
 
+    if (postMediaConditions.length !== 0) {
+      prismaPromises.push(
+        prisma.postMedia.createMany({
+          data: postMediaConditions,
+        })
+      )
+    }
+  }
+
+  if (Array.isArray(request.body.categoryIds)) {
+    if (
+      (await prisma.category.count({
+        where: {
+          id: {
+            in: request.body.categoryIds,
+          },
+        },
+      })) !== request.body.categoryIds.length
+    ) {
+      reply.send(new HttpError(400, 'Invali categoryIds'))
+
+      return
+    }
+
     prismaPromises.push(
-      prisma.postMedia.createMany({
-        data: postMediaConditions,
+      prisma.postCategory.deleteMany({
+        where: {
+          postId: request.params.id,
+        },
       })
     )
+
+    const postCategoryConditions: Prisma.PostCategoryCreateManyInput[] = []
+
+    for (let i = 0; i < request.body.categoryIds.length; i++) {
+      postCategoryConditions.push({
+        postId: request.params.id,
+        categoryId: request.body.categoryIds[i],
+      })
+    }
+
+    if (postCategoryConditions.length !== 0) {
+      prismaPromises.push(
+        prisma.postCategory.createMany({
+          data: postCategoryConditions,
+        })
+      )
+    }
   }
 
   prismaPromises.push(
@@ -147,6 +205,7 @@ export default async (
         createdAt: true,
         medias: {
           select: {
+            index: true,
             media: true,
           },
         },
@@ -161,14 +220,22 @@ export default async (
       },
       data: Object.assign(request.body, {
         mediaIds: undefined,
+        categoryIds: undefined,
       }),
     })
   )
 
   reply.send(
-    prismaPromises.length === 1
-      ? await prismaPromises[0]
-      : (await prisma.$transaction(prismaPromises))[2]
+    Object.assign(
+      prismaPromises.length === 1
+        ? await prismaPromises[0]
+        : (await prisma.$transaction(prismaPromises))[
+            prismaPromises.length - 1
+          ],
+      {
+        isLiked: post.likes.length === 1,
+      }
+    )
   )
 
   return

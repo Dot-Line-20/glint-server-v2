@@ -1,12 +1,13 @@
 import { FastifyRequest, FastifyReply } from 'fastify'
-import { Media, Post, Prisma } from '@prisma/client'
+import { Category, Media, Post, Prisma } from '@prisma/client'
 import { prisma } from '@library/prisma'
 import HttpError from '@library/httpError'
 
 export default async (
   request: FastifyRequest<{
     Body: {
-      mediaIds: number[]
+      mediaIds: Media['id'][]
+      categoryIds: Category['id'][]
     } & Pick<Post, 'title' | 'content'>
   }>,
   reply: FastifyReply
@@ -68,34 +69,80 @@ export default async (
     }
   }
 
+  const categoryConditions: Prisma.PostCategoryUncheckedCreateWithoutPostInput[] =
+    []
+
+  if (request.body.categoryIds.length !== 0) {
+    if (
+      (await prisma.category.count({
+        where: {
+          id: {
+            in: request.body.categoryIds,
+          },
+        },
+      })) !== request.body.categoryIds.length
+    ) {
+      reply.send(new HttpError(400, 'Invalid categoryIds'))
+
+      return
+    }
+
+    for (let i = 0; i < request.body.categoryIds.length; i++) {
+      categoryConditions.push({
+        categoryId: request.body.categoryIds[i],
+      })
+    }
+  }
+
   reply.send(
-    await prisma.post.create({
-      select: {
-        id: true,
-        userId: true,
-        title: true,
-        content: true,
-        createdAt: true,
-        medias: {
-          select: {
-						index: true,
-            media: true,
+    Object.assign(
+      await prisma.post.create({
+        select: {
+          id: true,
+          userId: true,
+          title: true,
+          content: true,
+          createdAt: true,
+          medias: {
+            select: {
+              index: true,
+              media: true,
+            },
+          },
+          categories: true,
+          _count: {
+            select: {
+              likes: true,
+            },
           },
         },
-        _count: {
-          select: {
-            likes: true,
+        data: Object.assign(
+          request.body,
+          {
+            mediaIds: undefined,
+            categoryIds: undefined,
+            userId: request.userId,
           },
-        },
-      },
-      data: Object.assign(request.body, {
-        mediaIds: undefined,
-        userId: request.userId,
-        medias: {
-          create: mediaConditions,
-        },
+          mediaConditions.length !== 0
+            ? {
+                medias: {
+                  create: mediaConditions,
+                },
+              }
+            : undefined,
+          categoryConditions.length !== 0
+            ? {
+                categories: {
+                  create: categoryConditions,
+                },
+              }
+            : undefined
+        ),
       }),
-    })
+      {
+        isLiked: false,
+      }
+    )
   )
 
   return
