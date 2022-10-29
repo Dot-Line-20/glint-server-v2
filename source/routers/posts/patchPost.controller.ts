@@ -164,7 +164,7 @@ export default async (
         },
       })) !== request.body.categoryIds.length
     ) {
-      reply.send(new HttpError(400, 'Invali categoryIds'))
+      reply.send(new HttpError(400, 'Invalid categoryIds'))
 
       return
     }
@@ -209,6 +209,11 @@ export default async (
             media: true,
           },
         },
+				categories: {
+					select: {
+						category: true,
+					},
+				},
         _count: {
           select: {
             likes: true,

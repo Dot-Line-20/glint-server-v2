@@ -25,7 +25,7 @@ export default async (
 
   if (isPartialNameDefined) {
     if (typeof request.query.name === 'string') {
-      reply.send(new HttpError(400, 'Duplicated name'))
+      reply.send(new HttpError(400, 'Duplicated name condition'))
     }
 
     categories =
