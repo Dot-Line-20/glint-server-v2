@@ -209,11 +209,11 @@ export default async (
             media: true,
           },
         },
-				categories: {
-					select: {
-						category: true,
-					},
-				},
+        categories: {
+          select: {
+            category: true,
+          },
+        },
         _count: {
           select: {
             likes: true,
