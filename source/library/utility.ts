@@ -63,7 +63,7 @@ export function getMediaPath(
   media: Omit<Media, 'id' | 'userId' | 'createdAt'>
 ): string {
   return join(
-    process.cwd(),
+    process.env.MEDIAS_PATH,
     'medias',
     media.isImage ? 'images' : 'videos',
     media.name + '.' + media.type
