@@ -2,15 +2,17 @@ import 'dotenv/config'
 import { randomBytes } from 'crypto'
 
 export const REQUIRED_ENVIRONMENT_VARIABLE_NAMES = [
-  'DATABASE_URL',
-  'REDIS_URL',
-  'PORT',
   'ARGON_ITERATION',
+  'ARGON_KEY_LENGTH',
   'ARGON_MEMORY',
   'ARGON_SALT_LENGTH',
-  'ARGON_KEY_LENGTH',
-  'EMAIL_USER',
+  'DATABASE_URL',
+  'DEFAULT_PAGE_SIZE',
   'EMAIL_PASSWORD',
+  'EMAIL_USER',
+  'MEDIAS_PATH',
+  'PORT',
+  'REDIS_URL',
 ] as const
 
 for (let i = 0; i < REQUIRED_ENVIRONMENT_VARIABLE_NAMES.length; i++) {

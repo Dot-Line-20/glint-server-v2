@@ -8,6 +8,8 @@ import serializeHandler from './handlers/serialize'
 import optionsHandler from './handlers/options'
 import headerHandler from './handlers/header'
 import fastifyMultipart from '@fastify/multipart'
+import { mkdir } from 'fs/promises'
+import { join } from 'path/posix'
 
 // App
 export default class {
@@ -20,8 +22,21 @@ export default class {
       logger: new Logger(),
     })
 
+    this.initializeMedias()
     this.initializeHandlers()
     this.initializeRouters()
+
+    return
+  }
+
+  private async initializeMedias(): Promise<void> {
+		console.log(join(process.env.MEDIAS_PATH, 'medias/images'))
+    await mkdir(join(process.env.MEDIAS_PATH, 'medias/images'), {
+      recursive: true,
+    })
+    await mkdir(join(process.env.MEDIAS_PATH, 'medias/videos'), {
+      recursive: true,
+    })
 
     return
   }
@@ -49,28 +64,26 @@ export default class {
     return
   }
 
-  public listen(port: number = Number.parseInt(process.env.PORT, 10)): void {
-    this.application
-      .listen({
-        host: '0.0.0.0',
-        port: port,
-      })
-      .then(() => {
-        this.application.log.info('Route tree:')
+  public async listen(
+    port: number = Number.parseInt(process.env.PORT, 10)
+  ): Promise<void> {
+    await this.application.listen({
+      host: '0.0.0.0',
+      port: port,
+    })
 
-        const routeLines: readonly string[] = this.application
-          .printRoutes({ commonPrefix: false })
-          .split(/^(└──\s|\s{4})/gm)
-          .slice(2)
+    this.application.log.info('Route tree:')
 
-        for (let i = 0; i < routeLines.length; i++) {
-          if (i % 2 === 0) {
-            this.application.log.info(routeLines[i].replace('\n', ''))
-          }
-        }
+    const routeLines: readonly string[] = this.application
+      .printRoutes({ commonPrefix: false })
+      .split(/^(└──\s|\s{4})/gm)
+      .slice(2)
 
-        return
-      })
+    for (let i = 0; i < routeLines.length; i++) {
+      if (i % 2 === 0) {
+        this.application.log.info(routeLines[i].replace('\n', ''))
+      }
+    }
 
     return
   }
