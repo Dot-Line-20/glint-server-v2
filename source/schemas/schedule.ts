@@ -5,10 +5,10 @@ import userSchema from '@schemas/user'
 import commonSchema from '@schemas/common'
 
 export default {
-  id: commonSchema.positiveInteger,
+  id: commonSchema.natrualNumber,
   userId: userSchema.id,
-  parentScheduleId: commonSchema.positiveInteger.raw({ nullable: true }),
-  type: (commonSchema.positiveInteger as IntegerSchema).maximum(4),
+  parentScheduleId: commonSchema.natrualNumber.raw({ nullable: true }),
+  type: (commonSchema.natrualNumber as IntegerSchema).maximum(4),
   name: commonSchema.name,
   startingAt: commonSchema.dateTime,
   endingAt: commonSchema.dateTime,

@@ -5,7 +5,7 @@ import commonSchema from '@schemas/common'
 import userSchema from '@schemas/user'
 
 export default {
-  id: commonSchema.positiveInteger,
+  id: commonSchema.natrualNumber,
   name: commonSchema.sha512,
   type: schema.string().enum(['gif', 'jpg', 'jpeg', 'png', 'mp4', 'mov']),
   userId: userSchema.id,

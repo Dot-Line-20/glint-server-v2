@@ -5,9 +5,8 @@ import commonSchema from '@schemas/common'
 import userSchema from '@schemas/user'
 
 export default {
-  id: commonSchema.positiveInteger,
+  id: commonSchema.natrualNumber,
   userId: userSchema.id,
-  title: commonSchema.name,
   content: commonSchema.content,
   isDeleted: schema.boolean(),
   createdAt: commonSchema.dateTime,
