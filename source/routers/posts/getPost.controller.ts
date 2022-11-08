@@ -29,7 +29,6 @@ export default async (
     select: {
       id: true,
       userId: true,
-      title: true,
       content: true,
       createdAt: true,
       medias: {

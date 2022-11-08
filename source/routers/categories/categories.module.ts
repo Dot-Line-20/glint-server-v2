@@ -2,7 +2,6 @@ import Module from '@library/module'
 import categorySchema from '@schemas/category'
 import pageSchema from '@schemas/page'
 import getCategoriesController from './getCategories.controller'
-import getCategoryController from './getCategory.controller'
 import postCategoriesController from './postCategories.controller'
 
 export default new Module({
@@ -32,17 +31,6 @@ export default new Module({
         ),
       },
       handler: getCategoriesController,
-    },
-    {
-      method: 'GET',
-      url: ':id',
-      isAuthNeeded: true,
-      schema: {
-        params: {
-          id: categorySchema.id.required(),
-        },
-      },
-      handler: getCategoryController,
     },
   ],
   modules: [],

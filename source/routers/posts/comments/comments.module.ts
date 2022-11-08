@@ -4,7 +4,6 @@ import postSchema from '@schemas/post'
 import commentSchema from '@schemas/comment'
 import postCommentsController from './postComments.controller'
 import getCommentsController from './getComments.controller'
-import getCommentController from './getComment.controller'
 import patchCommentController from './patchComment.controller'
 import deleteCommentController from './deleteComment.controller'
 
@@ -35,18 +34,6 @@ export default new Module({
         querystring: pageSchema,
       },
       handler: getCommentsController,
-    },
-    {
-      method: 'GET',
-      url: ':id',
-      isAuthNeeded: true,
-      schema: {
-        params: {
-          postId: postSchema.id.required(),
-          id: commentSchema.id.required(),
-        },
-      },
-      handler: getCommentController,
     },
     {
       method: 'PATCH',

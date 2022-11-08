@@ -8,7 +8,7 @@ export default async (
     Body: {
       mediaIds: Media['id'][]
       categoryIds: Category['id'][]
-    } & Pick<Post, 'title' | 'content'>
+    } & Pick<Post, 'content'>
   }>,
   reply: FastifyReply
 ) => {
@@ -100,7 +100,6 @@ export default async (
         select: {
           id: true,
           userId: true,
-          title: true,
           content: true,
           createdAt: true,
           medias: {

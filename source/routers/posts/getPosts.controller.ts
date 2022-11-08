@@ -25,7 +25,6 @@ export default async (
     select: {
       id: true,
       userId: true,
-      title: true,
       content: true,
       createdAt: true,
       medias: {
@@ -47,6 +46,7 @@ export default async (
       _count: {
         select: {
           likes: true,
+          comments: true,
         },
       },
     },
