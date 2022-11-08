@@ -83,7 +83,7 @@ model Message {
   chatId    Int      @map("chat_id") @db.UnsignedInt
   userId    Int      @map("user_id") @db.UnsignedInt
   content   String   @db.Text
-  createdAt DateTime @map("created_at") @db.DateTime(0)
+  createdAt DateTime @default(now()) @map("created_at") @db.DateTime(0)
   chat      Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade, map: "FOREIGN KEY (message.chat_id, chat.id)")
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade, map: "FOREIGN KEY (message.user_id, user.id)")
 
@@ -95,7 +95,6 @@ model Message {
 model Post {
   id         Int            @id @default(autoincrement()) @db.UnsignedInt
   userId     Int            @map("user_id") @db.UnsignedInt
-  title      String         @db.VarChar(64)
   content    String         @db.Text
   isDeleted  Boolean        @default(false) @map("is_deleted")
   createdAt  DateTime       @default(now()) @map("created_at") @db.DateTime(0)
@@ -124,7 +123,7 @@ model PostCategory {
 model PostMedia {
   postId  Int   @map("post_id") @db.UnsignedInt
   mediaId Int   @map("media_id") @db.UnsignedInt
-	index   Int   @db.UnsignedTinyInt
+  index   Int   @db.UnsignedTinyInt
   media   Media @relation("FOREIGN KEY (post_media.media_id, media.id)", fields: [mediaId], references: [id], onDelete: Cascade, map: "FOREIGN KEY (post_media.media_id, media.id)")
   post    Post  @relation("FOREIGN KEY (post_media.post_id, post.id)", fields: [postId], references: [id], onDelete: Cascade, map: "FOREIGN KEY (post_media.post_id, post.id)")
 
