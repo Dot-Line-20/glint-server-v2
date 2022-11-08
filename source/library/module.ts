@@ -2,8 +2,9 @@ import { FastifyInstance } from 'fastify'
 import { join } from 'path/posix'
 import { ModuleOptions, RouteOptions, SchemaKey } from '@library/type'
 import authHandler from '../handlers/auth'
-import schema, { ObjectSchema } from 'fluent-json-schema'
+import { NullSchema, ObjectSchema } from 'fluent-json-schema'
 import { FastifySchemaValidationError } from 'fastify/types/schema'
+import { getObjectSchema } from './utility'
 
 // Module
 export default class {
@@ -32,37 +33,6 @@ export default class {
     )
   }
 
-  private getObjectSchema(
-    object: Required<Required<RouteOptions>['schema']>['body']
-  ): ObjectSchema {
-    const schmeaNames: readonly string[] = Object.keys(object)
-
-    let _schema: ObjectSchema = schema.object().additionalProperties(false)
-
-    if (object.$isRequired === true) {
-      _schema = _schema.required()
-    }
-
-    for (let i = 0; i < schmeaNames.length; i++) {
-      if (schmeaNames[i] !== '$isRequired') {
-        _schema = _schema.prop(
-          schmeaNames[i],
-          Object.prototype.hasOwnProperty.call(
-            // @ts-expect-error :: fault of typescript
-            object[schmeaNames[i]],
-            'isFluentJSONSchema'
-          )
-            ? // @ts-expect-error :: fault of typescript
-              object[schmeaNames[i]]
-            : // @ts-expect-error :: fault of typescript
-              this.getObjectSchema(object[schmeaNames[i]])
-        )
-      }
-    }
-
-    return _schema.readOnly(true)
-  }
-
   public appendPrefix(prefix: string): void {
     this.options.prefix = join(prefix, this.options.prefix)
 
@@ -71,7 +41,7 @@ export default class {
 
   public register(fastifyInstance: FastifyInstance): void {
     for (let i = 0; i < this.options.routers.length; i++) {
-      let _schema: Partial<Record<SchemaKey, ObjectSchema>>
+      let _schema: Partial<Record<SchemaKey, ObjectSchema | NullSchema>>
 
       if (typeof this.options.routers[i].schema === 'object') {
         _schema = {}
@@ -81,7 +51,7 @@ export default class {
         ) as SchemaKey[]
 
         for (let j = 0; j < schemaKeys.length; j++) {
-          _schema[schemaKeys[j]] = this.getObjectSchema(
+          _schema[schemaKeys[j]] = getObjectSchema(
             (
               this.options.routers[i].schema as Required<
                 Required<RouteOptions>['schema']
