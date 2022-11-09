@@ -32,6 +32,9 @@ export default async (
           index: true,
           media: true,
         },
+        orderBy: {
+          index: 'asc',
+        },
       },
       categories: {
         select: {

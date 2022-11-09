@@ -36,6 +36,9 @@ export default async (
           index: true,
           media: true,
         },
+        orderBy: {
+          index: 'asc',
+        },
       },
       categories: {
         select: {
@@ -50,6 +53,7 @@ export default async (
       _count: {
         select: {
           likes: true,
+          comments: true,
         },
       },
     },

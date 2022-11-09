@@ -71,7 +71,7 @@ interface PageQuery extends Record<`page[${'index' | 'size'}]`, number> {
 type JsendResponse =
   | {
       status: 'success'
-      data: RecursiveRecord<string, any>
+      data: RecursiveRecord<string, any> | null
     }
   | {
       status: 'error'

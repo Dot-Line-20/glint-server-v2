@@ -35,6 +35,20 @@ export default async (
 
   reply.send(
     await prisma.message.update({
+      select: {
+        id: true,
+        content: true,
+        user: {
+          select: {
+            id: true,
+            email: true,
+            name: true,
+            birth: true,
+            mediaId: true,
+            createdAt: true,
+          },
+        },
+      },
       data: request.body,
       where: {
         id: request.params.id,

@@ -44,6 +44,20 @@ export default async (
 
   const message: Message = await prisma.message.create({
     data: Object.assign(request.body, {
+      select: {
+        id: true,
+        content: true,
+        user: {
+          select: {
+            id: true,
+            email: true,
+            name: true,
+            birth: true,
+            mediaId: true,
+            createdAt: true,
+          },
+        },
+      },
       chat: {
         connect: {
           id: request.params.chatId,

@@ -132,7 +132,7 @@ export default async (
 
               return
             }
-						break
+            break
           }
           /* eslint-enable */
 
@@ -175,7 +175,8 @@ export default async (
           }
         : {
             status: 'error',
-            message: error.message + (isStackAvailable ? '; ' + error.stack : ''),
+            message:
+              error.message + (isStackAvailable ? '; ' + error.stack : ''),
           }
     )
 
@@ -229,11 +230,11 @@ export default async (
         users: Pick<ChatUser, 'userId'>[]
       } | null = await prisma.chat.findUnique({
         select: {
-					users: {
-						where: {
-							userId: user.id
-						}
-					}
+          users: {
+            where: {
+              userId: user.id,
+            },
+          },
         },
         where: body,
       })
@@ -250,13 +251,11 @@ export default async (
         return
       }
 
-			const chatIdStrings: string[] = Array.from(socket.rooms) 
+      const chatIdStrings: string[] = Array.from(socket.rooms)
 
-			for(let i = 0; i < chatIdStrings.length; i++) {
-				if(chatIdStrings[i] !== socket.id) {
-					await socket.leave(chatIdStrings[i])
-				}
-			}
+      for (let i = 0; i < chatIdStrings.length; i++) {
+        await socket.leave(chatIdStrings[i])
+      }
 
       await socket.join(body.id.toString(10))
 
@@ -280,10 +279,20 @@ export default async (
     return
   })
 
+  socket.onAnyOutgoing((eventName: string) => {
+    if (eventName === 'chat:leave') {
+      user.chatId = -1
+    }
+
+    return
+  })
+
   socket.on('message:create', async (body: Pick<Message, 'content'>) => {
     try {
       if (user.chatId === -1) {
-        socket._onerror(new SocketError(true, 'message:create', 'Invalid chatId'))
+        socket._onerror(
+          new SocketError(true, 'message:create', 'Invalid chatId')
+        )
 
         return
       }
@@ -295,6 +304,7 @@ export default async (
             id: true,
             userId: true,
             content: true,
+						createdAt: true,
           },
           data: Object.assign(body, {
             user: {
@@ -325,7 +335,9 @@ export default async (
   socket.on('message:update', async (body: Pick<Message, 'id' | 'content'>) => {
     try {
       if (user.chatId === -1) {
-        socket._onerror(new SocketError(true, 'message:update', 'Invalid chatId'))
+        socket._onerror(
+          new SocketError(true, 'message:update', 'Invalid chatId')
+        )
 
         return
       }
@@ -384,7 +396,9 @@ export default async (
   socket.on('message:delete', async (body: Pick<Message, 'id'>) => {
     try {
       if (user.chatId === -1) {
-        socket._onerror(new SocketError(true, 'message:delete', 'Invalid chatId'))
+        socket._onerror(
+          new SocketError(true, 'message:delete', 'Invalid chatId')
+        )
 
         return
       }
