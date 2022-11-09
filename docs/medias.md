@@ -31,10 +31,10 @@
 	{
 		"status": "success",
 		"data": {
-			"id": "<number, positive number>",
+			"id": "<number, natural number>",
 			"name": "<string, hex encoded and length 128>",
 			"type": "<string, length 3>",
-			"userId": "<number, positive number>",
+			"userId": "<number, natural number>",
 			"isImage": "<boolean>",
 			"createdAt": "<string, ISO 8601 Date and time in UTC format>"
 		}
@@ -118,10 +118,10 @@
 	{
 		"status": "success",
 		"data": {
-			"id": "<number, positive number>",
+			"id": "<number, natural number>",
 			"name": "<string, hex encoded and length 128>",
 			"type": "<string, length 3>",
-			"userId": "<number, positive number>",
+			"userId": "<number, natural number>",
 			"isImage": "<boolean>",
 			"createdAt": "<string, ISO 8601 Date and time in UTC format>"
 		}[]
@@ -207,10 +207,10 @@
 	{
 		"status": "success",
 		"data": {
-			"id": "<number, positive number>",
+			"id": "<number, natural number>",
 			"name": "<string, hex encoded and length 128>",
 			"type": "<string, length 3>",
-			"userId": "<number, positive number>",
+			"userId": "<number, natural number>",
 			"isImage": "<boolean>",
 			"createdAt": "<string, ISO 8601 Date and time in UTC format>"
 		}[]
@@ -248,10 +248,10 @@
 	{
 		"status": "success",
 		"data": {
-			"id": "<number, positive number>",
+			"id": "<number, natural number>",
 			"name": "<string, hex encoded and length 128>",
 			"type": "<string, length 3>",
-			"userId": "<number, positive number>",
+			"userId": "<number, natural number>",
 			"isImage": "<boolean>",
 			"createdAt": "<string, ISO 8601 Date and time in UTC format>"
 		}

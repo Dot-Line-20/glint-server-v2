@@ -30,12 +30,12 @@ export default new Module({
           name: scheduleSchema.name.required(),
           startingAt: scheduleSchema.startingAt.required(),
           endingAt: scheduleSchema.endingAt.required(),
-          categoryIds: getArraySchema([categorySchema.id])
-            .uniqueItems(true)
-            .required(),
-          repetitions: getArraySchema([scheduleRepetitionSchema.repeatingAt])
-            .uniqueItems(true)
-            .required(),
+          categoryIds: getArraySchema([categorySchema.id], {
+            isUniqueItems: true,
+          }).required(),
+          repetitions: getArraySchema([scheduleRepetitionSchema.repeatingAt], {
+            isUniqueItems: true,
+          }).required(),
         },
       },
       handler: postSchedulesController,
@@ -50,7 +50,7 @@ export default new Module({
         },
         querystring: Object.assign(
           {
-            depth: commonSchema.positiveInteger,
+            depth: commonSchema.natrualNumber,
             isParent: schema.boolean(),
             from: commonSchema.dateTime,
             to: commonSchema.dateTime,
@@ -71,7 +71,7 @@ export default new Module({
           id: scheduleSchema.id.required(),
         },
         querystring: {
-          depth: commonSchema.positiveInteger,
+          depth: commonSchema.natrualNumber,
         },
       },
       handler: getScheduleController,
@@ -92,10 +92,12 @@ export default new Module({
           startingAt: scheduleSchema.startingAt,
           endingAt: scheduleSchema.endingAt,
           isSuccess: scheduleSchema.isSuccess,
-          categoryIds: getArraySchema([categorySchema.id]).uniqueItems(true),
-          repetitions: getArraySchema([
-            scheduleRepetitionSchema.repeatingAt,
-          ]).uniqueItems(true),
+          categoryIds: getArraySchema([categorySchema.id], {
+            isUniqueItems: true,
+          }),
+          repetitions: getArraySchema([scheduleRepetitionSchema.repeatingAt], {
+            isUniqueItems: true,
+          }),
         },
       },
       handler: patchScheduleController,

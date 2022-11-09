@@ -5,15 +5,19 @@ import errorHandler from './handlers/error'
 import rootModule from './routers/root.module'
 import notFoundHandler from './handlers/notFound'
 import serializeHandler from './handlers/serialize'
+import socketHandler from './handlers/socket'
 import optionsHandler from './handlers/options'
 import headerHandler from './handlers/header'
 import fastifyMultipart from '@fastify/multipart'
 import { mkdir } from 'fs/promises'
 import { join } from 'path/posix'
+import { Server } from 'socket.io'
+import { createAdapter } from '@socket.io/redis-adapter'
+import redis from '@library/redis'
 
-// App
+// Application
 export default class {
-  application: FastifyInstance
+  private application: FastifyInstance
 
   constructor() {
     this.application = fastify({
@@ -25,12 +29,12 @@ export default class {
     this.initializeMedias()
     this.initializeHandlers()
     this.initializeRouters()
+    this.initializeSocket()
 
     return
   }
 
   private async initializeMedias(): Promise<void> {
-		console.log(join(process.env.MEDIAS_PATH, 'medias/images'))
     await mkdir(join(process.env.MEDIAS_PATH, 'medias/images'), {
       recursive: true,
     })
@@ -60,6 +64,16 @@ export default class {
     rootModule.appendPrefix('/')
     rootModule.register(this.application)
     this.application.options('*', optionsHandler)
+
+    return
+  }
+
+  private async initializeSocket(): Promise<void> {
+    this.application.socketIO = new Server(this.application.server, {
+      adapter: createAdapter(redis.duplicate(), redis.duplicate()),
+    })
+
+    this.application.socketIO.on('connection', socketHandler)
 
     return
   }

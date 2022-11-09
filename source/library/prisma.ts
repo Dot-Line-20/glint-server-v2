@@ -102,3 +102,13 @@ export async function isCategoryExists(id: number): Promise<boolean> {
     })) === 1
   )
 }
+
+export async function isChatExists(id: number): Promise<boolean> {
+  return (
+    (await prisma.chat.count({
+      where: {
+        id: id,
+      },
+    })) === 1
+  )
+}

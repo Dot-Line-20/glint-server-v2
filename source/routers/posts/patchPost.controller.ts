@@ -18,7 +18,7 @@ export default async (
       {
         mediaIds: Media['id'][]
         categoryIds: Category['id'][]
-      } & Pick<Post, 'title' | 'content'>
+      } & Pick<Post, 'content'>
     >
   }>,
   reply: FastifyReply
@@ -200,13 +200,15 @@ export default async (
       select: {
         id: true,
         userId: true,
-        title: true,
         content: true,
         createdAt: true,
         medias: {
           select: {
             index: true,
             media: true,
+          },
+          orderBy: {
+            index: 'asc',
           },
         },
         categories: {
@@ -217,6 +219,7 @@ export default async (
         _count: {
           select: {
             likes: true,
+            comments: true,
           },
         },
       },

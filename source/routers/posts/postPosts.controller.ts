@@ -8,7 +8,7 @@ export default async (
     Body: {
       mediaIds: Media['id'][]
       categoryIds: Category['id'][]
-    } & Pick<Post, 'title' | 'content'>
+    } & Pick<Post, 'content'>
   }>,
   reply: FastifyReply
 ) => {
@@ -100,7 +100,6 @@ export default async (
         select: {
           id: true,
           userId: true,
-          title: true,
           content: true,
           createdAt: true,
           medias: {
@@ -108,13 +107,11 @@ export default async (
               index: true,
               media: true,
             },
+						orderBy: {
+							index: 'asc'
+						}
           },
           categories: true,
-          _count: {
-            select: {
-              likes: true,
-            },
-          },
         },
         data: Object.assign(
           request.body,
@@ -140,6 +137,10 @@ export default async (
         ),
       }),
       {
+        _count: {
+          likes: 0,
+          comments: 0,
+        },
         isLiked: false,
       }
     )

@@ -1,3 +1,3 @@
-import App from './application'
+import Application from './application'
 
-new App().listen()
+new Application().listen()

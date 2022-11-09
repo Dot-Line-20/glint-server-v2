@@ -20,16 +20,14 @@ export default new Module({
       isAuthNeeded: true,
       schema: {
         body: {
-          title: postSchema.title.required(),
           content: postSchema.content.required(),
           mediaIds: getArraySchema([mediaSchema.id], {
             maximumLength: 10,
-          })
-            .uniqueItems(true)
-            .required(),
-          categoryIds: getArraySchema([categorySchema.id])
-            .uniqueItems(true)
-            .required(),
+            isUniqueItems: true,
+          }).required(),
+          categoryIds: getArraySchema([categorySchema.id], {
+            isUniqueItems: true,
+          }).required(),
         },
       },
       handler: postPostsController,
@@ -63,12 +61,14 @@ export default new Module({
           id: postSchema.id.required(),
         },
         body: {
-          title: postSchema.title,
           content: postSchema.content,
           mediaIds: getArraySchema([mediaSchema.id], {
             maximumLength: 10,
-          }).uniqueItems(true),
-          categoryIds: getArraySchema([categorySchema.id]).uniqueItems(true),
+            isUniqueItems: true,
+          }),
+          categoryIds: getArraySchema([categorySchema.id], {
+            isUniqueItems: true,
+          }),
         },
       },
       handler: patchPostController,

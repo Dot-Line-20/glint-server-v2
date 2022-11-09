@@ -20,7 +20,6 @@
 
 |key|type|description|
 |---|---|---|
-|title|string|최소 1자 최대 64자의 길이 제한이 있는 플레인 텍스트 형식의 문자열입니다|
 |content|string|최소 1자 최대 65535자의 길이 제한이 있는 플레인 텍스트 형식의 문자열입니다|
 |mediaIds|number[]|자연수로 이루어진 배열입니다|
 |categoryIds|number[]|자연수로 이루어진 배열입니다|
@@ -34,30 +33,30 @@
 	{
 		"status": "success",
 		"data": {
-			"id": "<number, positive integer>",
-			"userId": "<number, positive integer>",
-			"title": "<string, length 1 to 64>",
+			"id": "<number, natural number>",
+			"userId": "<number, natural number>",
 			"content": "<string, length 1 to 65535>",
 			"createdAt": "<string, ISO 8601 Date and time in UTC format>",
 			"medias": {
 				"index": "<number, positive number>",
 				"media": {
-					"id": "<number, positive number>",
+					"id": "<number, natural number>",
 					"name": "<string, hex encoded and length 128>",
 					"type": "<string, length 3>",
-					"userId": "<number, positive number>",
+					"userId": "<number, natural number>",
 					"isImage": "<boolean>",
 					"createdAt": "<string, ISO 8601 Date and time in UTC format>"
 				}
 			}[],
 			"categories": {
 				"category": {
-					"id": "<number, positive integer>",
-					"name": "<string, length 1 to 64>",
+					"id": "<number, natural number>",
+					"name": "<string, length 1 to 64>"
 				}
 			}[],
 			"_count": {
-				"likes": "<number, positive number>"
+				"likes": "<number, positive number>",
+        "comments": "<number, positive number>"
 			},
 			"isLiked": "<boolean>"
 		}
@@ -153,30 +152,30 @@
 	{
 		"status": "success",
 		"data": {
-			"id": "<number, positive integer>",
-			"userId": "<number, positive integer>",
-			"title": "<string, length 1 to 64>",
+			"id": "<number, natural number>",
+			"userId": "<number, natural number>",
 			"content": "<string, length 1 to 65535>",
 			"createdAt": "<string, ISO 8601 Date and time in UTC format>",
 			"medias": {
 				"index": "<number, positive number>",
 				"media": {
-					"id": "<number, positive number>",
+					"id": "<number, natural number>",
 					"name": "<string, hex encoded and length 128>",
 					"type": "<string, length 3>",
-					"userId": "<number, positive number>",
+					"userId": "<number, natural number>",
 					"isImage": "<boolean>",
 					"createdAt": "<string, ISO 8601 Date and time in UTC format>"
 				}
 			}[],
 			"categories": {
 				"category": {
-					"id": "<number, positive integer>",
-					"name": "<string, length 1 to 64>",
+					"id": "<number, natural number>",
+					"name": "<string, length 1 to 64>"
 				}
 			}[],
 			"_count": {
-				"likes": "<number, positive number>"
+				"likes": "<number, positive number>",
+        "comments": "<number, positive number>"
 			},
 			"isLiked": "<boolean>"
 		}[]
@@ -214,30 +213,30 @@
 	{
 		"status": "success",
 		"data": {
-			"id": "<number, positive integer>",
-			"userId": "<number, positive integer>",
-			"title": "<string, length 1 to 64>",
+			"id": "<number, natural number>",
+			"userId": "<number, natural number>",
 			"content": "<string, length 1 to 65535>",
 			"createdAt": "<string, ISO 8601 Date and time in UTC format>",
 			"medias": {
 				"index": "<number, positive number>",
 				"media": {
-					"id": "<number, positive number>",
+					"id": "<number, natural number>",
 					"name": "<string, hex encoded and length 128>",
 					"type": "<string, length 3>",
-					"userId": "<number, positive number>",
+					"userId": "<number, natural number>",
 					"isImage": "<boolean>",
 					"createdAt": "<string, ISO 8601 Date and time in UTC format>"
 				}
 			}[],
 			"categories": {
 				"category": {
-					"id": "<number, positive integer>",
-					"name": "<string, length 1 to 64>",
+					"id": "<number, natural number>",
+					"name": "<string, length 1 to 64>"
 				}
 			}[],
 			"_count": {
-				"likes": "<number, positive number>"
+				"likes": "<number, positive number>",
+        "comments": "<number, positive number>"
 			},
 			"isLiked": "<boolean>"
 		}
@@ -270,7 +269,6 @@
 
 |key|type|description|
 |---|---|---|
-|title|string|최소 1자 최대 64자의 길이 제한이 있는 플레인 텍스트 형식의 문자열입니다|
 |content|string|최소 1자 최대 65535자의 길이 제한이 있는 플레인 텍스트 형식의 문자열입니다|
 |mediaIds|number[]|자연수로 이루어진 배열입니다|
 |categoryIds|number[]|자연수로 이루어진 배열입니다|
@@ -284,30 +282,30 @@
 	{
 		"status": "success",
 		"data": {
-			"id": "<number, positive integer>",
-			"userId": "<number, positive integer>",
-			"title": "<string, length 1 to 64>",
+			"id": "<number, natural number>",
+			"userId": "<number, natural number>",
 			"content": "<string, length 1 to 65535>",
 			"createdAt": "<string, ISO 8601 Date and time in UTC format>",
 			"medias": {
 				"index": "<number, positive number>",
 				"media": {
-					"id": "<number, positive number>",
+					"id": "<number, natural number>",
 					"name": "<string, hex encoded and length 128>",
 					"type": "<string, length 3>",
-					"userId": "<number, positive number>",
+					"userId": "<number, natural number>",
 					"isImage": "<boolean>",
 					"createdAt": "<string, ISO 8601 Date and time in UTC format>"
 				}
 			}[],
 			"categories": {
 				"category": {
-					"id": "<number, positive integer>",
-					"name": "<string, length 1 to 64>",
+					"id": "<number, natural number>",
+					"name": "<string, length 1 to 64>"
 				}
 			}[],
 			"_count": {
-				"likes": "<number, positive number>"
+				"likes": "<number, positive number>",
+        "comments": "<number, positive number>"
 			},
 			"isLiked": "<boolean>"
 		}

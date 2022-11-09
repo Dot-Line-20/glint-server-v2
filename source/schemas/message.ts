@@ -1,15 +1,13 @@
 import { Schema } from '@library/type'
-import { Comment } from '@prisma/client'
-import schema from 'fluent-json-schema'
+import { Message } from '@prisma/client'
 import commonSchema from '@schemas/common'
 import userSchema from '@schemas/user'
-import postSchema from '@schemas/post'
+import chatSchema from '@schemas/chat'
 
 export default {
   id: commonSchema.natrualNumber,
+  chatId: chatSchema.id,
   userId: userSchema.id,
-  postId: postSchema.id,
   content: commonSchema.content,
-  isDeleted: schema.boolean(),
   createdAt: commonSchema.dateTime,
-} as Schema<keyof Comment>
+} as Schema<keyof Message>

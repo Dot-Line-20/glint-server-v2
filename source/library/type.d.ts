@@ -67,3 +67,20 @@ type Schema<T extends string> = Record<
 interface PageQuery extends Record<`page[${'index' | 'size'}]`, number> {
   'page[order]': 'desc' | 'asc'
 }
+
+type JsendResponse =
+  | {
+      status: 'success'
+      data: RecursiveRecord<string, any> | null
+    }
+  | {
+      status: 'error'
+      message: string
+    }
+  | {
+      status: 'fail'
+      data: {
+        title: string
+        body?: string
+      }
+    }

@@ -1,8 +1,14 @@
 import { Media } from '@prisma/client'
-import schema, { ArraySchema, JSONSchema } from 'fluent-json-schema'
+import schema, {
+  ArraySchema,
+  JSONSchema,
+  NullSchema,
+  ObjectSchema,
+} from 'fluent-json-schema'
 import { join } from 'path'
 // @ts-expect-error :: No type definition
 import { SMTPChannel } from 'smtp-channel'
+import { RouteOptions } from './type'
 
 const smtp: SMTPChannel = new SMTPChannel({
   host: 'smtp.gmail.com',
@@ -45,9 +51,9 @@ export async function sendMail(
       process.env.EMAIL_USER +
       '>\r\nTo: <' +
       email +
-      '>\r\nSubject: ' +
-      title.replace(/\./m, '..') +
-      '\r\nContent-Type: text/html; charset="UTF-8";\r\n\r\n' +
+      '>\r\nSubject: =?UTF-8?B?' +
+      Buffer.from(title.replace(/\./m, '..'), 'utf-8').toString('base64') +
+      '?=\r\nContent-Type: text/html; charset="UTF-8";\r\n\r\n' +
       content.replace(/\n/g, '\r\n').replace(/^\./m, '..') +
       '\r\n.\r\nQUIT\r\n',
     { timeout: 3000 }
@@ -89,7 +95,11 @@ export function isCorrectFileType(type: string, buffer: Buffer): boolean {
 
 export function getArraySchema(
   jsonSchemas: JSONSchema[],
-  options: Partial<Record<`${'max' | 'min'}imumLength`, number>> = {}
+  options: Partial<
+    {
+      isUniqueItems: boolean
+    } & Record<`${'max' | 'min'}imumLength`, number>
+  > = {}
 ): ArraySchema {
   let _schema: ArraySchema = schema.array()
 
@@ -105,5 +115,44 @@ export function getArraySchema(
     _schema = _schema.minItems(options.minimumLength)
   }
 
+  if (options.isUniqueItems === true) {
+    _schema = _schema.uniqueItems(true)
+  }
+
   return _schema.readOnly(true)
+}
+
+export function getObjectSchema(
+  object: Required<Required<RouteOptions>['schema']>['body']
+): ObjectSchema | NullSchema {
+  const schmeaNames: readonly string[] = Object.keys(object)
+
+  let _schema: ObjectSchema = schema.object().additionalProperties(false)
+
+  if (schmeaNames.length !== 0) {
+    if (object.$isRequired === true) {
+      _schema = _schema.required()
+    }
+
+    for (let i = 0; i < schmeaNames.length; i++) {
+      if (schmeaNames[i] !== '$isRequired') {
+        _schema = _schema.prop(
+          schmeaNames[i],
+          Object.prototype.hasOwnProperty.call(
+            // @ts-expect-error :: fault of typescript
+            object[schmeaNames[i]],
+            'isFluentJSONSchema'
+          )
+            ? // @ts-expect-error :: fault of typescript
+              object[schmeaNames[i]]
+            : // @ts-expect-error :: fault of typescript
+              getObjectSchema(object[schmeaNames[i]])
+        )
+      }
+    }
+
+    return _schema.readOnly(true)
+  } else {
+    return schema.null()
+  }
 }
