@@ -31,8 +31,8 @@
 	{
 		"status": "success",
 		"data": {
-			"postId": "<number, positive integer>",
-			"userId": "<number, positive integer>",
+			"postId": "<number, natural number>",
+			"userId": "<number, natural number>",
 		}
 	}
 	```
@@ -87,9 +87,9 @@
 	{
 		"status": "success",
 		"data": {
-			"postId": "<number, positive integer>",
+			"postId": "<number, natural number>",
 			"user": {
-				"id": "<number, positive integer>",
+				"id": "<number, natural number>",
 				"email": "<string, email format>",
 				"name": "<string, length 1 to 64>",
 				"image": "<string, not decided>",

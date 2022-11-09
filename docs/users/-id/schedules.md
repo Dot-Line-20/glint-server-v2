@@ -43,26 +43,26 @@
 	{
 		"status": "success",
 		"data": {
-			"id": "<number, positive integer>",
-			"userId": "<number, positive integer>",
-			"parentScheduleId": "<number or null, positive integer or null>",
-			"type": "<number, positive integer and range 0 to 4>",
+			"id": "<number, natural number>",
+			"userId": "<number, natural number>",
+			"parentScheduleId": "<number or null, natural number or null>",
+			"type": "<number, natural number and range 0 to 4>",
 			"name": "<string, length 1 to 64>",
 			"startingAt": "<string, ISO 8601 Date and time in UTC format>",
 			"endingAt": "<string, ISO 8601 Date and time in UTC format>",
 			"isSuccess": "<boolean>",
 			"createdAt": "<string, ISO 8601 Date and time in UTC format>",
 			"categories": {
-				"scheduleId": "<number, positive integer>",
-				"categoryId": "<number, positive integer>",
+				"scheduleId": "<number, natural number>",
+				"categoryId": "<number, natural number>",
 				"category": {
-						"id": "<number, positive integer>",
+						"id": "<number, natural number>",
 						"name": "<string, length 1 to 64>"
 				}
 			}[],
 			"categories": {
 				"category": {
-					"id": "<number, positive integer>",
+					"id": "<number, natural number>",
 					"name": "<string, length 1 to 64>",
 				}
 			}[],
@@ -171,25 +171,25 @@
 	{
 		"status": "success",
 		"data": {
-			"id": "<number, positive integer>",
-			"userId": "<number, positive integer>",
-			"parentScheduleId": "<number or null, positive integer or null>",
+			"id": "<number, natural number>",
+			"userId": "<number, natural number>",
+			"parentScheduleId": "<number or null, natural number or null>",
 			"name": "<string, length 1 to 64>",
 			"startingAt": "<string, ISO 8601 Date and time in UTC format>",
 			"endingAt": "<string, ISO 8601 Date and time in UTC format>",
 			"isSuccess": "<boolean>",
 			"createdAt": "<string, ISO 8601 Date and time in UTC format>",
 			"categories": {
-				"scheduleId": "<number, positive integer>",
-				"categoryId": "<number, positive integer>",
+				"scheduleId": "<number, natural number>",
+				"categoryId": "<number, natural number>",
 				"category": {
-						"id": "<number, positive integer>",
+						"id": "<number, natural number>",
 						"name": "<string, length 1 to 64>"
 				}
 			}[],
 			"categories": {
 				"category": {
-					"id": "<number, positive integer>",
+					"id": "<number, natural number>",
 					"name": "<string, length 1 to 64>",
 				}
 			}[],
@@ -239,25 +239,25 @@
 	{
 		"status": "success",
 		"data": {
-			"id": "<number, positive integer>",
-			"userId": "<number, positive integer>",
-			"parentScheduleId": "<number or null, positive integer or null>",
+			"id": "<number, natural number>",
+			"userId": "<number, natural number>",
+			"parentScheduleId": "<number or null, natural number or null>",
 			"name": "<string, length 1 to 64>",
 			"startingAt": "<string, ISO 8601 Date and time in UTC format>",
 			"endingAt": "<string, ISO 8601 Date and time in UTC format>",
 			"isSuccess": "<boolean>",
 			"createdAt": "<string, ISO 8601 Date and time in UTC format>",
 			"categories": {
-				"scheduleId": "<number, positive integer>",
-				"categoryId": "<number, positive integer>",
+				"scheduleId": "<number, natural number>",
+				"categoryId": "<number, natural number>",
 				"category": {
-						"id": "<number, positive integer>",
+						"id": "<number, natural number>",
 						"name": "<string, length 1 to 64>"
 				}
 			}[],
 			"categories": {
 				"category": {
-					"id": "<number, positive integer>",
+					"id": "<number, natural number>",
 					"name": "<string, length 1 to 64>",
 				}
 			}[],
@@ -314,26 +314,26 @@
 	{
 		"status": "success",
 		"data": {
-			"id": "<number, positive integer>",
-			"userId": "<number, positive integer>",
-			"parentScheduleId": "<number or null, positive integer or null>",
-			"type": "<number, positive integer and range 0 to 4>",
+			"id": "<number, natural number>",
+			"userId": "<number, natural number>",
+			"parentScheduleId": "<number or null, natural number or null>",
+			"type": "<number, natural number and range 0 to 4>",
 			"name": "<string, length 1 to 64>",
 			"startingAt": "<string, ISO 8601 Date and time in UTC format>",
 			"endingAt": "<string, ISO 8601 Date and time in UTC format>",
 			"isSuccess": "<boolean>",
 			"createdAt": "<string, ISO 8601 Date and time in UTC format>",
 			"categories": {
-				"scheduleId": "<number, positive integer>",
-				"categoryId": "<number, positive integer>",
+				"scheduleId": "<number, natural number>",
+				"categoryId": "<number, natural number>",
 				"category": {
-						"id": "<number, positive integer>",
+						"id": "<number, natural number>",
 						"name": "<string, length 1 to 64>"
 				}
 			}[],
 			"categories": {
 				"category": {
-					"id": "<number, positive integer>",
+					"id": "<number, natural number>",
 					"name": "<string, length 1 to 64>",
 				}
 			}[],
@@ -476,7 +476,7 @@
 	{
 		"status": "success",
 		"data": {
-			"successRate": "<number, positive integer and range 0 to 100>"
+			"successRate": "<number, natural number and range 0 to 100>"
 		}
 	}
 	```

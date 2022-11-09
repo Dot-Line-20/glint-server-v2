@@ -37,9 +37,9 @@
 	{
 		"status": "success",
 		"data": {
-			"id": "<number, positive integer>",
-			"userId": "<number, positive integer>",
-			"postId": "<number, positive integer>",
+			"id": "<number, natural number>",
+			"userId": "<number, natural number>",
+			"postId": "<number, natural number>",
 			"content": "<string, length 1 to 65535>",
 			"createdAt": "<string, ISO 8601 Date and time in UTC format>",
 		}
@@ -85,53 +85,12 @@
 	{
 		"status": "success",
 		"data": {
-			"id": "<number, positive integer>",
-			"userId": "<number, positive integer>",
-			"postId": "<number, positive integer>",
+			"id": "<number, natural number>",
+			"userId": "<number, natural number>",
+			"postId": "<number, natural number>",
 			"content": "<string, length 1 to 65535>",
 			"createdAt": "<string, ISO 8601 Date and time in UTC format>",
 		}[]
-	}
-	```
-
----
-
-## 댓글
-
-```plain
-[GET] /posts/:postId/comments/:id
-```
-
-### Request
-
-#### Parameter
-
-|key|type|description|
-|---|---|---|
-|postId|number|자연수인 숫자입니다|
-|id|number|자연수인 숫자입니다|
-
-#### Header
-
-|key|type|description|
-|---|---|---|
-|Authorization|string|Bearer 타입의 json web token 형식 문자열입니다 (accessToken)|
-
-### Response
-
-#### 200
-
-- 성공
-	```json
-	{
-		"status": "success",
-		"data": {
-			"id": "<number, positive integer>",
-			"userId": "<number, positive integer>",
-			"postId": "<number, positive integer>",
-			"content": "<string, length 1 to 65535>",
-			"createdAt": "<string, ISO 8601 Date and time in UTC format>",
-		}
 	}
 	```
 
@@ -173,9 +132,9 @@
 	{
 		"status": "success",
 		"data": {
-			"id": "<number, positive integer>",
-			"userId": "<number, positive integer>",
-			"postId": "<number, positive integer>",
+			"id": "<number, natural number>",
+			"userId": "<number, natural number>",
+			"postId": "<number, natural number>",
 			"content": "<string, length 1 to 65535>",
 			"createdAt": "<string, ISO 8601 Date and time in UTC format>",
 		}

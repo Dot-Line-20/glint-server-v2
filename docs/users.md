@@ -28,15 +28,15 @@
 	{
 		"status": "success",
 		"data": {
-			"id": "<number, positive integer>",
+			"id": "<number, natural number>",
 			"email": "<string, email format>",
 			"name": "<string, length 1 to 64>",
 			"birth": "<string, ISO 8601 Date format>",
 			"media": {
-				"id": "<number, positive number>",
+				"id": "<number, natural number>",
 				"name": "<string, hex encoded and length 128>",
 				"type": "<string, length 3>",
-				"userId": "<number, positive number>",
+				"userId": "<number, natural number>",
 				"isImage": "<boolean>",
 				"createdAt": "<string, ISO 8601 Date and time in UTC format>"
 			}/* | null */,
@@ -90,15 +90,15 @@
 	{
 		"status": "success",
 		"data": {
-			"id": "<number, positive integer>",
+			"id": "<number, natural number>",
 			"email": "<string, email format>",
 			"name": "<string, length 1 to 64>",
 			"birth": "<string, ISO 8601 Date format>",
 			"media": {
-				"id": "<number, positive number>",
+				"id": "<number, natural number>",
 				"name": "<string, hex encoded and length 128>",
 				"type": "<string, length 3>",
-				"userId": "<number, positive number>",
+				"userId": "<number, natural number>",
 				"isImage": "<boolean>",
 				"createdAt": "<string, ISO 8601 Date and time in UTC format>"
 			}/* | null */,
@@ -138,15 +138,15 @@
 	{
 		"status": "success",
 		"data": {
-			"id": "<number, positive integer>",
+			"id": "<number, natural number>",
 			"email": "<string, email format>",
 			"name": "<string, length 1 to 64>",
 			"birth": "<string, ISO 8601 Date format>",
 			"media": {
-				"id": "<number, positive number>",
+				"id": "<number, natural number>",
 				"name": "<string, hex encoded and length 128>",
 				"type": "<string, length 3>",
-				"userId": "<number, positive number>",
+				"userId": "<number, natural number>",
 				"isImage": "<boolean>",
 				"createdAt": "<string, ISO 8601 Date and time in UTC format>"
 			}/* | null */,
@@ -196,15 +196,15 @@
 	{
 		"status": "success",
 		"data": {
-			"id": "<number, positive integer>",
+			"id": "<number, natural number>",
 			"email": "<string, email format>",
 			"name": "<string, length 1 to 64>",
 			"birth": "<string, ISO 8601 Date format>",
 			"media": {
-				"id": "<number, positive number>",
+				"id": "<number, natural number>",
 				"name": "<string, hex encoded and length 128>",
 				"type": "<string, length 3>",
-				"userId": "<number, positive number>",
+				"userId": "<number, natural number>",
 				"isImage": "<boolean>",
 				"createdAt": "<string, ISO 8601 Date and time in UTC format>"
 			}/* | null */,

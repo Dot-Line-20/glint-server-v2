@@ -25,7 +25,7 @@
 	{
 		"status": "success",
 		"data": {
-			"id": "<number, positive integer>",
+			"id": "<number, natural number>",
 			"name": "<string, length 1 to 64>",
 		}
 	}
@@ -79,7 +79,7 @@
 	{
 		"status": "success",
 		"data": {
-			"id": "<number, positive integer>",
+			"id": "<number, natural number>",
 			"name": "<string, length 1 to 64>",
 		}[]
 	}
@@ -93,44 +93,6 @@
 		"status": "fail",
 		"data": {
 			"title": "Duplicated name condition"
-		}
-	}
-	```
-
-
----
-
-## 카테고리
-
-```plain
-[GET] /categories/:id
-```
-
-### Request
-
-#### Parameter
-
-|key|type|description|
-|---|---|---|
-|id|number|자연수인 숫자입니다|
-
-#### Header
-
-|key|type|description|
-|---|---|---|
-|Authorization|string|Bearer 타입의 json web token 형식 문자열입니다 (accessToken)|
-
-### Response
-
-#### 200
-
-- 성공
-	```json
-	{
-		"status": "success",
-		"data": {
-			"id": "<number, positive integer>",
-			"name": "<string, length 1 to 64>",
 		}
 	}
 	```
