@@ -56,7 +56,7 @@
 			}[],
 			"_count": {
 				"likes": "<number, positive number>",
-        "comments": "<number, positive number>"
+				"comments": "<number, positive number>"
 			},
 			"isLiked": "<boolean>"
 		}
@@ -175,7 +175,7 @@
 			}[],
 			"_count": {
 				"likes": "<number, positive number>",
-        "comments": "<number, positive number>"
+				"comments": "<number, positive number>"
 			},
 			"isLiked": "<boolean>"
 		}[]
@@ -236,7 +236,7 @@
 			}[],
 			"_count": {
 				"likes": "<number, positive number>",
-        "comments": "<number, positive number>"
+				"comments": "<number, positive number>"
 			},
 			"isLiked": "<boolean>"
 		}
@@ -305,7 +305,7 @@
 			}[],
 			"_count": {
 				"likes": "<number, positive number>",
-        "comments": "<number, positive number>"
+				"comments": "<number, positive number>"
 			},
 			"isLiked": "<boolean>"
 		}

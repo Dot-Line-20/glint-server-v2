@@ -30,10 +30,15 @@ export default async (
             },
           },
         },
+        _count: {
+          select: {
+            users: true,
+          },
+        },
       },
       where: {
         users: {
-          every: {
+          some: {
             userId: request.userId,
           },
         },

@@ -107,11 +107,17 @@ export default async (
               index: true,
               media: true,
             },
-						orderBy: {
-							index: 'asc'
-						}
+            orderBy: {
+              index: 'asc',
+            },
           },
           categories: true,
+          _count: {
+            select: {
+              likes: true,
+              comments: true,
+            },
+          },
         },
         data: Object.assign(
           request.body,
@@ -137,10 +143,6 @@ export default async (
         ),
       }),
       {
-        _count: {
-          likes: 0,
-          comments: 0,
-        },
         isLiked: false,
       }
     )

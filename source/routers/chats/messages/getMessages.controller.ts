@@ -1,7 +1,7 @@
 import HttpError from '@library/httpError'
 import { prisma } from '@library/prisma'
 import { PageQuery } from '@library/type'
-import { Chat, ChatUser } from '@prisma/client'
+import { Chat, ChatUser, Message } from '@prisma/client'
 import { FastifyRequest, FastifyReply } from 'fastify'
 
 export default async (
@@ -9,7 +9,11 @@ export default async (
     Params: {
       chatId: Chat['id']
     }
-    Querystring: Partial<PageQuery>
+    Querystring: Partial<
+      {
+        startingId: Message['id']
+      } & PageQuery
+    >
   }>,
   reply: FastifyReply
 ) => {
@@ -57,12 +61,17 @@ export default async (
             email: true,
             name: true,
             birth: true,
-            mediaId: true,
+            media: true,
             createdAt: true,
           },
         },
       },
-      where: request.params,
+      where: {
+        id: {
+          lte: request.query.startingId,
+        },
+        chatId: request.params.chatId,
+      },
       skip: request.query['page[size]'] * request.query['page[index]'],
       take: request.query['page[size]'],
       orderBy: {
