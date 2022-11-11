@@ -30,9 +30,7 @@ export default async (
   request.query['page[size]'] ||= 50
   request.query['page[index]'] ||= 0
 
-  const scheduleCondition: Prisma.ScheduleWhereInput = {
-    parentScheduleId: request.query.isParent === true ? null : undefined,
-  }
+  const scheduleCondition: Prisma.ScheduleWhereInput = {}
 
   const isToDefined: boolean = typeof request.query.to === 'object'
 
@@ -87,6 +85,7 @@ export default async (
       select: selection,
       where: Object.assign(
         {
+          parentScheduleId: request.query.isParent === true ? null : undefined,
           userId: request.params.userId,
           isSuccess: request.query.isSuccess,
         },
