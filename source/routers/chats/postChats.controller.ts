@@ -52,8 +52,14 @@ export default async (
             },
           },
         },
+        _count: {
+          select: {
+            users: true,
+          },
+        },
       },
       data: Object.assign(request.body, {
+        userIds: undefined,
         users: {
           createMany: {
             data: userCreations,
