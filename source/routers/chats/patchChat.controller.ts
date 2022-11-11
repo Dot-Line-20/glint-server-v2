@@ -59,25 +59,6 @@ export default async (
   >[] = []
 
   if (Array.isArray(request.body.userIds)) {
-    if (request.body.userIds.length === 0) {
-			await prisma.chat.delete({
-				where: request.params,
-			})
-		
-			reply.send(null)
-		
-			request.server.socketIO.in(String(request.params.id)).emit('chat:leave', {
-				status: 'success',
-				data: null,
-			})
-		
-			request.server.socketIO
-				.in(String(request.params.id))
-				.socketsLeave(String(request.params.id))
-
-      return
-    }
-
     if (
       (await prisma.user.count({
         where: {
@@ -130,6 +111,11 @@ export default async (
                 createdAt: true,
               },
             },
+          },
+        },
+        _count: {
+          select: {
+            users: true,
           },
         },
       },

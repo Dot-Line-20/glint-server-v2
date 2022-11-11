@@ -3,6 +3,7 @@ import { getArraySchema } from '@library/utility'
 import chatSchema from '@schemas/chat'
 import pageSchema from '@schemas/page'
 import userSchema from '@schemas/user'
+import deleteChatController from './deleteChat.controller'
 import getChatsController from './getChats.controller'
 import messagesModule from './messages/messages.module'
 import patchChatController from './patchChat.controller'
@@ -45,11 +46,23 @@ export default new Module({
         body: {
           name: chatSchema.name,
           userIds: getArraySchema([userSchema.id], {
+            minimumLength: 1,
             isUniqueItems: true,
           }),
         },
       },
       handler: patchChatController,
+    },
+    {
+      method: 'DELETE',
+      url: ':id',
+      isAuthNeeded: true,
+      schema: {
+        params: {
+          id: chatSchema.id.required(),
+        },
+      },
+      handler: deleteChatController,
     },
   ],
   modules: [messagesModule],
