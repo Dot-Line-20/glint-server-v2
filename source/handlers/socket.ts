@@ -304,7 +304,7 @@ export default async (
             id: true,
             userId: true,
             content: true,
-						createdAt: true,
+            createdAt: true,
           },
           data: Object.assign(body, {
             user: {
