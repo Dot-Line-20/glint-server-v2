@@ -36,7 +36,7 @@ export default async (
     return
   }
 
-  if (post.likes.length !== 0) {
+  if (post.likes.length !== 1) {
     reply.send(new HttpError(400, 'Not liked'))
 
     return
@@ -46,7 +46,7 @@ export default async (
     where: {
       postId_userId: {
         postId: request.params.postId,
-        userId: request.params.userId,
+        userId: request.userId,
       },
     },
   })

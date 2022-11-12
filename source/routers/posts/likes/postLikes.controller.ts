@@ -35,7 +35,7 @@ export default async (
     return
   }
 
-  if (post.likes.length !== 1) {
+  if (post.likes.length !== 0) {
     reply.send(new HttpError(409, 'Duplicated like'))
 
     return
