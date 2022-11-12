@@ -129,30 +129,26 @@ export function getObjectSchema(
 
   let _schema: ObjectSchema = schema.object().additionalProperties(false)
 
-  if (schmeaNames.length !== 0) {
-    if (object.$isRequired === true) {
-      _schema = _schema.required()
-    }
-
-    for (let i = 0; i < schmeaNames.length; i++) {
-      if (schmeaNames[i] !== '$isRequired') {
-        _schema = _schema.prop(
-          schmeaNames[i],
-          Object.prototype.hasOwnProperty.call(
-            // @ts-expect-error :: fault of typescript
-            object[schmeaNames[i]],
-            'isFluentJSONSchema'
-          )
-            ? // @ts-expect-error :: fault of typescript
-              object[schmeaNames[i]]
-            : // @ts-expect-error :: fault of typescript
-              getObjectSchema(object[schmeaNames[i]])
-        )
-      }
-    }
-
-    return _schema.readOnly(true)
-  } else {
-    return schema.null()
+  if (object.$isRequired === true) {
+    _schema = _schema.required()
   }
+
+  for (let i = 0; i < schmeaNames.length; i++) {
+    if (schmeaNames[i] !== '$isRequired') {
+      _schema = _schema.prop(
+        schmeaNames[i],
+        Object.prototype.hasOwnProperty.call(
+          // @ts-expect-error :: fault of typescript
+          object[schmeaNames[i]],
+          'isFluentJSONSchema'
+        )
+          ? // @ts-expect-error :: fault of typescript
+            object[schmeaNames[i]]
+          : // @ts-expect-error :: fault of typescript
+            getObjectSchema(object[schmeaNames[i]])
+      )
+    }
+  }
+
+  return _schema.readOnly(true)
 }

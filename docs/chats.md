@@ -155,8 +155,8 @@
 
 |key|type|description|
 |---|---|---|
-|name|string|최소 1자 최대 64자의 길이 제한이 있는 플레인 텍스트 형식의 문자열입니다|
-|userIds|number[]|자연수로 이루어진 배열입니다|
+|name|_string_|최소 1자 최대 64자의 길이 제한이 있는 플레인 텍스트 형식의 문자열입니다|
+|userIds|_number[]_|자연수로 이루어진 배열입니다|
 
 ### Response
 

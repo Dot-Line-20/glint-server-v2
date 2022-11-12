@@ -12,7 +12,7 @@ export default async (
   }>,
   reply: FastifyReply
 ) => {
-  if (!isPostExists(request.params.postId)) {
+  if (!(await isPostExists(request.params.postId))) {
     reply.callNotFound()
 
     return

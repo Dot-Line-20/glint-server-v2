@@ -9,7 +9,6 @@ import userSchema from '@schemas/user'
 import deleteScheduleController from './deleteSchedule.controller'
 import getScheduleController from './getSchedule.controller'
 import getSchedulesController from './getSchedules.controller'
-import getSuccessRateController from './getSuccessRate.controller'
 import patchScheduleController from './patchSchedule.controller'
 import postSchedulesController from './postSchedules.controller'
 import { getArraySchema } from '@library/utility'
@@ -28,6 +27,7 @@ export default new Module({
           type: scheduleSchema.type.required(),
           parentScheduleId: scheduleSchema.parentScheduleId.required(),
           name: scheduleSchema.name.required(),
+          content: scheduleSchema.content.required(),
           startingAt: scheduleSchema.startingAt.required(),
           endingAt: scheduleSchema.endingAt.required(),
           categoryIds: getArraySchema([categorySchema.id], {
@@ -89,6 +89,7 @@ export default new Module({
           parentScheduleId: scheduleSchema.parentScheduleId,
           type: scheduleSchema.type,
           name: scheduleSchema.name,
+          content: scheduleSchema.content,
           startingAt: scheduleSchema.startingAt,
           endingAt: scheduleSchema.endingAt,
           isSuccess: scheduleSchema.isSuccess,
@@ -113,17 +114,6 @@ export default new Module({
         },
       },
       handler: deleteScheduleController,
-    },
-    {
-      url: 'successRate',
-      method: 'GET',
-      isAuthNeeded: true,
-      schema: {
-        params: {
-          userId: userSchema.id.required(),
-        },
-      },
-      handler: getSuccessRateController,
     },
   ],
   modules: [],
