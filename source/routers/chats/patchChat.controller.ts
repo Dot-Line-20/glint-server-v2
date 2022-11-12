@@ -113,6 +113,7 @@ export default async (
             },
           },
         },
+        createdAt: true,
         _count: {
           select: {
             users: true,
