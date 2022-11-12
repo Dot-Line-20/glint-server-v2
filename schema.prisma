@@ -175,7 +175,7 @@ model Schedule {
   parentScheduleId Int?                 @map("parent_schedule_id") @db.UnsignedInt
   type             Int                  @db.UnsignedTinyInt
   name             String               @db.VarChar(64)
-	content          String               @db.Text
+  content          String               @db.Text
   startingAt       DateTime             @map("starting_at") @db.DateTime(0)
   endingAt         DateTime             @map("ending_at") @db.DateTime(0)
   isSuccess        Boolean?             @default(false) @map("is_success")
@@ -213,41 +213,41 @@ model ScheduleRepetition {
 }
 
 model User {
-  id               Int             @id @default(autoincrement()) @db.UnsignedInt
-  email            String          @unique(map: "UNIQUE INDEX (email)") @db.VarChar(128)
-  password         String          @db.VarChar(512)
-  name             String          @db.VarChar(64)
-  birth            DateTime        @db.Date
-  mediaId          Int?            @map("media_id") @db.UnsignedInt
-  verificationKey  String?         @unique(map: "UNIQUE INDEX (verification_key)") @map("verification_key") @db.VarChar(128)
-  createdAt        DateTime        @default(now()) @map("created_at") @db.DateTime(0)
-  media            Media?          @relation("FOREIGN KEY (user.media_id, media.id)", fields: [mediaId], references: [id], map: "FOREIGN KEY (user.media_id, media.id)")
-  chatUsers        ChatUser[]
-  comments         Comment[]
-  medias           Media[]         @relation("FOREIGN KEY (media.user_id, user.id)")
-  messages         Message[]
-  posts            Post[]
-  likes            PostLike[]      @relation("FOREIGN KEY (post_like.user_id, user.id)")
-  reports          Report[]
-  schedules        Schedule[]
-  targetFollowings UserFollowing[] @relation("FOREIGN KEY (user_following.target_user_id, user.id)")
-  followings       UserFollowing[] @relation("FOREIGN KEY (user_following.user_id, user.id)")
-  reports_         UserReport[]
-  socials          UserSocial[]
+  id                 Int            @id @default(autoincrement()) @db.UnsignedInt
+  email              String         @unique(map: "UNIQUE INDEX (email)") @db.VarChar(128)
+  password           String         @db.VarChar(512)
+  name               String         @db.VarChar(64)
+  birth              DateTime       @db.Date
+  mediaId            Int?           @map("media_id") @db.UnsignedInt
+  verificationKey    String?        @unique(map: "UNIQUE INDEX (verification_key)") @map("verification_key") @db.VarChar(128)
+  createdAt          DateTime       @default(now()) @map("created_at") @db.DateTime(0)
+  media              Media?         @relation("FOREIGN KEY (user.media_id, media.id)", fields: [mediaId], references: [id], map: "FOREIGN KEY (user.media_id, media.id)")
+  chatUsers          ChatUser[]
+  comments           Comment[]
+  medias             Media[]        @relation("FOREIGN KEY (media.user_id, user.id)")
+  messages           Message[]
+  posts              Post[]
+  likes              PostLike[]     @relation("FOREIGN KEY (post_like.user_id, user.id)")
+  reports            Report[]
+  schedules          Schedule[]
+  followingFollowers UserFollower[] @relation("FOREIGN KEY (user_follower.following_user_id, user.id)")
+  followers          UserFollower[] @relation("FOREIGN KEY (user_follower.user_id, user.id)")
+  reports_           UserReport[]
+  socials            UserSocial[]
 
   @@index([mediaId], map: "FOREIGN KEY (user.media_id, media.id)")
   @@map("user")
 }
 
-model UserFollowing {
-  userId       Int  @map("user_id") @db.UnsignedInt
-  targetUserId Int  @map("target_user_id") @db.UnsignedInt
-  targetUser   User @relation("FOREIGN KEY (user_following.target_user_id, user.id)", fields: [targetUserId], references: [id], onDelete: Cascade, map: "FOREIGN KEY (user_following.target_user_id, user.id)")
-  user         User @relation("FOREIGN KEY (user_following.user_id, user.id)", fields: [userId], references: [id], onDelete: Cascade, map: "FOREIGN KEY (user_following.user_id, user.id)")
+model UserFollower {
+  userId          Int  @map("user_id") @db.UnsignedInt
+  followingUserId Int  @map("following_user_id") @db.UnsignedInt
+  followingUser   User @relation("FOREIGN KEY (user_follower.following_user_id, user.id)", fields: [followingUserId], references: [id], onDelete: Cascade, map: "FOREIGN KEY (user_follower.following_user_id, user.id)")
+  user            User @relation("FOREIGN KEY (user_follower.user_id, user.id)", fields: [userId], references: [id], onDelete: Cascade, map: "FOREIGN KEY (user_follower.user_id, user.id)")
 
-  @@id([userId, targetUserId])
-  @@index([targetUserId], map: "FOREIGN KEY (user_following.target_user_id, user.id)")
-  @@map("user_following")
+  @@id([userId, followingUserId])
+  @@index([followingUserId], map: "FOREIGN KEY (user_follower.following_user_id, user.id)")
+  @@map("user_follower")
 }
 
 model UserReport {

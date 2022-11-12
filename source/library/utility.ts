@@ -134,7 +134,11 @@ export function getObjectSchema(
   }
 
   for (let i = 0; i < schmeaNames.length; i++) {
-    if (schmeaNames[i] !== '$isRequired') {
+    if (
+      schmeaNames[i] !== '$isRequired' &&
+      // @ts-expect-error :: fault of typescript
+      typeof object[schmeaNames[i]] === 'object'
+    ) {
       _schema = _schema.prop(
         schmeaNames[i],
         Object.prototype.hasOwnProperty.call(
