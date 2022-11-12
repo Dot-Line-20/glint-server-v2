@@ -17,10 +17,11 @@ model Category {
 }
 
 model Chat {
-  id       Int        @id @default(autoincrement()) @db.UnsignedInt
-  name     String     @db.VarChar(64)
-  users    ChatUser[]
-  messages Message[]
+  id        Int        @id @default(autoincrement()) @db.UnsignedInt
+  name      String     @db.VarChar(64)
+  createdAt DateTime   @default(now()) @map("created_at") @db.DateTime(0)
+  users     ChatUser[]
+  messages  Message[]
 
   @@map("chat")
 }

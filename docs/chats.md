@@ -50,7 +50,11 @@
 					}/* | null */,
 					"createdAt": "<string, ISO 8601 Date and time in UTC format>"
 				}
-			}[]
+			}[],
+			"createdAt": "<string, ISO 8601 Date and time in UTC format>",
+			"_count": {
+				"users": "<number, positive number>"
+			}
 		}
 	}
 	```
@@ -116,7 +120,11 @@
 					}/* | null */,
 					"createdAt": "<string, ISO 8601 Date and time in UTC format>"
 				}
-			}[]
+			}[],
+			"createdAt": "<string, ISO 8601 Date and time in UTC format>",
+			"_count": {
+				"users": "<number, positive number>"
+			}
 		}[]
 	}
 	```
@@ -177,7 +185,11 @@
 					}/* | null */,
 					"createdAt": "<string, ISO 8601 Date and time in UTC format>"
 				}
-			}[]
+			}[],
+			"createdAt": "<string, ISO 8601 Date and time in UTC format>",
+			"_count": {
+				"users": "<number, positive number>"
+			}
 		}
 	}
 	```
