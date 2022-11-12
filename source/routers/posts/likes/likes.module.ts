@@ -1,7 +1,7 @@
 import Module from '@library/module'
+import pageSchema from '@schemas/page'
 import postSchema from '@schemas/post'
 import userSchema from '@schemas/user'
-import schema from 'fluent-json-schema'
 import deleteLikeController from './deleteLike.controller'
 import getLikesController from './getLikes.controller'
 import postLikesController from './postLikes.controller'
@@ -16,6 +16,9 @@ export default new Module({
         params: {
           postId: postSchema.id.required(),
         },
+        querystring: Object.assign({}, pageSchema, {
+          'page[order]': undefined,
+        }),
       },
       handler: getLikesController,
     },
