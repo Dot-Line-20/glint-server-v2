@@ -264,6 +264,7 @@ export default async (
         parentScheduleId: true,
         type: true,
         name: true,
+        content: true,
         startingAt: true,
         endingAt: true,
         isSuccess: true,

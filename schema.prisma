@@ -175,6 +175,7 @@ model Schedule {
   parentScheduleId Int?                 @map("parent_schedule_id") @db.UnsignedInt
   type             Int                  @db.UnsignedTinyInt
   name             String               @db.VarChar(64)
+	content          String               @db.Text
   startingAt       DateTime             @map("starting_at") @db.DateTime(0)
   endingAt         DateTime             @map("ending_at") @db.DateTime(0)
   isSuccess        Boolean?             @default(false) @map("is_success")
