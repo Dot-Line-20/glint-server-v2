@@ -66,23 +66,6 @@ export async function isCommentExists(
   )
 }
 
-export async function isLikeExists(
-  postId: number,
-  userId: number
-): Promise<boolean> {
-  return (
-    (await prisma.postLike.count({
-      where: {
-        post: {
-          id: postId,
-          isDeleted: false,
-        },
-        userId: userId,
-      },
-    })) === 1
-  )
-}
-
 export async function isMediaExists(id: number): Promise<boolean> {
   return (
     (await prisma.media.count({
