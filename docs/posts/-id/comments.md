@@ -121,7 +121,7 @@
 
 |key|type|description|
 |---|---|---|
-|content|string|최소 1자 최대 65535자의 길이 제한이 있는 플레인 텍스트 형식의 문자열입니다|
+|content|_string_|최소 1자 최대 65535자의 길이 제한이 있는 플레인 텍스트 형식의 문자열입니다|
 
 ### Response
 

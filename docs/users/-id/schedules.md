@@ -29,6 +29,7 @@
 |parentScheduleId|number \| null|자연수인 숫자 또는 null입니다|
 |type|number|0에서 4까지의 범위 제한이 있는 자연수인 숫자입니다|
 |name|string|최소 1자 최대 64자의 길이 제한이 있는 플레인 텍스트 형식의 문자열입니다|
+|content|string|최소 1자 최대 65535자의 길이 제한이 있는 플레인 텍스트 형식의 문자열입니다|
 |startingAt|string|ISO 8601 Date and time in UTC 형식의 문자열입니다|
 |endingAt|string|ISO 8601 Date and time in UTC 형식의 문자열입니다|
 |categoryIds|number[]|자연수로 이루어진 배열입니다|
@@ -48,18 +49,11 @@
 			"parentScheduleId": "<number or null, natural number or null>",
 			"type": "<number, natural number and range 0 to 4>",
 			"name": "<string, length 1 to 64>",
+			"content": "<string, length 1 to 65535>",
 			"startingAt": "<string, ISO 8601 Date and time in UTC format>",
 			"endingAt": "<string, ISO 8601 Date and time in UTC format>",
 			"isSuccess": "<boolean>",
 			"createdAt": "<string, ISO 8601 Date and time in UTC format>",
-			"categories": {
-				"scheduleId": "<number, natural number>",
-				"categoryId": "<number, natural number>",
-				"category": {
-						"id": "<number, natural number>",
-						"name": "<string, length 1 to 64>"
-				}
-			}[],
 			"categories": {
 				"category": {
 					"id": "<number, natural number>",
@@ -175,18 +169,11 @@
 			"userId": "<number, natural number>",
 			"parentScheduleId": "<number or null, natural number or null>",
 			"name": "<string, length 1 to 64>",
+			"content": "<string, length 1 to 65535>",
 			"startingAt": "<string, ISO 8601 Date and time in UTC format>",
 			"endingAt": "<string, ISO 8601 Date and time in UTC format>",
 			"isSuccess": "<boolean>",
 			"createdAt": "<string, ISO 8601 Date and time in UTC format>",
-			"categories": {
-				"scheduleId": "<number, natural number>",
-				"categoryId": "<number, natural number>",
-				"category": {
-						"id": "<number, natural number>",
-						"name": "<string, length 1 to 64>"
-				}
-			}[],
 			"categories": {
 				"category": {
 					"id": "<number, natural number>",
@@ -243,18 +230,11 @@
 			"userId": "<number, natural number>",
 			"parentScheduleId": "<number or null, natural number or null>",
 			"name": "<string, length 1 to 64>",
+			"content": "<string, length 1 to 65535>",
 			"startingAt": "<string, ISO 8601 Date and time in UTC format>",
 			"endingAt": "<string, ISO 8601 Date and time in UTC format>",
 			"isSuccess": "<boolean>",
 			"createdAt": "<string, ISO 8601 Date and time in UTC format>",
-			"categories": {
-				"scheduleId": "<number, natural number>",
-				"categoryId": "<number, natural number>",
-				"category": {
-						"id": "<number, natural number>",
-						"name": "<string, length 1 to 64>"
-				}
-			}[],
 			"categories": {
 				"category": {
 					"id": "<number, natural number>",
@@ -299,6 +279,7 @@
 |parentScheduleId|_number \| null_|자연수인 숫자 또는 null입니다|
 |type|_number_|0에서 4까지의 범위 제한이 있는 자연수인 숫자입니다|
 |name|_string_|최소 1자 최대 64자의 길이 제한이 있는 플레인 텍스트 형식의 문자열입니다|
+|content|_string_|최소 1자 최대 65535자의 길이 제한이 있는 플레인 텍스트 형식의 문자열입니다|
 |startingAt|_string_|ISO 8601 Date and time in UTC 형식의 문자열입니다|
 |endingAt|_string_|ISO 8601 Date and time in UTC 형식의 문자열입니다|
 |isSuccess|_boolean_|불리언입니다|
@@ -319,18 +300,11 @@
 			"parentScheduleId": "<number or null, natural number or null>",
 			"type": "<number, natural number and range 0 to 4>",
 			"name": "<string, length 1 to 64>",
+			"content": "<string, length 1 to 65535>",
 			"startingAt": "<string, ISO 8601 Date and time in UTC format>",
 			"endingAt": "<string, ISO 8601 Date and time in UTC format>",
 			"isSuccess": "<boolean>",
 			"createdAt": "<string, ISO 8601 Date and time in UTC format>",
-			"categories": {
-				"scheduleId": "<number, natural number>",
-				"categoryId": "<number, natural number>",
-				"category": {
-						"id": "<number, natural number>",
-						"name": "<string, length 1 to 64>"
-				}
-			}[],
 			"categories": {
 				"category": {
 					"id": "<number, natural number>",
@@ -441,42 +415,6 @@
 		"status": "fail",
 		"data": {
 			"title": "Unauthorized user"
-		}
-	}
-	```
-
----
-
-## 유저 성공률
-
-```plain
-[GET] /users/:userId/schedules/successRate
-```
-
-### Request
-
-#### Parameter
-
-|key|type|description|
-|---|---|---|
-|userId|number|자연수인 숫자입니다|
-
-#### Header
-
-|key|type|description|
-|---|---|---|
-|Authorization|string|Bearer 타입의 json web token 형식 문자열입니다 (accessToken)|
-
-### Response
-
-#### 200
-
-- 성공
-	```json
-	{
-		"status": "success",
-		"data": {
-			"successRate": "<number, natural number and range 0 to 100>"
 		}
 	}
 	```

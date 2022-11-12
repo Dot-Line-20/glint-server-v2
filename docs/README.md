@@ -20,9 +20,9 @@
 				- :id ([PATCH](posts/-id/comments.md#댓글-수정), [DELETE](posts/-id/comments.md#댓글-삭제))
 	- ***users*** ([POST](users.md#유저-생성), [GET](users.md#모든-유저))
 		- :id ([GET](users.md#유저), [PATCH](users.md#유저-수정), [DELETE](users.md#유저-삭제))
+			- metadata ([GET](users.md#유저-메타데이터))
 			- ***schedules*** ([POST](users/-id/schedules.md#일정-생성), [GET](users/-id/schedules.md#모든-일정))
 				- :id ([GET](users/-id/schedules.md#일정), [PATCH](users/-id/schedules.md#일정-수정), [DELETE](users/-id/schedules.md#일정-삭제))
-				- successRate ([GET](users/-id/schedules.md#유저-성공률))
 	- ***socket.io***
 		- auth ([:login](socket.io.md#유저-인증))
 		- chat ([:join](socket.io.md#채팅-참여), [:leave](socket.io.md#채팅-퇴장))

@@ -316,3 +316,41 @@
 		}
 	}
 	```
+
+---
+
+## 유저 메타데이터
+
+```plain
+[GET] /users/:userId/metadata
+```
+
+### Request
+
+#### Parameter
+
+|key|type|description|
+|---|---|---|
+|userId|number|자연수인 숫자입니다|
+
+#### Header
+
+|key|type|description|
+|---|---|---|
+|Authorization|string|Bearer 타입의 json web token 형식 문자열입니다 (accessToken)|
+
+### Response
+
+#### 200
+
+- 성공
+	```json
+	{
+		"status": "success",
+		"data": {
+			"successRate": "<number, natural number and range 1 to 100>",
+			"followers": "<number, positive number>",
+			"followings": "<number, positive number>",
+		}
+	}
+	```
