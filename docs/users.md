@@ -348,7 +348,7 @@
 	{
 		"status": "success",
 		"data": {
-			"successRate": "<number, natural number and range 1 to 100>",
+			"successRate": "<number, natural number and range 0 to 100>"/* | null */,
 			"followers": "<number, positive number>",
 			"followings": "<number, positive number>",
 		}
