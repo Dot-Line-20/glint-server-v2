@@ -2,6 +2,7 @@ import Module from '@library/module'
 import pageSchema from '@schemas/page'
 import userSchema from '@schemas/user'
 import deleteUserController from './deleteUser.controller'
+import getUserMetadataController from './getUserMetadata.controller'
 import getUserController from './getUser.controller'
 import getUsersController from './getUsers.controller'
 import patchUserController from './patchUser.controller'
@@ -72,6 +73,17 @@ export default new Module({
         },
       },
       handler: deleteUserController,
+    },
+    {
+      url: ':id/metadata',
+      method: 'GET',
+      isAuthNeeded: true,
+      schema: {
+        params: {
+          id: userSchema.id.required(),
+        },
+      },
+      handler: getUserMetadataController,
     },
   ],
   modules: [schedulesModule],
