@@ -8,6 +8,7 @@ import getUsersController from './getUsers.controller'
 import patchUserController from './patchUser.controller'
 import postUsersController from './postUsers.controller'
 import schedulesModule from './schedules/schedules.module'
+import followersModule from './followers/followers.module'
 
 export default new Module({
   routers: [
@@ -86,6 +87,6 @@ export default new Module({
       handler: getUserMetadataController,
     },
   ],
-  modules: [schedulesModule],
+  modules: [followersModule, schedulesModule],
   prefix: 'users',
 })
