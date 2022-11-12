@@ -45,14 +45,14 @@ export default async (
               100
           )
         : 100,
-    followers: await prisma.userFollowing.count({
-      where: {
-        targetUserId: request.userId,
-      },
-    }),
-    followings: await prisma.userFollowing.count({
+    followers: await prisma.userFollower.count({
       where: {
         userId: request.userId,
+      },
+    }),
+    followings: await prisma.userFollower.count({
+      where: {
+        followingUserId: request.userId,
       },
     }),
   })
