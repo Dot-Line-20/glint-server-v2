@@ -117,7 +117,11 @@ export default async (
           _count: {
             select: {
               likes: true,
-              comments: true,
+              comments: {
+                where: {
+                  isDeleted: false,
+                },
+              },
             },
           },
         },
