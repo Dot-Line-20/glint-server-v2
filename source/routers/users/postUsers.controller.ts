@@ -62,11 +62,6 @@ export default async (
         }),
         verificationKey: verificationKey,
         birth: new Date(request.body.birth),
-        media: {
-          connect: {
-            id: 0,
-          },
-        },
       }),
     })
   )

@@ -1,5 +1,5 @@
 import { FastifyRequest, FastifyReply } from 'fastify'
-import { Media, User } from '@prisma/client'
+import { Media, PostMedia, User } from '@prisma/client'
 import { isUserEmailExists, isUserIdExists, prisma } from '@library/prisma'
 import HttpError from '@library/httpError'
 
@@ -36,17 +36,15 @@ export default async (
   if (typeof request.body.mediaId === 'number') {
     const media:
       | ({
-          _count: {
-            posts: number
-          }
+          post: Pick<PostMedia, 'postId'> | null
         } & Pick<Media, 'userId' | 'isImage'>)
       | null = await prisma.media.findUnique({
       select: {
         userId: true,
         isImage: true,
-        _count: {
+        post: {
           select: {
-            posts: true,
+            postId: true,
           },
         },
       },
@@ -73,7 +71,7 @@ export default async (
       return
     }
 
-    if (media._count.posts !== 0) {
+    if (media.post !== null) {
       reply.send(new HttpError(409, 'Duplicated media usage'))
 
       return
