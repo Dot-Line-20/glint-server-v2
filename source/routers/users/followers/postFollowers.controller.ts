@@ -12,7 +12,7 @@ export default async (
   reply: FastifyReply
 ) => {
   if (request.params.userId === request.userId) {
-    reply.send(new HttpError(400, 'Invalid userId'))
+    reply.send(new HttpError(400, 'Invalid user'))
 
     return
   }
