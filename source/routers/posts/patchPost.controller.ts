@@ -7,6 +7,7 @@ import {
   PostMedia,
   Prisma,
   PrismaPromise,
+  User,
 } from '@prisma/client'
 import { prisma } from '@library/prisma'
 import HttpError from '@library/httpError'
@@ -80,17 +81,19 @@ export default async (
     }
 
     const medias: ({
-      _count: {
-        posts: number
-        user_: number
-      }
+      user_: Pick<User, 'id'> | null
+      post: Pick<PostMedia, 'postId'> | null
     } & Pick<Media, 'userId'>)[] = await prisma.media.findMany({
       select: {
         userId: true,
-        _count: {
+        user_: {
           select: {
-            posts: true,
-            user_: true,
+            id: true,
+          },
+        },
+        post: {
+          select: {
+            postId: true,
           },
         },
       },
@@ -123,7 +126,7 @@ export default async (
           return
         }
 
-        if (medias[i]._count.posts !== 0 || medias[i]._count.user_ !== 0) {
+        if (medias[i].post !== null || medias[i].user_ !== null) {
           reply.send(new HttpError(409, 'Duplicated media usage'))
 
           return

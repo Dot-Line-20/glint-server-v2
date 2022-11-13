@@ -7,6 +7,7 @@ import getRootController from './getRoot.controller'
 import mediasModule from './medias/medias.module'
 import postAndGetCoffeeController from './postAndGetCoffee.controller'
 import postsModule from './posts/posts.module'
+import reportsModule from './reports/reports.module'
 import usersModule from './users/users.module'
 
 export default new Module({
@@ -38,6 +39,7 @@ export default new Module({
     chatsModule,
     mediasModule,
     postsModule,
+    reportsModule,
     usersModule,
   ],
   prefix: '',
