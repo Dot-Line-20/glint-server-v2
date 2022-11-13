@@ -21,6 +21,28 @@ export default async (
   }
 
   if (typeof request.body.commentId === 'number') {
+    const comment: Pick<Comment, 'userId'> | null =
+      await prisma.comment.findUnique({
+        select: {
+          userId: true,
+        },
+        where: {
+          id: request.body.commentId,
+        },
+      })
+
+    if (comment === null) {
+      reply.send(new HttpError(400, 'Invalid commentId'))
+
+      return
+    }
+
+    if (comment.userId === request.userId) {
+      reply.send(new HttpError(400, 'Invalid user'))
+
+      return
+    }
+
     isIdDefined = true
 
     reportCreation.comment = {
@@ -33,6 +55,27 @@ export default async (
   if (typeof request.body.postId === 'number') {
     if (isIdDefined) {
       reply.send(new HttpError(400, 'Duplicated id'))
+
+      return
+    }
+
+    const post: Pick<Post, 'userId'> | null = await prisma.post.findUnique({
+      select: {
+        userId: true,
+      },
+      where: {
+        id: request.body.postId,
+      },
+    })
+
+    if (post === null) {
+      reply.send(new HttpError(400, 'Invalid postId'))
+
+      return
+    }
+
+    if (post.userId === request.userId) {
+      reply.send(new HttpError(400, 'Invalid user'))
 
       return
     }
@@ -53,6 +96,27 @@ export default async (
       return
     }
 
+    const user: Pick<User, 'id'> | null = await prisma.user.findUnique({
+      select: {
+        id: true,
+      },
+      where: {
+        id: request.body.userId,
+      },
+    })
+
+    if (user === null) {
+      reply.send(new HttpError(400, 'Invalid userId'))
+
+      return
+    }
+
+    if (user.id === request.userId) {
+      reply.send(new HttpError(400, 'Invalid user'))
+
+      return
+    }
+
     isIdDefined = true
 
     reportCreation.user_ = {
@@ -68,48 +132,50 @@ export default async (
     return
   }
 
-  await prisma.report.create({
-    select: {
-      id: true,
-      user: {
-        select: {
-          id: true,
-          email: true,
-          name: true,
-          birth: true,
-          media: true,
-          createdAt: true,
+  reply.send(
+    await prisma.report.create({
+      select: {
+        id: true,
+        user: {
+          select: {
+            id: true,
+            email: true,
+            name: true,
+            birth: true,
+            media: true,
+            createdAt: true,
+          },
         },
-      },
-      content: true,
-      createdAt: true,
-      comment: {
-        select: {
-          comment: true,
+        content: true,
+        createdAt: true,
+        comment: {
+          select: {
+            comment: true,
+          },
         },
-      },
-      post: {
-        select: {
-          post: true,
+        post: {
+          select: {
+            post: true,
+          },
         },
-      },
-      user_: {
-        select: {
-          user: {
-            select: {
-              id: true,
-              email: true,
-              name: true,
-              birth: true,
-              media: true,
-              createdAt: true,
+        user_: {
+          select: {
+            user: {
+              select: {
+                id: true,
+                email: true,
+                name: true,
+                birth: true,
+                media: true,
+                createdAt: true,
+              },
             },
           },
         },
       },
-    },
-    data: reportCreation,
-  })
+      data: reportCreation,
+    })
+  )
 
   return
 }
