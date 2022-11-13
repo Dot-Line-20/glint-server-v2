@@ -1,6 +1,6 @@
 import { FastifyRequest, FastifyReply } from 'fastify'
 import { Chat, Prisma, PrismaPromise, User } from '@prisma/client'
-import { isChatExists, prisma } from '@library/prisma'
+import { prisma } from '@library/prisma'
 import HttpError from '@library/httpError'
 
 export default async (

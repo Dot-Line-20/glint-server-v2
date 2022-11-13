@@ -8,7 +8,7 @@ import schema, {
 import { join } from 'path'
 // @ts-expect-error :: No type definition
 import { SMTPChannel } from 'smtp-channel'
-import { RouteOptions } from './type'
+import { RouteOptions, SchemaKey } from '@library/type'
 
 const smtp: SMTPChannel = new SMTPChannel({
   host: 'smtp.gmail.com',
@@ -123,7 +123,7 @@ export function getArraySchema(
 }
 
 export function getObjectSchema(
-  object: Required<Required<RouteOptions>['schema']>['body']
+  object: Required<Required<RouteOptions>['schema']>[SchemaKey]
 ): ObjectSchema | NullSchema {
   const schmeaNames: readonly string[] = Object.keys(object)
 
