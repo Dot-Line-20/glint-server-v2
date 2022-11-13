@@ -35,13 +35,13 @@ export default new Module({
       handler: getFollowersController,
     },
     {
-      url: ':id',
+      url: ':_userId',
       method: 'DELETE',
       isAuthNeeded: true,
       schema: {
         params: {
           userId: userSchema.id.required(),
-          id: userFollower.userId.required(),
+          _userId: userFollower.userId.required(),
         },
         body: {},
       },

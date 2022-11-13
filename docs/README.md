@@ -18,9 +18,13 @@
 				- :userId ([DELETE](posts/-id/likes.md#좋아요-삭제))
 			- ***comments*** ([POST](posts/-id/comments.md#댓글-생성), [GET](posts/-id/comments.md#모든-댓글))
 				- :id ([PATCH](posts/-id/comments.md#댓글-수정), [DELETE](posts/-id/comments.md#댓글-삭제))
+	- ***reports*** ([POST](reports.md#신고-생성), [GET](reports.md#모든-신고))
+		- :id ([GET](reports.md#신고), [DELETE](reports.md#신고-삭제))
 	- ***users*** ([POST](users.md#유저-생성), [GET](users.md#모든-유저))
 		- :id ([GET](users.md#유저), [PATCH](users.md#유저-수정), [DELETE](users.md#유저-삭제))
 			- metadata ([GET](users.md#유저-메타데이터))
+			- ***followers*** ([POST](users/-id/followers.md#팔로워-생성), [GET](users/-id/followers.md#모든-팔로워))
+				- :_userId ([DELETE](users/-id/followers.md#팔로워-삭제))
 			- ***schedules*** ([POST](users/-id/schedules.md#일정-생성), [GET](users/-id/schedules.md#모든-일정))
 				- :id ([GET](users/-id/schedules.md#일정), [PATCH](users/-id/schedules.md#일정-수정), [DELETE](users/-id/schedules.md#일정-삭제))
 	- ***socket.io***

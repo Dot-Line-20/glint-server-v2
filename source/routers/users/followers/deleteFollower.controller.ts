@@ -7,7 +7,7 @@ export default async (
   request: FastifyRequest<{
     Params: {
       userId: User['id']
-      id: User['id']
+      _userId: User['id']
     }
   }>,
   reply: FastifyReply

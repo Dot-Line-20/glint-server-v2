@@ -41,7 +41,7 @@
 			"userId": "<number, natural number>",
 			"postId": "<number, natural number>",
 			"content": "<string, length 1 to 65535>",
-			"createdAt": "<string, ISO 8601 Date and time in UTC format>",
+			"createdAt": "<string, ISO 8601 Date and time in UTC format>"
 		}
 	}
 	```
@@ -89,7 +89,7 @@
 			"userId": "<number, natural number>",
 			"postId": "<number, natural number>",
 			"content": "<string, length 1 to 65535>",
-			"createdAt": "<string, ISO 8601 Date and time in UTC format>",
+			"createdAt": "<string, ISO 8601 Date and time in UTC format>"
 		}[]
 	}
 	```
@@ -136,7 +136,7 @@
 			"userId": "<number, natural number>",
 			"postId": "<number, natural number>",
 			"content": "<string, length 1 to 65535>",
-			"createdAt": "<string, ISO 8601 Date and time in UTC format>",
+			"createdAt": "<string, ISO 8601 Date and time in UTC format>"
 		}
 	}
 	```
