@@ -124,7 +124,7 @@
 ## 팔로워 삭제
 
 ```plain
-[DELETE] /users/:userId/followers/:userId
+[DELETE] /users/:userId/followers/:_userId
 ```
 
 ### Request
