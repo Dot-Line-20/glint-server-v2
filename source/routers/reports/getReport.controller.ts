@@ -56,6 +56,11 @@ export default async (
             post: true,
           },
         },
+        story: {
+          select: {
+            story: true,
+          },
+        },
         user_: {
           select: {
             user: {

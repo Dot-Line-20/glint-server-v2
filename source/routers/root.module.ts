@@ -8,6 +8,7 @@ import mediasModule from './medias/medias.module'
 import postAndGetCoffeeController from './postAndGetCoffee.controller'
 import postsModule from './posts/posts.module'
 import reportsModule from './reports/reports.module'
+import storiesModule from './stories/stories.module'
 import usersModule from './users/users.module'
 
 export default new Module({
@@ -40,6 +41,7 @@ export default new Module({
     mediasModule,
     postsModule,
     reportsModule,
+    storiesModule,
     usersModule,
   ],
   prefix: '',
