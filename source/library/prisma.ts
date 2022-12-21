@@ -77,3 +77,14 @@ export async function isChatExists(id: number): Promise<boolean> {
     })) === 1
   )
 }
+
+export async function isStoryExists(id: number): Promise<boolean> {
+  return (
+    (await prisma.story.count({
+      where: {
+        id: id,
+        isDeleted: false,
+      },
+    })) === 1
+  )
+}

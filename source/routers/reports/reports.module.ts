@@ -3,6 +3,7 @@ import commentSchema from '@schemas/comment'
 import pageSchema from '@schemas/page'
 import postSchema from '@schemas/post'
 import reportSchema from '@schemas/report'
+import storySchema from '@schemas/story'
 import userSchema from '@schemas/user'
 import deleteReportController from './deleteReport.controller'
 import getReportController from './getReport.controller'
@@ -29,6 +30,7 @@ export default new Module({
           commentId: commentSchema.id,
           postId: postSchema.id,
           userId: userSchema.id,
+          storyId: storySchema.id,
           content: reportSchema.content.required(),
         },
       },

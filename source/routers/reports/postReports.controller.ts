@@ -1,5 +1,5 @@
 import { FastifyRequest, FastifyReply } from 'fastify'
-import { Comment, Post, Prisma, Report, User } from '@prisma/client'
+import { Comment, Post, Prisma, Report, Story, User } from '@prisma/client'
 import { prisma } from '@library/prisma'
 import HttpError from '@library/httpError'
 
@@ -9,6 +9,7 @@ export default async (
       commentId: Comment['id']
       postId: Post['id']
       userId: User['id']
+      storyId: Story['id']
     }> &
       Pick<Report, 'content'>
   }>,
@@ -89,6 +90,37 @@ export default async (
     }
   }
 
+  if (typeof request.body.storyId === 'number') {
+    if (isIdDefined) {
+      reply.send(new HttpError(400, 'Duplicated id'))
+
+      return
+    }
+
+    const story: Pick<Story, 'id'> | null = await prisma.story.findUnique({
+      select: {
+        id: true,
+      },
+      where: {
+        id: request.body.storyId,
+      },
+    })
+
+    if (story === null) {
+      reply.send(new HttpError(400, 'Invalid storyId'))
+
+      return
+    }
+
+    isIdDefined = true
+
+    reportCreation.story = {
+      create: {
+        storyId: request.body.storyId,
+      },
+    }
+  }
+
   if (typeof request.body.userId === 'number') {
     if (isIdDefined) {
       reply.send(new HttpError(400, 'Duplicated id'))
@@ -156,6 +188,11 @@ export default async (
         post: {
           select: {
             post: true,
+          },
+        },
+        story: {
+          select: {
+            story: true,
           },
         },
         user_: {
